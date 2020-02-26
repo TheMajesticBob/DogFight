@@ -79,3 +79,10 @@ std::string toStrDecPt(const uint16_t& dp, const T& i) {
   stream << std::fixed << std::setprecision(dp) << i;
   return stream.str();
 }
+
+template<typename T>
+T lerp(T a, T b, float t)
+{
+  t = fmax(0.0f, fmin(1.0f, t));
+  return (1.0f - t) * a + t * b;
+}
