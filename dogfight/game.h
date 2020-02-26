@@ -1,4 +1,4 @@
 #pragma once
-#include "scenes/scene_menu.h"
+#include "scenes/scene_testing.h"
 
-extern MenuScene menu;
+extern TestingScene testing;

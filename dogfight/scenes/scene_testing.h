@@ -2,10 +2,10 @@
 
 #include "engine.h"
 
-class MenuScene : public Scene {
+class TestingScene : public Scene {
 public:
-  MenuScene() = default;
-  ~MenuScene() override = default;
+  TestingScene() = default;
+  ~TestingScene() override = default;
 
   void Load() override;
 
