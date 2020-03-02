@@ -13,13 +13,6 @@ endif()
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Debug stuff
-if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
-    set_directory_properties(PROPERTIES COMPILE_DEFINITIONS "_DEBUG")
-else ()
-    set_directory_properties(PROPERTIES COMPILE_DEFINITIONS "NDEBUG")
-endif ()
-
 # Project initialisation
 project(DogFight)
 
