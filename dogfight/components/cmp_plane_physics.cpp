@@ -2,7 +2,8 @@
 #include "system_physics.h"
 #include "system_renderer.h"
 #include "system_resources.h"
-#include <cmath>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 using namespace std;
 using namespace sf;
