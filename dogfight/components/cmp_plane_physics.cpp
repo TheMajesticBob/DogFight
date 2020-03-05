@@ -34,10 +34,17 @@ void PlanePhysicsComponent::update(double dt)
 	velocity *= clampedSpeed;
 	_body->SetLinearVelocity(velocity);
 
+	_debugShape.setRotation(angle);
+	_debugShape.setPosition(_parent->getPosition());
+
 	PhysicsComponent::update(dt);
 }
 
-void PlanePhysicsComponent::render() { Renderer::queue(&_debugText); }
+void PlanePhysicsComponent::render()
+{
+	Renderer::queue(&_debugText);
+	Renderer::queue(&_debugShape);
+}
 
 void PlanePhysicsComponent::accelerate()
 {
@@ -65,6 +72,34 @@ PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
 	_body->SetFixedRotation(false);
 	_body->SetBullet(true);
 
+	b2Fixture* fixtures = _body->GetFixtureList();
+	_body->DestroyFixture(fixtures);
+
+	_debugShape.setPointCount(3);
+	_debugShape.setPoint(1, {0.0f, -0.5f * size.x});
+	_debugShape.setPoint(2, {0.0f, 0.5f * size.x});
+	_debugShape.setPoint(0, {-sqrt(3.0f) / 2.0f * size.y, 0.0f});
+
+    // Create the fixture shape
+    b2PolygonShape Shape;
+    // SetAsBox box takes HALF-Widths!
+	b2Vec2 vertices[3];
+	vertices[0].Set(sqrt(3.0f) / 2.0f * size.y, 0.0f);
+	vertices[1].Set(0.0f, -0.5f * _size.x);
+	vertices[2].Set(0.0f, 0.5f * _size.x);
+	Shape.Set(vertices, 3);
+    //Shape.SetAsBox(sv2_to_bv2(size).x * 0.5f, sv2_to_bv2(size).y * 0.5f);
+    b2FixtureDef FixtureDef;
+    // Fixture properties
+    // FixtureDef.density = _dynamic ? 10.f : 0.f;
+    FixtureDef.friction = _dynamic ? 0.1f : 0.8f;
+    FixtureDef.restitution = .2;
+    FixtureDef.shape = &Shape;
+    // Add to body
+    _fixture = _body->CreateFixture(&FixtureDef);
+    //_fixture->SetRestitution(.9)
+    FixtureDef.restitution = .2;
+
 	//TODO: Replace with JSON initialisation
 	_maxSpeed = 30.0f;
 	_rotationSpeed = 2.6f;
@@ -77,4 +112,6 @@ PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
   	_font = Resources::get<sf::Font>("RobotoMono-Regular.ttf");
   	_debugText.setFont(*_font);
 	_debugText.setPosition({20.0f, 20.0f});
+
+	_body->SetTransform(_body->GetPosition(), 90.0f / 180.0f * M_PI);
 }

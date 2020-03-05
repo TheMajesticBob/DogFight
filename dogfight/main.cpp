@@ -8,7 +8,7 @@ TestingScene testing;
 
 int main(int argc, char** argv)
 {
-	Engine::Start(1280, 720, "DogFight", &testing);
+	Engine::Start(1920, 1080, "DogFight", &testing);
 
 	return 0;
 }

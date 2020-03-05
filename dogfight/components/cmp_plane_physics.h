@@ -1,6 +1,7 @@
 #pragma once
 #include "cmp_physics.h"
 #include "cmp_text.h"
+#include <SFML/Graphics.hpp>
 
 class PlanePhysicsComponent : public PhysicsComponent
 {
@@ -18,6 +19,8 @@ class PlanePhysicsComponent : public PhysicsComponent
 		b2Vec2 forceApplied;
 		sf::Text _debugText;
 		std::shared_ptr<sf::Font> _font;
+
+		sf::ConvexShape _debugShape;
 
 	public:
   		void update(double dt) override;

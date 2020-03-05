@@ -10,10 +10,10 @@ Player::Player(Scene* const s) : Entity(s)
 
 	movementComponent = addComponent<PlanePhysicsComponent>(size);
 	//movementComponent->
-	shapeComponent = addComponent<ShapeComponent>();
-	shapeComponent->setShape<RectangleShape>(size);
-	shapeComponent->getShape().setFillColor(Color::Red);
-	shapeComponent->getShape().setOrigin(size / 2.0f);
+	//shapeComponent = addComponent<ShapeComponent>();
+	//shapeComponent->setShape<CircleShape>(30.0f, 3);
+	//shapeComponent->getShape().setFillColor(Color::Blue);
+	//shapeComponent->getShape().setOrigin({15.0f, 10.0f});
 }
 
 void Player::update(double dt)

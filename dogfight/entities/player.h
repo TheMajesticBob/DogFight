@@ -2,6 +2,7 @@
 #include <ecm.h>
 #include "../components/cmp_plane_physics.h"
 #include "../components/cmp_sprite.h"
+#include <SFML/Graphics.hpp>
 
 class Player : public Entity
 {
@@ -15,4 +16,20 @@ class Player : public Entity
 	protected:
 		std::shared_ptr<PlanePhysicsComponent> movementComponent;
 		std::shared_ptr<ShapeComponent> shapeComponent;
+};
+
+class TriangleShape : sf::CircleShape
+{
+	public :
+
+    explicit TriangleShape(const sf::Vector2f radius = {0.0f, 0.0f}) :
+    m_radius(radius)
+    {
+        update();
+		setPointCount(3);
+    }
+
+	private:
+		sf::Vector2f m_radius;
+
 };
