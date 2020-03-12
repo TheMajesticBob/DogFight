@@ -9,11 +9,16 @@ Player::Player(Scene* const s) : Entity(s)
 	Vector2f size = { 30.0f, 30.0f };
 
 	movementComponent = addComponent<PlanePhysicsComponent>(size);
-	//movementComponent->
-	//shapeComponent = addComponent<ShapeComponent>();
-	//shapeComponent->setShape<CircleShape>(30.0f, 3);
-	//shapeComponent->getShape().setFillColor(Color::Blue);
-	//shapeComponent->getShape().setOrigin({15.0f, 10.0f});
+	movementComponent->setDebugDraw(true);
+
+	// The following does not match the actual triangle shape of movement component, therefore I left the drawing to it
+	// We should definitely look into that when we get assets
+
+	// shapeComponent = addComponent<ShapeComponent>();
+	// shapeComponent->setShape<CircleShape>(size.x / 2.0f, 3);
+	// shapeComponent->getShape().setFillColor(Color::Blue);
+	// shapeComponent->getShape().setOrigin({15.0f, 10.0f});
+	// shapeComponent->getShape().setRotation(45.0f);
 }
 
 void Player::update(double dt)
@@ -32,6 +37,10 @@ void Player::update(double dt)
 		movementComponent->turn(1.0f);
 	}
 
+	if(Keyboard::isKeyPressed(Keyboard::P))
+	{
+		// movementComponent->setDebugDraw(!movementComponent->getDebugDraw());
+	}
 
 	Entity::update(dt);
 }

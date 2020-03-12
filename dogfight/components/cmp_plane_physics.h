@@ -20,6 +20,7 @@ class PlanePhysicsComponent : public PhysicsComponent
 		sf::Text _debugText;
 		std::shared_ptr<sf::Font> _font;
 
+		bool _debugDraw;
 		sf::ConvexShape _debugShape;
 
 	public:
@@ -31,6 +32,9 @@ class PlanePhysicsComponent : public PhysicsComponent
 
 		// Turns the plane left or right based on the value <-1; 1>
 		void turn(float value);
+
+		void setDebugDraw(bool draw) { _debugDraw = draw; }
+		bool getDebugDraw() { return _debugDraw; }
 
 		PlanePhysicsComponent() = delete;
   		explicit PlanePhysicsComponent(Entity* p, const sf::Vector2f& size);

@@ -44,7 +44,11 @@ void PlanePhysicsComponent::update(double dt)
 void PlanePhysicsComponent::render()
 {
 	Renderer::queue(&_debugText);
-	Renderer::queue(&_debugShape);
+
+	if(_debugDraw)
+	{
+		Renderer::queue(&_debugShape);
+	}
 }
 
 void PlanePhysicsComponent::accelerate()
@@ -76,30 +80,41 @@ PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
 	b2Fixture* fixtures = _body->GetFixtureList();
 	_body->DestroyFixture(fixtures);
 
+	// Define triangle points
+	sf::Vector2f points[] = {
+		{0.0f, -0.5f * size.x},
+		{0.0f, 0.5f * size.x},
+		{-sqrt(3.0f) / 2.0f * size.y, 0.0f}
+	};
+
+	// Set debug shape points
 	_debugShape.setPointCount(3);
-	_debugShape.setPoint(1, {0.0f, -0.5f * size.x});
-	_debugShape.setPoint(2, {0.0f, 0.5f * size.x});
-	_debugShape.setPoint(0, {-sqrt(3.0f) / 2.0f * size.y, 0.0f});
+	for( int i = 0; i < 3; ++i )
+	{
+		_debugShape.setPoint(i, points[i]);
+	}
 
     // Create the fixture shape
     b2PolygonShape Shape;
-    // SetAsBox box takes HALF-Widths!
+	// Set triangle vertices
 	b2Vec2 vertices[3];
-	vertices[0].Set(sqrt(3.0f) / 2.0f * size.y, 0.0f);
-	vertices[1].Set(0.0f, -0.5f * _size.x);
-	vertices[2].Set(0.0f, 0.5f * _size.x);
+	for(int i = 0; i < 3; ++i )
+	{
+		// We have to scale the points properly by using sv2_to_bv2
+		b2Vec2 point = sv2_to_bv2(points[i]);
+		vertices[i].Set(-point.x, point.y);
+	}
 	Shape.Set(vertices, 3);
-    //Shape.SetAsBox(sv2_to_bv2(size).x * 0.5f, sv2_to_bv2(size).y * 0.5f);
+
     b2FixtureDef FixtureDef;
     // Fixture properties
-    // FixtureDef.density = _dynamic ? 10.f : 0.f;
+    //FixtureDef.density = _dynamic ? 10.f : 0.f;
     FixtureDef.friction = _dynamic ? 0.1f : 0.8f;
     FixtureDef.restitution = .2;
     FixtureDef.shape = &Shape;
+
     // Add to body
     _fixture = _body->CreateFixture(&FixtureDef);
-    //_fixture->SetRestitution(.9)
-    FixtureDef.restitution = .2;
 
 	//TODO: Replace with JSON initialisation
 	_maxSpeed = 30.0f;
