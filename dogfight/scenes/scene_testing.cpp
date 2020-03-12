@@ -2,6 +2,7 @@
 #include "../game.h"
 #include "../entities/player.h"
 #include "../entities/camera.h"
+#include "../entities/enemy.h"
 
 #include <SFML/Graphics.hpp>
 
@@ -13,6 +14,9 @@ void TestingScene::Load()
   auto player = makeEntity<Player>();
   player->GetMovementComponent()->teleport(Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2));
 
+  auto enemy = makeEntity<Enemy>();
+  enemy->GetMovementComponent()->teleport(Vector2f(100.0f, 100.0f));
+  
   auto camera = makeEntity<Camera>();
   camera->AddFollow(player);
 
