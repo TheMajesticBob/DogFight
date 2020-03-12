@@ -39,8 +39,11 @@ link_directories("${CMAKE_BINARY_DIR}/lib/sfml/lib")
 # Box2D
 add_subdirectory("lib/b2d/Box2D" EXCLUDE_FROM_ALL)
 set(B2D_INCS "lib/b2d/Box2D/")
-link_directories("${CMAKE_BINARY_DIR}/lib/sfml/lib")
-
+link_directories("${CMAKE_BINARY_DIR}/lib/b2d/lib")
+# JSON
+add_subdirectory("lib/json" EXCLUDE_FROM_ALL)
+set(JSON_INCS "lib/json/include")
+link_directories("${CMAKE_BINARY_DIR}/lib/json/lib")
 
 ### Resources ###
 file(GLOB_RECURSE RESOURCE_FILES "res/*.*")
@@ -72,6 +75,6 @@ add_executable(DOGFIGHT ${SOURCES} ${CMPNTS} ${SCENES} ${ENTITIES} ${RESOURCE_FI
 source_group("components" FILES ${CMPNTS})
 source_group("resources" FILES ${RESOURCE_FILES})
 source_group("entities", FILES, ${ENTITIES})
-target_include_directories(DOGFIGHT SYSTEM PRIVATE ${SFML_INCS} ${B2D_INCS})
+target_include_directories(DOGFIGHT SYSTEM PRIVATE ${SFML_INCS} ${B2D_INCS} ${JSON_INCS})
 target_link_libraries(DOGFIGHT lib_engine)
 set(EXECUTABLES ${EXECUTABLES} DOGFIGHT)

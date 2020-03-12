@@ -2,12 +2,15 @@
 #include "system_physics.h"
 #include "system_renderer.h"
 #include "system_resources.h"
+#include "nlohmann/json.hpp"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <fstream>
 
 using namespace std;
 using namespace sf;
 using namespace Physics;
+using json = nlohmann::json;
 
 void PlanePhysicsComponent::update(double dt)
 {
@@ -117,12 +120,16 @@ PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
     _fixture = _body->CreateFixture(&FixtureDef);
 
 	//TODO: Replace with JSON initialisation
-	_maxSpeed = 30.0f;
-	_rotationSpeed = 2.6f;
-	_acceleration = 40.0f;
-	_accelerationRotationMultiplier = 0.45f;
-	_body->SetAngularDamping(10.0f);
-	_body->SetLinearDamping(0.1f);
+	std::ifstream file("res/data/planes/player.json");
+	json j;
+	file >> j;
+
+	_maxSpeed = stof(to_string(j["PlaneControl"]["MaxSpeed"])); // 30.0f;
+	_rotationSpeed = stof(to_string(j["PlaneControl"]["RotationSpeed"])); // 2.6f;
+	_acceleration = stof(to_string(j["PlaneControl"]["Acceleration"])); // 40.0f;
+	_accelerationRotationMultiplier = stof(to_string(j["PlaneControl"]["AccelerationRotationMultiplier"])); // 0.45f;
+	_body->SetAngularDamping(stof(to_string(j["Physics"]["AngularDamping"])));
+	_body->SetLinearDamping(stof(to_string(j["Physics"]["LinearDamping"])));
 
 	// Debug
   	_font = Resources::get<sf::Font>("RobotoMono-Regular.ttf");
