@@ -39,7 +39,7 @@ link_directories("${CMAKE_BINARY_DIR}/lib/sfml/lib")
 # Box2D
 add_subdirectory("lib/b2d/Box2D" EXCLUDE_FROM_ALL)
 set(B2D_INCS "lib/b2d/Box2D/")
-link_directories("${CMAKE_BINARY_DIR}/lib/b2d/lib")
+link_directories("${CMAKE_BINARY_DIR}/lib/b2d")
 # JSON
 add_subdirectory("lib/json" EXCLUDE_FROM_ALL)
 set(JSON_INCS "lib/json/include")

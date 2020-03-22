@@ -1,6 +1,7 @@
 #pragma once
 #include "cmp_physics.h"
 #include "cmp_text.h"
+#include "../definitions.h"
 #include <SFML/Graphics.hpp>
 
 class PlanePhysicsComponent : public PhysicsComponent
@@ -15,6 +16,7 @@ class PlanePhysicsComponent : public PhysicsComponent
 		float _rotationSpeed;
 		float _accelerationRotationMultiplier;
 
+		std::shared_ptr<defs::Plane> _planeDefinition;
 
 		b2Vec2 forceApplied;
 		sf::Text _debugText;
@@ -28,7 +30,7 @@ class PlanePhysicsComponent : public PhysicsComponent
 		void render() override;
 
 		// Accelerates the plane with full thrust
-		void accelerate();
+		void accelerate(float value = 1.0f);
 
 		// Turns the plane left or right based on the value <-1; 1>
 		void turn(float value);

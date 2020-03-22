@@ -25,7 +25,7 @@ void Player::update(double dt)
 {
 	if(Keyboard::isKeyPressed(Keyboard::W))
 	{
-		movementComponent->accelerate();
+		movementComponent->accelerate(1.0f);
 	}
 
 	if(Keyboard::isKeyPressed(Keyboard::A))

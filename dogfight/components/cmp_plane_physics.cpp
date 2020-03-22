@@ -2,10 +2,11 @@
 #include "system_physics.h"
 #include "system_renderer.h"
 #include "system_resources.h"
-#include "nlohmann/json.hpp"
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <fstream>
+#include "nlohmann/json.hpp"
+#include "../engine/game_resources.h"
 
 using namespace std;
 using namespace sf;
@@ -14,6 +15,12 @@ using json = nlohmann::json;
 
 void PlanePhysicsComponent::update(double dt)
 {
+	// If plane definition has not been initialised yet, don't do anything
+	if(_planeDefinition == nullptr)
+	{
+		return;
+	}
+
 	// Reset acceleration for this frame
 	_isAccelerating = false;
 
@@ -34,7 +41,7 @@ void PlanePhysicsComponent::update(double dt)
 	);
 
 	// Clamp speed
-	auto clampedSpeed = min(speed, _maxSpeed);
+	auto clampedSpeed = min(speed, _planeDefinition->maxSpeed);
 	velocity *= clampedSpeed;
 	_body->SetLinearVelocity(velocity);
 
@@ -54,20 +61,38 @@ void PlanePhysicsComponent::render()
 	}
 }
 
-void PlanePhysicsComponent::accelerate()
+void PlanePhysicsComponent::accelerate(float value)
 {
+	// If plane definition has not been initialised yet, don't do anything
+	if(_planeDefinition == nullptr)
+	{
+		return;
+	}
+
+	// Clamp value between 0 and 1
+	value = max(0.0f, min(value, 1.0f));
+
 	_isAccelerating = true;
 
 	double angle = _body->GetAngle() * 180.0f / M_PI;
-	forceApplied = _acceleration * b2Vec2(-cos(deg2rad(angle)), sin(deg2rad(angle)));
+	forceApplied = _planeDefinition->acceleration * b2Vec2(-cos(deg2rad(angle)), sin(deg2rad(angle)));
 
 	_body->ApplyForce(forceApplied, _body->GetPosition(), true);
 }
 
 void PlanePhysicsComponent::turn(float value)
 {
-	auto accelerationMultiplier = _isAccelerating ? _accelerationRotationMultiplier : 1.0f;
-	_body->SetAngularVelocity(_body->GetAngularVelocity() + deg2rad(value * accelerationMultiplier * _rotationSpeed));
+	// If plane definition has not been initialised yet, don't do anything
+	if(_planeDefinition == nullptr)
+	{
+		return;
+	}
+
+	// Clamp value between -1 and 1
+	value = max(-1.0f, min(value, 1.0f));
+
+	auto accelerationMultiplier = _isAccelerating ? _planeDefinition->accelerationRotationMultiplier : 1.0f;
+	_body->SetAngularVelocity(_body->GetAngularVelocity() + deg2rad(value * accelerationMultiplier * _planeDefinition->rotationSpeed));
 }
 
 PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
@@ -120,16 +145,20 @@ PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
     _fixture = _body->CreateFixture(&FixtureDef);
 
 	//TODO: Replace with JSON initialisation
-	std::ifstream file("res/data/planes/player.json");
-	json j;
-	file >> j;
+	_planeDefinition = Resources::get<defs::Plane>("player");
+	// std::ifstream file("res/data/planes/player.json");
+	// json j;
+	// file >> j;
 
-	_maxSpeed = stof(to_string(j["PlaneControl"]["MaxSpeed"])); // 30.0f;
-	_rotationSpeed = stof(to_string(j["PlaneControl"]["RotationSpeed"])); // 2.6f;
-	_acceleration = stof(to_string(j["PlaneControl"]["Acceleration"])); // 40.0f;
-	_accelerationRotationMultiplier = stof(to_string(j["PlaneControl"]["AccelerationRotationMultiplier"])); // 0.45f;
-	_body->SetAngularDamping(stof(to_string(j["Physics"]["AngularDamping"])));
-	_body->SetLinearDamping(stof(to_string(j["Physics"]["LinearDamping"])));
+	// _planeDefinition = j.get<defs::Plane>();
+
+	_maxSpeed = _planeDefinition->maxSpeed; // 30.0f;
+	_rotationSpeed = _planeDefinition->rotationSpeed;
+	// _rotationSpeed = stof(to_string(_planeDefinition["PlaneControl"]["RotationSpeed"])); // 2.6f;
+	// _acceleration = stof(to_string(_planeDefinition["PlaneControl"]["Acceleration"])); // 40.0f;
+	// _accelerationRotationMultiplier = stof(to_string(j["PlaneControl"]["AccelerationRotationMultiplier"])); // 0.45f;
+	_body->SetAngularDamping(_planeDefinition->angularDamping);
+	_body->SetLinearDamping(_planeDefinition->linearDamping);
 
 	// Debug
   	_font = Resources::get<sf::Font>("RobotoMono-Regular.ttf");
