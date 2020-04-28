@@ -53,7 +53,7 @@ void PlanePhysicsComponent::update(double dt)
 
 void PlanePhysicsComponent::render()
 {
-	Renderer::queue(&_debugText);
+	UI::queue(&_debugText);
 
 	if(_debugDraw)
 	{
