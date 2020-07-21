@@ -4,7 +4,9 @@
 using namespace std;
 using namespace sf;
 
-static queue<const Drawable*> sprites;
+typedef pair<int, queue<const Drawable*>> RenderQueuePair;
+
+static map<int, queue<const Drawable*>> sprites;
 static RenderWindow* rw;
 static RenderTexture rt;
 
@@ -19,10 +21,15 @@ void Renderer::initialise(sf::RenderWindow& r)
 
 void Renderer::shutdown()
 {
-	while (!sprites.empty())
+	for (auto& spriteQueue : sprites)
 	{
-		sprites.pop();
+		while (!spriteQueue.second.empty())
+		{
+			spriteQueue.second.pop();
+		}
 	}
+
+	sprites.clear();
 
 	UI::shutdown();
 }
@@ -36,10 +43,14 @@ void Renderer::render()
 		throw("No render window set! ");
 	}
 
-	while (!sprites.empty()) 
+	// Get reference to queues to avoid copying data and slowing down the process
+	for (auto& spriteQueue : sprites)
 	{
-		rw->draw(*sprites.front());
-		sprites.pop();
+		while (!spriteQueue.second.empty())
+		{
+			rw->draw(*spriteQueue.second.front());
+			spriteQueue.second.pop();
+		}
 	}
 
 	// Draw the UI
@@ -59,4 +70,15 @@ void Renderer::render()
 	}
 }
 
-void Renderer::queue(const sf::Drawable* s) { sprites.push(s); }
+void Renderer::queue(const sf::Drawable* s) { sprites[0].push(s); }
+
+void Renderer::queue(const FDrawable* s)
+{
+	// Make sure we have enough layers
+// 	if(s->layer >= sprites.size())
+// 	{
+// 		sprites.resize(s->layer + 1);
+// 	}
+
+	sprites[s->layer].push(s->drawable.get());
+}

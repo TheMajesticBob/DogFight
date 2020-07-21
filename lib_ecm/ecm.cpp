@@ -29,7 +29,10 @@ void Entity::render() {
     return;
   }
   for (auto& c : _components) {
-    c->render();
+	  if (c->is_visible())
+	  {
+		  c->render();
+	  }
   }
 }
 

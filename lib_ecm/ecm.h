@@ -15,12 +15,16 @@ class Component {
 protected:
   Entity* const _parent;
   bool _fordeletion; // should be removed
+  bool _isVisible;
   explicit Component(Entity* const p);
 
 public:
   Component() = delete;
 
   bool is_fordeletion() const;
+  bool is_visible() const { return _isVisible; }
+  
+  void setVisibility(bool visible) { _isVisible = visible; }
 
   virtual void update(double dt) = 0;
 

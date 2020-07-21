@@ -11,6 +11,13 @@ Player::Player(Scene* const s) : Entity(s)
 	movementComponent = addComponent<PlanePhysicsComponent>(size);
 	movementComponent->setDebugDraw(true);
 
+	thrusterComponent = addComponent<ShapeComponent>();
+	thrusterComponent->setShape<RectangleShape>(Vector2f(size.x, size.y / 2.0f));
+	thrusterComponent->getShape().setFillColor(Color::Yellow);
+	thrusterComponent->getShape().setOrigin(Vector2f(size.x / 2.0f, size.y / 4.0f));
+	thrusterComponent->setVisibility(false);
+	thrusterComponent->setLayer(-1);
+
 	// The following does not match the actual triangle shape of movement component, therefore I left the drawing to it
 	// We should definitely look into that when we get assets
 
@@ -23,9 +30,14 @@ Player::Player(Scene* const s) : Entity(s)
 
 void Player::update(double dt)
 {
-	if(Keyboard::isKeyPressed(Keyboard::W))
+	if (Keyboard::isKeyPressed(Keyboard::W))
 	{
 		movementComponent->accelerate(1.0f);
+		thrusterComponent->setVisibility(true);
+	}
+	else
+	{
+		thrusterComponent->setVisibility(false);
 	}
 
 	if(Keyboard::isKeyPressed(Keyboard::A))

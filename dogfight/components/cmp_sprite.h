@@ -1,13 +1,27 @@
 #pragma once
 
 #include "ecm.h"
+#include "system_renderer.h"
 #include <SFML/Graphics/Shape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
-class SpriteComponent : public Component {
+class DrawableComponent : public Component
+{
+protected:
+	std::shared_ptr<FDrawable> _drawable;
+
+public:
+	DrawableComponent() = delete;
+	explicit DrawableComponent(Entity* p) : Component(p) {}
+
+	void setLayer(int layer) { _drawable->layer = layer; }
+};
+
+class SpriteComponent : public DrawableComponent {
 protected:
   std::shared_ptr<sf::Sprite> _sprite;
   std::shared_ptr<sf::Texture> _texture;
+
 public:
   SpriteComponent() = delete;
 
@@ -15,16 +29,14 @@ public:
   void update(double dt) override;
   void render() override;
 
-  sf::Sprite& getSprite() const;
-
-
   void setTexure(std::shared_ptr<sf::Texture> tex);
+
+  sf::Sprite& getSprite() const;
 };
 
-class ShapeComponent : public Component {
+class ShapeComponent : public DrawableComponent {
 protected:
   std::shared_ptr<sf::Shape> _shape;
-  // sf::Shape _shape;
 
 public:
   ShapeComponent() = delete;
@@ -33,8 +45,13 @@ public:
 
   void update(double dt) override;
   void render() override;
+
   sf::Shape& getShape() const;
-  template <typename T, typename... Targs> void setShape(Targs... params) {
+
+  template <typename T, typename... Targs> 
+  void setShape(Targs... params) 
+  {
     _shape.reset(new T(params...));
+	_drawable->drawable = _shape;
   }
 };
