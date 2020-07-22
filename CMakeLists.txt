@@ -13,6 +13,30 @@ endif()
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Helper function for file sorting
+function(assign_source_group)
+    foreach(_source IN ITEMS ${ARGN})
+        if (IS_ABSOLUTE "${_source}")
+            file(RELATIVE_PATH _source_rel "${CMAKE_CURRENT_SOURCE_DIR}" "${_source}")
+        else()
+            set(_source_rel "${_source}")
+        endif()
+        get_filename_component(_source_path "${_source_rel}" DIRECTORY)
+        get_filename_component(_extension "${_source_rel}" EXT)
+		if(_extension MATCHES "(\.[h][p]*)")
+			set(_filter "Header Files")
+		elseif(_extension MATCHES "(\.[c][p]*)")
+			set(_filter "Source Files")
+		else()
+			set(_filter "Resources")
+		endif()
+		message(STATUS, "File ${_source_rel} Filter ${_filter}")
+		string(REGEX REPLACE "^([a-zA-Z0-9_]*\/)" "" _source_path "${_source_path}")
+        string(REPLACE "/" "\\" _source_path_msvc "${_source_path}")
+        source_group("${_filter}\\${_source_path_msvc}" FILES "${_source}")
+    endforeach()
+endfunction(assign_source_group)
+
 # Project initialisation
 project(DogFight)
 
@@ -68,13 +92,20 @@ target_link_libraries(lib_ecm PRIVATE lib_maths)
 
 ### Actual game code
 file(GLOB_RECURSE SOURCES dogfight/*.cpp dogfight/*.h)
+
+# Source files
 file(GLOB_RECURSE CMPNTS dogfight/components/*.cpp dogfight/components/*.h)
 file(GLOB_RECURSE SCENES dogfight/scenes/*.cpp dogfight/scenes/*.h)
 file(GLOB_RECURSE ENTITIES dogfight/entities/*.cpp dogfight/entities/*.h)
+
+# Add all to project
 add_executable(DOGFIGHT ${SOURCES} ${CMPNTS} ${SCENES} ${ENTITIES} ${RESOURCE_FILES})
-source_group("components" FILES ${CMPNTS})
-source_group("resources" FILES ${RESOURCE_FILES})
-source_group("entities", FILES, ${ENTITIES})
+
+# Filter header/source files
+assign_source_group(${SOURCES} ${CMPNTS} ${SCENES} ${ENTITIES} ${RESOURCE_FILES})
+#source_group("resources" FILES ${RESOURCE_FILES})
+
+# Include and link libs
 target_include_directories(DOGFIGHT SYSTEM PRIVATE ${SFML_INCS} ${B2D_INCS} ${JSON_INCS})
 target_link_libraries(DOGFIGHT lib_engine)
 set(EXECUTABLES ${EXECUTABLES} DOGFIGHT)
