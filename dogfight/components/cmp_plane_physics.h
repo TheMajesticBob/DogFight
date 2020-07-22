@@ -38,6 +38,8 @@ class PlanePhysicsComponent : public PhysicsComponent
 		void setDebugDraw(bool draw) { _debugDraw = draw; }
 		bool getDebugDraw() { return _debugDraw; }
 
+		sf::Vector2f getAngle();
+
 		PlanePhysicsComponent() = delete;
-  		explicit PlanePhysicsComponent(Entity* p, const sf::Vector2f& size);
+  		explicit PlanePhysicsComponent(Entity* p, const sf::Vector2f& size, b2FixtureDef& fixtureDef = b2FixtureDef());
 };

@@ -16,7 +16,18 @@ public:
   virtual void Update(const double& dt);
   virtual void Render();
   bool isLoaded() const;
+
   std::shared_ptr<Entity> makeEntity();
+
+  template <typename T, typename... Targs>
+  std::shared_ptr<T> makeEntity(Targs... params)
+  {
+	  static_assert(std::is_base_of<Entity, T>::value, "T != entity");
+
+	  std::shared_ptr<T> e = std::make_shared<T>(this, params...);
+	  ents.list.push_back(e);
+	  return std::move(e);
+  }
 
   template<typename T>
   std::shared_ptr<T> makeEntity()

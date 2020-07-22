@@ -1,6 +1,9 @@
 #include "player.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <engine.h>
+#include "projectile.h"
+#include "system_physics.h"
 
 using namespace sf;
 
@@ -8,7 +11,11 @@ Player::Player(Scene* const s) : Entity(s)
 {
 	Vector2f size = { 30.0f, 30.0f };
 
-	movementComponent = addComponent<PlanePhysicsComponent>(size);
+	b2FixtureDef FixtureDef;
+	FixtureDef.filter.categoryBits = Physics::COLLISION_PLAYER;
+	FixtureDef.filter.maskBits = Physics::MASK_PLAYER;
+
+	movementComponent = addComponent<PlanePhysicsComponent>(size, FixtureDef);
 	movementComponent->setDebugDraw(true);
 
 	thrusterComponent = addComponent<ShapeComponent>();
@@ -30,6 +37,11 @@ Player::Player(Scene* const s) : Entity(s)
 
 void Player::update(double dt)
 {
+	if (fireCooldown > 0.0f)
+	{
+		fireCooldown -= dt;
+	}
+
 	if (Keyboard::isKeyPressed(Keyboard::W))
 	{
 		movementComponent->accelerate(1.0f);
@@ -52,6 +64,13 @@ void Player::update(double dt)
 	if(Keyboard::isKeyPressed(Keyboard::P))
 	{
 		// movementComponent->setDebugDraw(!movementComponent->getDebugDraw());
+	}
+
+	if (Keyboard::isKeyPressed(Keyboard::Space) && fireCooldown <= 0.0f)
+	{
+		auto projectile = scene->makeEntity<Projectile>(this);
+		projectile->fire(movementComponent->getAngle());
+		fireCooldown = 1.0f / fireRate;
 	}
 
 	Entity::update(dt);

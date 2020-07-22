@@ -4,6 +4,16 @@
 #include <SFML/System/Vector2.hpp>
 
 namespace Physics {
+
+	const uint16 COLLISION_PLAYER	= 0x0001;
+	const uint16 COLLISION_ENEMY	= 0x0002;
+	const uint16 COLLISION_BULLET	= 0x0004;
+	const uint16 COLLISION_STATIC	= 0x0008;
+
+	const uint16 MASK_PROJECTILE = COLLISION_ENEMY | COLLISION_PLAYER | COLLISION_STATIC;
+	const uint16 MASK_PLAYER = COLLISION_ENEMY | COLLISION_PLAYER | COLLISION_STATIC;
+	const uint16 MASK_ENEMY = COLLISION_BULLET | COLLISION_ENEMY | COLLISION_PLAYER | COLLISION_STATIC;
+
 void initialise();
 void shutdown();
 void update(const double&);

@@ -17,6 +17,9 @@ class Player : public Entity
 		std::shared_ptr<PlanePhysicsComponent> movementComponent;
 		std::shared_ptr<ShapeComponent> shapeComponent;
 		std::shared_ptr<ShapeComponent> thrusterComponent;
+
+		float fireRate = 3.0f;
+		float fireCooldown = 0.0f;
 };
 
 class TriangleShape : sf::CircleShape

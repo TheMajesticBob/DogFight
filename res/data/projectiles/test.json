@@ -1,0 +1,10 @@
+{
+  "Projectile": {
+    "InitialSpeed": 3000.0
+  },
+  "Physics": {
+    "Mass":  0.1,
+    "LinearDamping": 0.1,
+    "GravityAffects": true
+  }
+}

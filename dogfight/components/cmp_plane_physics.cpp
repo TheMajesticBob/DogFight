@@ -95,9 +95,15 @@ void PlanePhysicsComponent::turn(float value)
 	_body->SetAngularVelocity(_body->GetAngularVelocity() + deg2rad(value * accelerationMultiplier * _planeDefinition->rotationSpeed));
 }
 
+sf::Vector2f PlanePhysicsComponent::getAngle()
+{
+	double angle = _body->GetAngle() * 180.0f / M_PI;
+	return sf::Vector2f(-cos(deg2rad(angle)), sin(deg2rad(angle)));
+}
+
 PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
-											 const Vector2f& size)
-	: PhysicsComponent(p, true, size)
+											 const Vector2f& size, b2FixtureDef& fixtureDef)
+	: PhysicsComponent(p, true, size, fixtureDef)
 {
 	_size = sv2_to_bv2(size, true);
 
@@ -144,19 +150,10 @@ PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
     // Add to body
     _fixture = _body->CreateFixture(&FixtureDef);
 
-	//TODO: Replace with JSON initialisation
 	_planeDefinition = Resources::get<defs::Plane>("player");
-	// std::ifstream file("res/data/planes/player.json");
-	// json j;
-	// file >> j;
 
-	// _planeDefinition = j.get<defs::Plane>();
-
-	_maxSpeed = _planeDefinition->maxSpeed; // 30.0f;
+	_maxSpeed = _planeDefinition->maxSpeed;
 	_rotationSpeed = _planeDefinition->rotationSpeed;
-	// _rotationSpeed = stof(to_string(_planeDefinition["PlaneControl"]["RotationSpeed"])); // 2.6f;
-	// _acceleration = stof(to_string(_planeDefinition["PlaneControl"]["Acceleration"])); // 40.0f;
-	// _accelerationRotationMultiplier = stof(to_string(j["PlaneControl"]["AccelerationRotationMultiplier"])); // 0.45f;
 	_body->SetAngularDamping(_planeDefinition->angularDamping);
 	_body->SetLinearDamping(_planeDefinition->linearDamping);
 

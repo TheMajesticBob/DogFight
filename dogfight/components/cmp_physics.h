@@ -3,6 +3,7 @@
 #include "cmp_sprite.h"
 #include "ecm.h"
 #include <Box2D/Dynamics/b2Body.h>
+#include <Box2D/Dynamics/b2Fixture.h>
 
 class PhysicsComponent : public Component {
 protected:
@@ -11,7 +12,7 @@ protected:
   b2Fixture* _fixture;
 
 public:
-  PhysicsComponent(Entity* p, bool dyn, const sf::Vector2f& size);
+  PhysicsComponent(Entity* p, bool dyn, const sf::Vector2f& size, b2FixtureDef& FixtureDef = b2FixtureDef());
 
   b2Fixture* const getFixture() const;
   bool isTouching(const PhysicsComponent& pc) const;
