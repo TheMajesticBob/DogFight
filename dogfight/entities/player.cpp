@@ -12,8 +12,8 @@ Player::Player(Scene* const s) : Entity(s)
 	Vector2f size = { 30.0f, 30.0f };
 
 	b2FixtureDef FixtureDef;
-	FixtureDef.filter.categoryBits = Physics::COLLISION_PLAYER;
-	FixtureDef.filter.maskBits = Physics::MASK_PLAYER;
+	FixtureDef.filter.categoryBits = Physics::COLLISION_DYNAMIC;
+	FixtureDef.filter.maskBits = Physics::MASK_DYNAMIC;
 
 	movementComponent = addComponent<PlanePhysicsComponent>(size, FixtureDef);
 	movementComponent->setDebugDraw(true);
