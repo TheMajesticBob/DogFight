@@ -44,21 +44,15 @@ void Player::update(double dt)
 
 	if (Keyboard::isKeyPressed(Keyboard::W))
 	{
-		movementComponent->accelerate(1.0f);
-		thrusterComponent->setVisibility(true);
+		Accelerate(1.0f);
 	}
-	else
-	{
-		thrusterComponent->setVisibility(false);
-	}
-
 	if(Keyboard::isKeyPressed(Keyboard::A))
 	{
-		movementComponent->turn(-1.0f);
+		Turn(-1.0f);
 	}
 	else if (Keyboard::isKeyPressed(Keyboard::D))
 	{
-		movementComponent->turn(1.0f);
+		Turn(1.0f);
 	}
 
 	if(Keyboard::isKeyPressed(Keyboard::P))
@@ -66,12 +60,31 @@ void Player::update(double dt)
 		// movementComponent->setDebugDraw(!movementComponent->getDebugDraw());
 	}
 
-	if (Keyboard::isKeyPressed(Keyboard::Space) && fireCooldown <= 0.0f)
+	if (Keyboard::isKeyPressed(Keyboard::Space))
+	{
+		Fire();
+	}
+
+	thrusterComponent->setVisibility(movementComponent->isAccelerating());
+	Entity::update(dt);
+}
+
+void Player::Accelerate(float Value)
+{
+	movementComponent->accelerate(Value);
+}
+
+void Player::Turn(float Value)
+{
+	movementComponent->turn(Value);
+}
+
+void Player::Fire()
+{
+	if (fireCooldown <= 0.0f)
 	{
 		auto projectile = scene->makeEntity<Projectile>(this);
 		projectile->fire(movementComponent->getAngle());
 		fireCooldown = 1.0f / fireRate;
 	}
-
-	Entity::update(dt);
 }

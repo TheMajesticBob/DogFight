@@ -14,6 +14,10 @@ class Player : public Entity
 		std::shared_ptr<PlanePhysicsComponent> GetMovementComponent() { return movementComponent; }
 
 	protected:
+		void Accelerate(float Value);
+		void Turn(float Value);
+		void Fire();
+
 		std::shared_ptr<PlanePhysicsComponent> movementComponent;
 		std::shared_ptr<ShapeComponent> shapeComponent;
 		std::shared_ptr<ShapeComponent> thrusterComponent;
