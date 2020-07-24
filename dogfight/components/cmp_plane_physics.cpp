@@ -4,14 +4,11 @@
 #include "system_resources.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include <fstream>
-#include "nlohmann/json.hpp"
 #include "../engine/game_resources.h"
 
 using namespace std;
 using namespace sf;
 using namespace Physics;
-using json = nlohmann::json;
 
 void PlanePhysicsComponent::update(double dt)
 {

@@ -66,6 +66,9 @@ public:
 
   virtual void render();
 
+  virtual void OnBeginOverlap(Entity* const e) {}
+  virtual void OnEndOverlap(Entity* const e) {}
+
   //
   const sf::Vector2f& getPosition() const;
 

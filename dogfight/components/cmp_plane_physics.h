@@ -38,6 +38,8 @@ class PlanePhysicsComponent : public PhysicsComponent
 		void setDebugDraw(bool draw) { _debugDraw = draw; }
 		bool getDebugDraw() { return _debugDraw; }
 
+		bool isAccelerating() { return _isAccelerating; }
+
 		sf::Vector2f getAngle();
 
 		PlanePhysicsComponent() = delete;
