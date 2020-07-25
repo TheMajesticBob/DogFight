@@ -147,12 +147,72 @@ private:
 	std::shared_ptr<BTNode> _child;
 };
 
+// Selector Nodes execute their children from left to right. They stop executing when one of their children succeeds. 
+// If a Selector's child succeeds, the Selector succeeds. If all the Selector's children fail, the Selector fails.
 class BTSelector : public BTNode
 {
+private:
+	std::vector<std::shared_ptr<BTNode>> _children;
+	int _currentId = 0;
 
+public:
+	BTSelector() = delete;
+	BTSelector(BehaviourTree* const bt, std::string name, std::vector<std::shared_ptr<BTNode>> children)
+		: BTNode(bt, name), _children(children)
+	{
+		for (auto& child : children)
+		{
+			child->setParentNode(this);
+		}
+	}
+
+	virtual void run() override
+	{
+		BTNode::run();
+
+		// If there are no children, return without success
+		if (_children.size() == 0)
+		{
+			onFinished(false);
+			return;
+		}
+
+		// Wrap current child ID within limit and return true when all children finished successfully
+		if (_currentId >= _children.size())
+		{
+			_currentId = 0;
+			return;
+		}
+
+		// Run current child node & increment ID counter
+		_children[_currentId++]->run();
+	}
+
+	virtual void onChildFinished(bool success)
+	{
+		// When child returns with success, reset the counter and return success
+		if (success)
+		{
+			_currentId = 0;
+			onFinished(true);
+		}
+		else
+		{
+			// If all children failed, we fail as well; otherwise carry on
+			if (_currentId == _children.size())
+			{
+				onFinished(false);
+			} 
+			else
+			{
+				run();
+			}
+		}
+	}
 };
 
-// Sequence nodes cycle through all of their children and run them until one fails
+// Sequence nodes execute their children from left to right. They stop executing when one of their children fails. 
+// If a child fails, then the Sequence fails. If all the Sequence's children succeed, then the Sequence succeeds.
 class BTSequence : public BTNode
 {
 private:
@@ -202,7 +262,7 @@ public:
 		}
 		else
 		{
-			// If unsuccessful, reset the child counter
+			// If unsuccessful, reset the child counter and return unsuccessfully
 			_currentId = 0;
 			onFinished(false);
 		}

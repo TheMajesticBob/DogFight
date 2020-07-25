@@ -17,11 +17,11 @@ public:
 		std::shared_ptr<TestingTask> task6 = makeNode<TestingTask>("Second inner task", 1.0f);
 		std::shared_ptr<FailTask> task7 = makeNode<FailTask>("Fail task");
 
-		std::shared_ptr<BTSequence> sequence2 = makeNode<BTSequence>("Inner Sequence",
+		std::shared_ptr<BTSelector> sequence2 = makeNode<BTSelector>("Inner Selector",
 			std::vector<std::shared_ptr<BTNode>>
 			{
-				std::static_pointer_cast<BTNode>(task5),
 				std::static_pointer_cast<BTNode>(task7),
+				std::static_pointer_cast<BTNode>(task5),
 				std::static_pointer_cast<BTNode>(task6)
 			});
 
