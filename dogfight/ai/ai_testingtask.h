@@ -2,6 +2,19 @@
 #include "ai/task.h"
 #include <string.h>
 
+class TestingDecorator : public BTDecorator
+{
+public:
+	TestingDecorator(BehaviourTree* const bt, std::string name)
+		: BTDecorator(bt, name) {}
+
+	virtual bool evaluate()
+	{
+		std::cout << "Decorator fails" << std::endl;
+		return false;
+	}
+};
+
 class TestingTask : public BTTask
 {
 public:

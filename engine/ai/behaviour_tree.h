@@ -15,7 +15,6 @@ class BehaviourTree : public Entity, public std::enable_shared_from_this<Behavio
 private:
 	std::shared_ptr<class RootNode> _rootNode;
 	std::shared_ptr<class Blackboard> _blackboard;
-	// std::shared_ptr<BehaviourTree> _sharedThis;
 	class BTNode* _currentNode;
 
 	void setCurrentNode(BTNode* node);
@@ -30,15 +29,45 @@ public:
 	void startBehaviourTree();
 	virtual void update(double dt) override;
 
+	// Create nodes
 	template<typename T, typename... Targs>
 	std::shared_ptr<T> makeNode(Targs... params)
 	{
+		static_assert(std::is_base_of<BTNode, T>::value, "T != BTNode");
 		auto newNode = std::make_shared<T>(this, params...);
 		return newNode;
 	}
 
+	// Create decorators
+	template<typename T, typename... Targs>
+	std::shared_ptr<T> makeDecorator(Targs... params)
+	{
+		static_assert(std::is_base_of<BTDecorator, T>::value, "T != BTDecorator");
+		auto newDecorator = std::make_shared<T>(this, params...);
+		return newDecorator;
+	}
+
 protected:
 	friend class BTNode;
+	friend class BTDecorator;
+};
+
+
+// Decorators are used as conditions - the node they are attached to will only execute if all decorators return true
+class BTDecorator
+{
+public:
+	BTDecorator() = delete;
+	BTDecorator(BehaviourTree* const bt, std::string name = "Unnamed") : _behaviourTree(bt), _name(name) {}
+
+	virtual bool evaluate() { return true; }
+
+protected:
+	BehaviourTree* const getBehaviourTree() { return _behaviourTree; }
+
+private:
+	std::string _name;
+	BehaviourTree* _behaviourTree;
 };
 
 class BTNode : public std::enable_shared_from_this<BTNode>
@@ -50,6 +79,12 @@ public:
 	virtual void run() 
 	{
 		_behaviourTree->setCurrentNode(this);
+
+		// Return unsuccessfully if decorators don't allow running
+		if (!evaluateDecorators())
+		{
+			onFinished(false);
+		}
 	}
 
 	// Update runs on the active node until it finishes
@@ -102,13 +137,34 @@ public:
 	// Returns name
 	const std::string& getName() { return _name; }
 
+	// Add decorators to the node
+	void addDecorator(std::shared_ptr<BTDecorator> decorator) { _decorators.push_back(decorator); }
+	void addDecorators(std::vector<std::shared_ptr<BTDecorator>> decorators)
+	{
+		_decorators.insert(_decorators.end(), std::begin(decorators), std::end(decorators)); 
+	}
+
 private:
 	BTNode* _parent;
 	std::shared_ptr<Blackboard> _blackboard;
 	BehaviourTree* _behaviourTree;
 
 protected:
+	bool evaluateDecorators()
+	{
+		for (auto decorator : _decorators)
+		{
+			if (!decorator->evaluate())
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	std::string _name;
+	std::vector<std::shared_ptr<BTDecorator>> _decorators;
 };
 
 class RootNode : public BTNode

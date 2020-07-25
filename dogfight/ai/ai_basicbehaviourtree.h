@@ -8,8 +8,11 @@ public:
 	BasicBehaviourTree(Scene* const s, std::shared_ptr<Blackboard> b = nullptr)
 		: BehaviourTree(s, b)
 	{
+		std::shared_ptr<TestingDecorator> decorator = makeDecorator<TestingDecorator>("Fail decorator");
+
 		std::shared_ptr<TestingTask> task1 = makeNode<TestingTask>("First task", 2.0f);
 		std::shared_ptr<TestingTask> task2 = makeNode<TestingTask>("Second task", 1.0f);
+		task2->addDecorator(decorator);
 		std::shared_ptr<TestingTask> task3 = makeNode<TestingTask>("Third task", 3.0f);
 		std::shared_ptr<TestingTask> task4 = makeNode<TestingTask>("Fourth task", 0.5f);
 
