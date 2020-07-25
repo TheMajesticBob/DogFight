@@ -10,4 +10,6 @@ public:
   void Load() override;
 
   void Update(const double& dt) override;
+
+  std::shared_ptr<class BasicBehaviourTree> bt;
 };

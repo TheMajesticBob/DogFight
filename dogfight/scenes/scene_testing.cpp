@@ -3,6 +3,8 @@
 #include "../entities/player.h"
 #include "../entities/camera.h"
 
+#include "../ai/ai_basicbehaviourtree.h"
+
 #include <SFML/Graphics.hpp>
 
 using namespace std;
@@ -10,6 +12,9 @@ using namespace sf;
 
 void TestingScene::Load()
 {
+	bt = makeEntity<BasicBehaviourTree>();
+	bt->startBehaviourTree();
+
   auto player = makeEntity<Player>();
   player->GetMovementComponent()->teleport(Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2));
 
