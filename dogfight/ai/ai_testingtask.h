@@ -2,6 +2,32 @@
 #include "ai/task.h"
 #include <string.h>
 
+class BTT_MoveTowardsEntity : public BTTask
+{
+public:
+	BTT_MoveTowardsEntity(BehaviourTree* const bt, std::string name)
+		: BTTask(bt, name)
+	{
+		_timer = 0.5f;
+	}
+
+	virtual void run() override;
+	virtual void update(const double&) override;
+
+private:
+	void swap() 
+	{
+		_timeToSwap = _timer;
+		_isAccelerating = !_isAccelerating;
+	}
+
+	std::shared_ptr<Entity> _targetEntity;
+	class Enemy* _myPawn;
+	bool _isAccelerating;
+	float _timer;
+	float _timeToSwap;
+};
+
 class TestingDecorator : public BTDecorator
 {
 public:

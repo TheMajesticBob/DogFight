@@ -1,6 +1,4 @@
 #include "player.h"
-#include <SFML/Graphics.hpp>
-#include <SFML/Window/Keyboard.hpp>
 #include <engine.h>
 #include "projectile.h"
 #include "system_physics.h"
@@ -9,6 +7,8 @@ using namespace sf;
 
 Player::Player(Scene* const s) : Entity(s)
 {
+	addTag("Player");
+
 	Vector2f size = { 30.0f, 30.0f };
 
 	b2FixtureDef FixtureDef;
@@ -84,7 +84,7 @@ void Player::Fire()
 	if (fireCooldown <= 0.0f)
 	{
 		auto projectile = scene->makeEntity<Projectile>(this);
-		projectile->fire(movementComponent->getAngle());
+		projectile->fire(movementComponent->getForwardVector());
 		fireCooldown = 1.0f / fireRate;
 	}
 }

@@ -76,6 +76,7 @@ file(GLOB_RECURSE RESOURCE_FILES "res/*.*")
 ### Engine ###
 file(GLOB_RECURSE SOURCE_FILES engine/*.cpp engine/*.h)
 add_library(lib_engine STATIC ${SOURCE_FILES} ${RESOURCE_FILES})
+assign_source_group(${SOURCE_FILES} ${RESOURCE_FILES})
 target_include_directories(lib_engine INTERFACE "${CMAKE_SOURCE_DIR}/engine/" PUBLIC SYSTEM ${B2D_INCS} )
 target_link_libraries(lib_engine lib_maths lib_ecm Box2D sfml-graphics sfml-audio)
 
@@ -87,6 +88,7 @@ target_include_directories(lib_maths INTERFACE "${CMAKE_SOURCE_DIR}/lib_maths" I
 ### ECM lib
 file(GLOB_RECURSE SOURCE_FILES lib_ecm/*.cpp lib_ecm/*.h)
 add_library(lib_ecm STATIC ${SOURCE_FILES})
+assign_source_group(${SOURCE_FILES})
 target_include_directories(lib_ecm INTERFACE "${CMAKE_SOURCE_DIR}/lib_ecm" )
 target_link_libraries(lib_ecm PRIVATE lib_maths)
 
@@ -103,7 +105,6 @@ add_executable(DOGFIGHT ${SOURCES} ${CMPNTS} ${SCENES} ${ENTITIES} ${RESOURCE_FI
 
 # Filter header/source files
 assign_source_group(${SOURCES} ${CMPNTS} ${SCENES} ${ENTITIES} ${RESOURCE_FILES})
-#source_group("resources" FILES ${RESOURCE_FILES})
 
 # Include and link libs
 target_include_directories(DOGFIGHT SYSTEM PRIVATE ${SFML_INCS} ${B2D_INCS} ${JSON_INCS})

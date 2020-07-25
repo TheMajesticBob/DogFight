@@ -92,10 +92,10 @@ void PlanePhysicsComponent::turn(float value)
 	_body->SetAngularVelocity(_body->GetAngularVelocity() + deg2rad(value * accelerationMultiplier * _planeDefinition->rotationSpeed));
 }
 
-sf::Vector2f PlanePhysicsComponent::getAngle()
+sf::Vector2f PlanePhysicsComponent::getForwardVector()
 {
 	double angle = _body->GetAngle() * 180.0f / M_PI;
-	return sf::Vector2f(-cos(deg2rad(angle)), sin(deg2rad(angle)));
+	return normalize(sf::Vector2f(-cos(deg2rad(angle)), sin(deg2rad(angle))));
 }
 
 PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,

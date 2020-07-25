@@ -26,6 +26,8 @@ public:
   
   void setVisibility(bool visible) { _isVisible = visible; }
 
+  virtual void onBeginPlay() {}
+
   virtual void update(double dt) = 0;
 
   virtual void render() = 0;

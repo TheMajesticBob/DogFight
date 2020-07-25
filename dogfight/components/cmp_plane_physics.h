@@ -40,7 +40,7 @@ class PlanePhysicsComponent : public PhysicsComponent
 
 		bool isAccelerating() { return _isAccelerating; }
 
-		sf::Vector2f getAngle();
+		sf::Vector2f getForwardVector();
 
 		PlanePhysicsComponent() = delete;
   		explicit PlanePhysicsComponent(Entity* p, const sf::Vector2f& size, b2FixtureDef& fixtureDef = b2FixtureDef());

@@ -37,6 +37,12 @@ Vector2<T> operator*(const Vector2<T>& left, const Vector2<T>& right) {
   return r;
 }
 
+template<typename T>
+const float dot(const Vector2<T>& a, const Vector2<T>& b)
+{
+	return a.x * b.y + a.y * b.x;
+}
+
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const Vector2<T>& v) {
   os << '(' << v.x << ',' << v.y << ')';
@@ -49,6 +55,10 @@ template <typename T, typename U> Vector2<T> Vcast(const Vector2<U>& v) {
 
 static double deg2rad(double degrees) {
   return degrees * 4.0 * atan(1.0) / 180.0;
+}
+
+static double rad2deg(double radians) {
+	return radians / (4.0 * atan(1.0)) * 180.0;
 }
 
 template <typename T>

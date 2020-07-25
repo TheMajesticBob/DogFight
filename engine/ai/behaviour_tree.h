@@ -73,7 +73,10 @@ private:
 class BTNode : public std::enable_shared_from_this<BTNode>
 {
 public:
-	BTNode(BehaviourTree* const bt, std::string name = "Unnamed") : _behaviourTree(bt), _name(name) {}
+	BTNode(BehaviourTree* const bt, std::string name = "Unnamed") : _behaviourTree(bt), _name(name) 
+	{
+		_blackboard = _behaviourTree->getBlackboard();
+	}
 
 	// This method is called every time a node is selected to start
 	virtual void run() 
