@@ -67,21 +67,23 @@ void BTT_MoveTowardsEntity::update(const double& dt)
 		if (_targetEntity)
 		{
 			direction = sf::normalize(_targetEntity->getPosition() - _myPawn->getPosition());
+			direction.y = -direction.y;
 			distance = sf::length(_targetEntity->getPosition() - _myPawn->getPosition());
 		}
 
-		float _dot = sf::dot(direction, _myPawn->GetMovementComponent()->getForwardVector());
-		float angle = sf::rad2deg(acos(_dot)); // +90.0f;
+		sf::Vector2f forward = _myPawn->GetMovementComponent()->getForwardVector();
+		float _dot = sf::dot(direction, forward);
+		float angle = sf::rad2deg(atan2(direction.x * forward.y - forward.x * direction.y, direction.x * forward.x + direction.y * forward.y)); // +90.0f;
 
-		if (abs(angle) > 10.0f)
+		if (abs(angle) > 10.0f && _dot > -0.9f)
 		{
-			_myPawn->Turn(angle / 10.0f);
+			_myPawn->Turn(angle);
 		}
 		else
 		{
 			if (distance > 10.0f)
 			{
-				_myPawn->Accelerate(distance / 1000.0f);
+				_myPawn->Accelerate(distance / 10000.0f);
 			}
 		}
 	}
