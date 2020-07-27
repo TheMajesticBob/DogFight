@@ -59,4 +59,8 @@ namespace defs
 		j.at("Physics").at("LinearDamping").get_to(p.linearDamping);
 		j.at("Physics").at("GravityAffects").get_to(p.gravityAffects);
 	}
+
+	inline void from_json(const json &j, Controls &c)
+	{
+	}
 }
