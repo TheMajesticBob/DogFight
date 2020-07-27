@@ -2,13 +2,6 @@
 #include "ai/behaviour_tree.h"
 #include "ai_testingtask.h"
 
-class EnemyBlackboard : public Blackboard
-{
-public:
-	class Enemy* myPawn;
-	std::shared_ptr<Entity> targetEntity;
-};
-
 class BasicBehaviourTree : public BehaviourTree
 {
 public:

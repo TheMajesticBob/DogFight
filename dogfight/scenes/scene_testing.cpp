@@ -1,6 +1,6 @@
 #include "scene_testing.h"
 #include "../game.h"
-#include "../entities/player.h"
+#include "../entities/Ship.h"
 #include "../entities/enemy.h"
 #include "../entities/camera.h"
 

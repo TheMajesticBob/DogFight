@@ -1,11 +1,34 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include <map>
 #include <ecm.h>
 
 // Blackboard is a data storage class for AI tasks, residing within the BehaviourTree
 class Blackboard
 {
+public:
+	inline void setBool(std::string key, bool value) { boolMap[key] = value; }
+	inline bool getBool(std::string key) { return boolMap[key]; }
+
+	inline void setString(std::string key, std::string value) { stringMap[key] = value; }
+	inline std::string getString(std::string key) { return stringMap[key]; }
+
+	inline void setFloat(std::string key, float value) { floatMap[key] = value; }
+	inline float getFloat(std::string key) { return floatMap[key]; }
+
+	inline void setInt(std::string key, int value) { intMap[key] = value; }
+	inline int getInt(std::string key) { return intMap[key]; }
+
+	inline void setEntity(std::string key, Entity* value) { entityMap[key] = value; }
+	inline Entity* getEntity(std::string key) { return entityMap[key]; }
+
+private:
+	std::map<std::string, bool> boolMap;
+	std::map<std::string, std::string> stringMap;
+	std::map<std::string, float> floatMap;
+	std::map<std::string, int> intMap;
+	std::map<std::string, Entity*> entityMap;
 
 };
 

@@ -28,11 +28,7 @@ void BTT_MoveTowardsEntity::run()
 
 	if (getBlackboard())
 	{
- 		EnemyBlackboard* blackboard = static_cast<EnemyBlackboard*>(getBlackboard().get());
-		if (blackboard)
-		{
-			_myPawn = blackboard->myPawn;
-		}
+		_myPawn = static_cast<Enemy*>(getBlackboard()->getEntity("MyPawn"));
 // 		if (!blackboard || !blackboard->targetEntity)
 // 		{
 // 			onFinished(false);	
@@ -55,10 +51,10 @@ void BTT_MoveTowardsEntity::update(const double& dt)
 
 	if (_myPawn)
 	{
-		EnemyBlackboard* blackboard = static_cast<EnemyBlackboard*>(getBlackboard().get());
+		Blackboard* blackboard = getBlackboard().get();
 		if (blackboard)
 		{
-			_targetEntity = blackboard->targetEntity;
+			_targetEntity = blackboard->getEntity("TargetEntity");
 		}
 
 		sf::Vector2f direction;

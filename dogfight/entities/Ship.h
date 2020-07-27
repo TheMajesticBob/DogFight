@@ -4,26 +4,36 @@
 #include "../components/cmp_sprite.h"
 #include <SFML/Graphics.hpp>
 
-class Player : public Entity
+class Ship : public Entity
 {
 	public:
-		Player() = delete;
-		Player(Scene* const s);
+		Ship() = delete;
+		Ship(Scene* const s);
 
 		void update(double) override;
 		std::shared_ptr<PlanePhysicsComponent> GetMovementComponent() { return movementComponent; }
+		b2Fixture* const GetFixture() { return movementComponent->getFixture(); }
 
-	protected:
 		void Accelerate(float Value);
 		void Turn(float Value);
 		void Fire();
 
+	protected:
 		std::shared_ptr<PlanePhysicsComponent> movementComponent;
 		std::shared_ptr<ShapeComponent> shapeComponent;
 		std::shared_ptr<ShapeComponent> thrusterComponent;
 
 		float fireRate = 3.0f;
 		float fireCooldown = 0.0f;
+};
+
+class Player : public Ship
+{
+public:
+	Player() = delete;
+	Player(Scene* const s);
+
+	void update(double) override;
 };
 
 class TriangleShape : sf::CircleShape

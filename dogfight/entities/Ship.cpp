@@ -1,14 +1,12 @@
-#include "player.h"
+#include "Ship.h"
 #include <engine.h>
 #include "projectile.h"
 #include "system_physics.h"
 
 using namespace sf;
 
-Player::Player(Scene* const s) : Entity(s)
+Ship::Ship(Scene* const s) : Entity(s)
 {
-	addTag("Player");
-
 	Vector2f size = { 30.0f, 30.0f };
 
 	b2FixtureDef FixtureDef;
@@ -35,12 +33,42 @@ Player::Player(Scene* const s) : Entity(s)
 	// shapeComponent->getShape().setRotation(45.0f);
 }
 
-void Player::update(double dt)
+void Ship::update(double dt)
 {
 	if (fireCooldown > 0.0f)
 	{
 		fireCooldown -= dt;
 	}
+}
+
+void Ship::Accelerate(float Value)
+{
+	movementComponent->accelerate(Value);
+}
+
+void Ship::Turn(float Value)
+{
+	movementComponent->turn(Value);
+}
+
+void Ship::Fire()
+{
+	if (fireCooldown <= 0.0f)
+	{
+		auto projectile = scene->makeEntity<Projectile>(this);
+		projectile->fire(movementComponent->getForwardVector());
+		fireCooldown = 1.0f / fireRate;
+	}
+}
+
+Player::Player(Scene* const s) : Ship(s)
+{
+	addTag("Player");
+}
+
+void Player::update(double dt)
+{
+	Ship::update(dt);
 
 	if (Keyboard::isKeyPressed(Keyboard::W))
 	{
@@ -67,24 +95,4 @@ void Player::update(double dt)
 
 	thrusterComponent->setVisibility(movementComponent->isAccelerating());
 	Entity::update(dt);
-}
-
-void Player::Accelerate(float Value)
-{
-	movementComponent->accelerate(Value);
-}
-
-void Player::Turn(float Value)
-{
-	movementComponent->turn(Value);
-}
-
-void Player::Fire()
-{
-	if (fireCooldown <= 0.0f)
-	{
-		auto projectile = scene->makeEntity<Projectile>(this);
-		projectile->fire(movementComponent->getForwardVector());
-		fireCooldown = 1.0f / fireRate;
-	}
 }
