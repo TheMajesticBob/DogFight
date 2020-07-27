@@ -4,6 +4,9 @@
 #include <map>
 #include <ecm.h>
 
+// Debug purposes
+#include <SFML/Graphics.hpp>
+
 // Blackboard is a data storage class for AI tasks, residing within the BehaviourTree
 class Blackboard
 {
@@ -29,7 +32,6 @@ private:
 	std::map<std::string, float> floatMap;
 	std::map<std::string, int> intMap;
 	std::map<std::string, Entity*> entityMap;
-
 };
 
 // BehaviourTree class manages the AI tree
@@ -39,6 +41,7 @@ private:
 	std::shared_ptr<class RootNode> _rootNode;
 	std::shared_ptr<class Blackboard> _blackboard;
 	class BTNode* _currentNode;
+	Entity* _controlledEntity;
 
 	void setCurrentNode(BTNode* node);
 
@@ -49,8 +52,9 @@ public:
 	const std::shared_ptr<class Blackboard> getBlackboard() { return _blackboard; }
 	const std::shared_ptr<class RootNode> getRootNode() { return _rootNode; }
 
-	void startBehaviourTree();
+	void startBehaviourTree(Entity* controlledEntity);
 	virtual void update(double dt) override;
+	virtual void render() override;
 
 	// Create nodes
 	template<typename T, typename... Targs>
@@ -67,12 +71,19 @@ public:
 	{
 		static_assert(std::is_base_of<BTDecorator, T>::value, "T != BTDecorator");
 		auto newDecorator = std::make_shared<T>(this, params...);
+		_decorators.push_back(newDecorator.get());
 		return newDecorator;
 	}
 
 protected:
+	std::vector<class BTDecorator*> _decorators;
+
 	friend class BTNode;
 	friend class BTDecorator;
+
+private:
+	sf::Text _debugText;
+	std::shared_ptr<sf::Font> _font;
 };
 
 
@@ -83,7 +94,8 @@ public:
 	BTDecorator() = delete;
 	BTDecorator(BehaviourTree* const bt, std::string name = "Unnamed") : _behaviourTree(bt), _name(name) {}
 
-	virtual bool evaluate() { return true; }
+	virtual bool evaluate(Entity*) { return true; }
+	virtual void update(double&, Entity*) { }
 
 protected:
 	BehaviourTree* const getBehaviourTree() { return _behaviourTree; }
@@ -102,8 +114,9 @@ public:
 	}
 
 	// This method is called every time a node is selected to start
-	virtual void run() 
+	virtual void run(Entity* e) 
 	{
+		_myEntity = e;
 		_behaviourTree->setCurrentNode(this);
 
 		// Return unsuccessfully if decorators don't allow running
@@ -114,7 +127,7 @@ public:
 	}
 
 	// Update runs on the active node until it finishes
-	virtual void update(const double&) {}
+	virtual void update(const double&, Entity*) {}
 
 	// Called when a child node has finished (only works with nodes that allow children)
 	virtual void onChildFinished(bool success) {}
@@ -122,7 +135,7 @@ public:
 	// This method has to be called to prevent the behaviour tree getting stuck in one task
 	void onFinished(bool success)
 	{
-		std::cout << "Node " << _name << " finished " << (success ? "successfully" : "unsuccessfully") << std::endl;
+		// std::cout << "Node " << _name << " finished " << (success ? "successfully" : "unsuccessfully") << std::endl;
 
 		if (getParentNode() != nullptr)
 		{
@@ -180,7 +193,7 @@ protected:
 	{
 		for (auto decorator : _decorators)
 		{
-			if (!decorator->evaluate())
+			if (!decorator->evaluate(_myEntity))
 			{
 				return false;
 			}
@@ -189,6 +202,7 @@ protected:
 		return true;
 	}
 
+	Entity* _myEntity;
 	std::string _name;
 	std::vector<std::shared_ptr<BTDecorator>> _decorators;
 };
@@ -209,20 +223,20 @@ public:
 		_child->setParentNode(this);
 	}
 
-	virtual void run()
+	virtual void run(Entity* e)
 	{
-		BTNode::run();
+		BTNode::run(e);
 
 		if (_child != nullptr)
 		{
-			_child->run();
+			_child->run(e);
 		}
 	}
 
 	virtual void onChildFinished(bool success)
 	{
 		// Root node always restarts once the child is finished
-		run();
+		run(_myEntity);
 	}
 
 private:
@@ -248,9 +262,9 @@ public:
 		}
 	}
 
-	virtual void run() override
+	virtual void run(Entity* e) override
 	{
-		BTNode::run();
+		BTNode::run(e);
 
 		// If there are no children, return without success
 		if (_children.size() == 0)
@@ -267,7 +281,7 @@ public:
 		}
 
 		// Run current child node & increment ID counter
-		_children[_currentId++]->run();
+		_children[_currentId++]->run(e);
 	}
 
 	virtual void onChildFinished(bool success)
@@ -287,7 +301,7 @@ public:
 			} 
 			else
 			{
-				run();
+				run(_myEntity);
 			}
 		}
 	}
@@ -312,9 +326,9 @@ public:
 		}
 	}
 
-	virtual void run() override
+	virtual void run(Entity* e) override
 	{
-		BTNode::run();
+		BTNode::run(e);
 
 		// If there are no children, return with success
 		if (_children.size() == 0)
@@ -332,7 +346,7 @@ public:
 		}
 
 		// Run current child node & increment ID counter
-		_children[_currentId++]->run();
+		_children[_currentId++]->run(e);
 	}
 
 	virtual void onChildFinished(bool success)
@@ -340,7 +354,7 @@ public:
 		// When child returns with success, continue; otherwise return without success
 		if (success)
 		{
-			run();
+			run(_myEntity);
 		}
 		else
 		{

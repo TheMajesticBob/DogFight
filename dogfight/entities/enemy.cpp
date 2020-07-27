@@ -29,7 +29,7 @@ Enemy::Enemy(Scene* const s)
 	_blackboard->setEntity("TargetEntity", s->ents.find("Player")[0].get());
 
 	_behaviourTree = s->makeEntity<BasicBehaviourTree>(_blackboard);
-	_behaviourTree->startBehaviourTree();
+	_behaviourTree->startBehaviourTree(this);
 }
 
 void Enemy::update(double dt)
