@@ -104,28 +104,28 @@ void Player::update(double dt)
 {
 	Ship::update(dt);
 
-	if (Keyboard::isKeyPressed(Keyboard::W))
-	{
-		Accelerate(1.0f);
-	}
-	if(Keyboard::isKeyPressed(Keyboard::A))
-	{
-		Turn(-1.0f);
-	}
-	else if (Keyboard::isKeyPressed(Keyboard::D))
-	{
-		Turn(1.0f);
-	}
+	//if (Keyboard::isKeyPressed(Keyboard::W))
+	//{
+	//	Accelerate(1.0f);
+	//}
+	//if(Keyboard::isKeyPressed(Keyboard::A))
+	//{
+	//	Turn(-1.0f);
+	//}
+	//else if (Keyboard::isKeyPressed(Keyboard::D))
+	//{
+	//	Turn(1.0f);
+	//}
 
-	if(Keyboard::isKeyPressed(Keyboard::P))
-	{
-		// movementComponent->setDebugDraw(!movementComponent->getDebugDraw());
-	}
+	//if(Keyboard::isKeyPressed(Keyboard::P))
+	//{
+	//	// movementComponent->setDebugDraw(!movementComponent->getDebugDraw());
+	//}
 
-	if (Keyboard::isKeyPressed(Keyboard::Space))
-	{
-		Fire();
-	}
+	//if (Keyboard::isKeyPressed(Keyboard::Space))
+	//{
+	//	Fire();
+	//}
 
 	thrusterComponent->setVisibility(movementComponent->isAccelerating());
 	Pawn::update(dt);

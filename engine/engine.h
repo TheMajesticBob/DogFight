@@ -25,7 +25,7 @@ public:
 	  static_assert(std::is_base_of<Entity, T>::value, "T != entity");
 
 	  std::shared_ptr<T> e = std::make_shared<T>(this, params...);
-	  ents.list.push_back(e);
+	  ents.list.push_back(std::static_pointer_cast<T>(e));
 	  return std::move(e);
   }
 

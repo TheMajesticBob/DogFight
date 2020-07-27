@@ -64,5 +64,4 @@ namespace Resources
 		*f = j.get<defs::Controls>();
 		return f;
 	};
-
 }
