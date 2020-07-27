@@ -68,6 +68,10 @@ link_directories("${CMAKE_BINARY_DIR}/lib/b2d")
 add_subdirectory("lib/json" EXCLUDE_FROM_ALL)
 set(JSON_INCS "lib/json/include")
 link_directories("${CMAKE_BINARY_DIR}/lib/json/lib")
+# GLFW
+add_subdirectory("lib/glfw" EXCLUDE_FROM_ALL)
+set(GLFW_INCS "lib/glfw/include")
+link_directories("${CMAKE_BINARY_DIR}/lib/glfw/lib")
 
 ### Resources ###
 file(GLOB_RECURSE RESOURCE_FILES "res/*.*")
@@ -77,8 +81,8 @@ file(GLOB_RECURSE RESOURCE_FILES "res/*.*")
 file(GLOB_RECURSE SOURCE_FILES engine/*.cpp engine/*.h)
 add_library(lib_engine STATIC ${SOURCE_FILES} ${RESOURCE_FILES})
 assign_source_group(${SOURCE_FILES} ${RESOURCE_FILES})
-target_include_directories(lib_engine INTERFACE "${CMAKE_SOURCE_DIR}/engine/" PUBLIC SYSTEM ${B2D_INCS} )
-target_link_libraries(lib_engine lib_maths lib_ecm Box2D sfml-graphics sfml-audio)
+target_include_directories(lib_engine INTERFACE "${CMAKE_SOURCE_DIR}/engine/" PUBLIC SYSTEM ${B2D_INCS})
+target_link_libraries(lib_engine lib_maths lib_ecm Box2D sfml-graphics sfml-audio glfw opengl32)
 
 ### Maths lib
 add_library(lib_maths INTERFACE)
