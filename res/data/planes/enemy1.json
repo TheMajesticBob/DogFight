@@ -1,15 +1,15 @@
 {
   "Health": {
     "Hull": 100.0,
-    "Shield": 50.0
+    "Shield": 0.0
   },
   "Weapons": [
     "basic"
   ],
   "PlaneControl": {
     "MaxSpeed": 30.0,
-    "RotationSpeed": 3.0,
-    "Acceleration": 40.0,
+    "RotationSpeed": 4.0,
+    "Acceleration": 30.0,
     "AccelerationRotationMultiplier": 0.45
   },
   "Physics": {

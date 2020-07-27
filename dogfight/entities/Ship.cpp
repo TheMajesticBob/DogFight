@@ -2,19 +2,31 @@
 #include <engine.h>
 #include "projectile.h"
 #include "system_physics.h"
+#include "../components/cmp_health_component.h"
+#include "../components/cmp_weapon.h"
+#include "../engine/game_resources.h"
 
 using namespace sf;
 
-Ship::Ship(Scene* const s) : Pawn(s)
+Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 {
+	_shipDefinition = Resources::get<defs::Plane>(shipDefinition);
+
 	Vector2f size = { 30.0f, 30.0f };
 
 	b2FixtureDef FixtureDef;
 	FixtureDef.filter.categoryBits = Physics::COLLISION_DYNAMIC;
 	FixtureDef.filter.maskBits = Physics::MASK_DYNAMIC;
 
-	movementComponent = addComponent<PlanePhysicsComponent>(size, FixtureDef);
+	movementComponent = addComponent<PlanePhysicsComponent>(size, _shipDefinition, FixtureDef);
 	movementComponent->setDebugDraw(true);
+
+	healthComponent = addComponent<HealthComponent>(_shipDefinition->health);
+
+	for (auto& w : _shipDefinition->weapons)
+	{
+		weaponComponents.push_back(addComponent<WeaponComponent>(w));
+	}
 
 	thrusterComponent = addComponent<ShapeComponent>();
 	thrusterComponent->setShape<RectangleShape>(Vector2f(size.x, size.y / 2.0f));
@@ -41,6 +53,21 @@ void Ship::update(double dt)
 	}
 }
 
+void Ship::OnHit(float damage)
+{
+	healthComponent->onHit(damage);
+	if (healthComponent->getCurrentHealth() <= 0.0f)
+	{
+		OnDestroyed();
+		setForDelete();
+	}
+}
+
+void Ship::OnDestroyed()
+{
+	//TODO: Make Boom!
+}
+
 void Ship::Accelerate(float Value)
 {
 	movementComponent->accelerate(Value);
@@ -53,15 +80,22 @@ void Ship::Turn(float Value)
 
 void Ship::Fire()
 {
-	if (fireCooldown <= 0.0f)
+	for (auto weapon : weaponComponents)
 	{
-		auto projectile = scene->makeEntity<Projectile>(this);
-		projectile->fire(movementComponent->getForwardVector());
-		fireCooldown = 1.0f / fireRate;
+		if (weapon)
+		{
+			weapon->fire(movementComponent->getForwardVector());
+		}
 	}
+// 	if (fireCooldown <= 0.0f)
+// 	{
+// 		auto projectile = scene->makeEntity<Projectile>("test", this);
+// 		projectile->fire();
+// 		fireCooldown = 1.0f / fireRate;
+// 	}
 }
 
-Player::Player(Scene* const s) : Ship(s)
+Player::Player(Scene* const s, std::string shipDefinition) : Ship(s, shipDefinition)
 {
 	addTag("Player");
 }

@@ -71,6 +71,8 @@ public:
   virtual void OnBeginOverlap(Entity* const e) {}
   virtual void OnEndOverlap(Entity* const e) {}
 
+  virtual void OnHit(float damage) {}
+
   //
   const sf::Vector2f& getPosition() const;
 
@@ -127,7 +129,8 @@ public:
   }
 };
 
-class Pawn : public Entity{
+class Pawn : public Entity
+{
     // base class for a controllable entity with a pointer to its controller
 protected:
     //Controller

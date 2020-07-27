@@ -13,10 +13,10 @@ using namespace sf;
 
 void TestingScene::Load()
 {
-	auto player = makeEntity<Player>();
+	auto player = makeEntity<Player>("player");
 	player->GetMovementComponent()->teleport(Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2));
 
-	auto enemy = makeEntity<Enemy>();
+	auto enemy = makeEntity<Enemy>("player");
 	enemy->GetMovementComponent()->teleport((Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2) + Vector2f(50.0f,0.0f)));
 
 	auto camera = makeEntity<Camera>();

@@ -8,10 +8,15 @@ class Ship : public Pawn
 {
 	public:
 		Ship() = delete;
-		Ship(Scene* const s);
+		Ship(Scene* const s, std::string shipDefinition);
 
 		void update(double) override;
+		void OnHit(float damage) override;
+		virtual void OnDestroyed();
+
 		std::shared_ptr<PlanePhysicsComponent> GetMovementComponent() { return movementComponent; }
+		std::shared_ptr<class HealthComponent> GetHealthComponent() { return healthComponent; }
+
 		b2Fixture* const GetFixture() { return movementComponent->getFixture(); }
 
 		void Accelerate(float Value);
@@ -19,7 +24,11 @@ class Ship : public Pawn
 		void Fire();
 
 	protected:
+		std::shared_ptr<defs::Plane> _shipDefinition;
+
 		std::shared_ptr<PlanePhysicsComponent> movementComponent;
+		std::shared_ptr<class HealthComponent> healthComponent;
+		std::vector<std::shared_ptr<class WeaponComponent>> weaponComponents;
 		std::shared_ptr<ShapeComponent> shapeComponent;
 		std::shared_ptr<ShapeComponent> thrusterComponent;
 
@@ -31,7 +40,7 @@ class Player : public Ship
 {
 public:
 	Player() = delete;
-	Player(Scene* const s);
+	Player(Scene* const s, std::string shipDefinition);
 
 	void update(double) override;
 };

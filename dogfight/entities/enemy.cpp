@@ -4,8 +4,8 @@
 
 #include "../ai/ai_basicbehaviourtree.h"
 
-Enemy::Enemy(Scene* const s)
-	: Ship(s)
+Enemy::Enemy(Scene* const s, std::string shipDefinition)
+	: Ship(s, shipDefinition)
 {
 // 	sf::Vector2f size = { 30.0f, 30.0f };
 // 
@@ -38,6 +38,12 @@ void Enemy::update(double dt)
 	thrusterComponent->setVisibility(movementComponent->isAccelerating());
 	Entity::update(dt);
 }
+
+void Enemy::OnDestroyed()
+{
+	_behaviourTree->setForDelete();
+}
+
 // 
 // void Enemy::Accelerate(float Value)
 // {

@@ -1,6 +1,8 @@
 #include "projectile.h"
+#include "../engine/game_resources.h"
+#include "Ship.h"
 
-Projectile::Projectile(Scene* const s, Entity* const owner)
+Projectile::Projectile(Scene* const s, std::string definition, Entity* const owner)
 	: Entity(s), _owner(owner)
 {
 	b2FixtureDef fixtureDef;
@@ -8,12 +10,14 @@ Projectile::Projectile(Scene* const s, Entity* const owner)
 	fixtureDef.filter.maskBits = Physics::MASK_PROJECTILE;
 	fixtureDef.isSensor = true;
 
-	bulletComponent = addComponent<BulletComponent>(sf::Vector2f(10.0f, 10.0f), 2.0f, fixtureDef);
+	_projectileDefiniton = Resources::get<defs::Projectile>(definition);
+
+	bulletComponent = addComponent<BulletComponent>(_projectileDefiniton, 2.0f, fixtureDef);
 
 	shapeComponent = addComponent<ShapeComponent>();
-	shapeComponent->setShape<sf::CircleShape>(10.0f);
+	shapeComponent->setShape<sf::RectangleShape>(_projectileDefiniton->size);
 	shapeComponent->getShape().setFillColor(sf::Color::Yellow);
-	shapeComponent->getShape().setOrigin(sf::Vector2f(5.0f, 5.0f));
+	shapeComponent->getShape().setOrigin(_projectileDefiniton->size / 2.0f);
 	shapeComponent->setLayer(1);
 }
 
@@ -24,6 +28,7 @@ void Projectile::update(double dt)
 
 void Projectile::fire(sf::Vector2f direction)
 {
+	setRotation(_owner->getRotation());
 	bulletComponent->teleport(_owner->getPosition());
 	bulletComponent->fire(direction);
 }
@@ -33,5 +38,10 @@ void Projectile::OnBeginOverlap(Entity* const e)
 	if (e != _owner)
 	{
 		this->setForDelete();
+		Ship* ship = static_cast<Ship*>(e);
+		if(ship)
+		{
+			ship->OnHit(_damage);
+		}
 	}
 }

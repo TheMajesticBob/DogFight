@@ -50,40 +50,44 @@ void BTT_MoveTowardsEntity::update(const double& dt, Entity* e)
 
 	if (_myPawn)
 	{
-		Blackboard* blackboard = getBlackboard().get();
-		if (blackboard)
+		auto movementComponent = _myPawn->GetMovementComponent();
+		if (movementComponent)
 		{
-			_targetEntity = blackboard->getEntity("TargetEntity");
-		}
-
-		sf::Vector2f direction;
-		float distance;
-
-		if (_targetEntity)
-		{
-			direction = sf::normalize(_targetEntity->getPosition() - _myPawn->getPosition());
-			direction.y = -direction.y;
-			distance = sf::length(_targetEntity->getPosition() - _myPawn->getPosition());
-		}
-
-		sf::Vector2f forward = _myPawn->GetMovementComponent()->getForwardVector();
-		float _dot = sf::dot(direction, forward);
-		float angle = sf::rad2deg(atan2(direction.x * forward.y - forward.x * direction.y, direction.x * forward.x + direction.y * forward.y)); // +90.0f;
-
-		if (abs(angle) > MinTurnAngle) // && _dot > -0.9f)
-		{
-			_myPawn->Turn(angle);
-			_myPawn->Accelerate(0.1f);
-		}
-		else
-		{
-			if (distance > MinThrottleDistance)
+			Blackboard* blackboard = getBlackboard().get();
+			if (blackboard)
 			{
-				_myPawn->Accelerate(distance / 10000.0f);
+				_targetEntity = blackboard->getEntity("TargetEntity");
 			}
-			else 
+
+			sf::Vector2f direction;
+			float distance;
+
+			if (_targetEntity)
 			{
-				onFinished(true);
+				direction = sf::normalize(_targetEntity->getPosition() - _myPawn->getPosition());
+				direction.y = -direction.y;
+				distance = sf::length(_targetEntity->getPosition() - _myPawn->getPosition());
+			}
+
+			sf::Vector2f forward = _myPawn->GetMovementComponent()->getForwardVector();
+			float _dot = sf::dot(direction, forward);
+			float angle = sf::rad2deg(atan2(direction.x * forward.y - forward.x * direction.y, direction.x * forward.x + direction.y * forward.y)); // +90.0f;
+
+			if (abs(angle) > MinTurnAngle) // && _dot > -0.9f)
+			{
+				_myPawn->Turn(angle);
+				_myPawn->Accelerate(0.1f);
+			}
+			else
+			{
+				if (distance > MinThrottleDistance)
+				{
+					_myPawn->Accelerate(distance / 10000.0f);
+				}
+				else
+				{
+					onFinished(true);
+				}
 			}
 		}
 	}

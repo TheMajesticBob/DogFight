@@ -17,7 +17,7 @@ void HealthComponent::onHit(float damage)
 	_currentHealth -= damage;
 }
 
-HealthComponent::HealthComponent(Entity* p) : Component(p)
+HealthComponent::HealthComponent(Entity* p, float maxHealth) : Component(p), _currentHealth(maxHealth), _maxHealth(maxHealth)
 {
 
 }

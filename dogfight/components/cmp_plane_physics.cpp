@@ -4,7 +4,6 @@
 #include "system_resources.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "../engine/game_resources.h"
 
 using namespace std;
 using namespace sf;
@@ -99,9 +98,11 @@ sf::Vector2f PlanePhysicsComponent::getForwardVector()
 }
 
 PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
-											 const Vector2f& size, b2FixtureDef& fixtureDef)
+											 const Vector2f& size, std::shared_ptr<defs::Plane> definition, b2FixtureDef& fixtureDef)
 	: PhysicsComponent(p, true, size, fixtureDef)
 {
+	_planeDefinition = definition;
+
 	_size = sv2_to_bv2(size, true);
 
 	_body->SetSleepingAllowed(false);
@@ -146,8 +147,6 @@ PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
 
     // Add to body
     _fixture = _body->CreateFixture(&FixtureDef);
-
-	_planeDefinition = Resources::get<defs::Plane>("player");
 
 	_maxSpeed = _planeDefinition->maxSpeed;
 	_rotationSpeed = _planeDefinition->rotationSpeed;

@@ -11,9 +11,10 @@ class Enemy : public Ship
 {
 	public:
 		Enemy() = delete;
-		Enemy(Scene* const s);
+		Enemy(Scene* const s, std::string shipDefinition);
 
 		void update(double) override;
+		void OnDestroyed() override;
 
 protected:
 	std::shared_ptr<class BasicBehaviourTree> _behaviourTree;

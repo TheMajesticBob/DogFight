@@ -10,7 +10,15 @@ using namespace Physics;
 void BulletComponent::fire(Vector2f& direction)
 {
 	direction = normalize(direction);
+	//impulse(sf::rotate(Vector2f(0, 15.f), -_parent->getRotation()));
 	_body->SetLinearVelocity(_initialSpeed*sv2_to_bv2(direction));
+	
+		//   s->getShape().setFillColor(Color::Red);
+		//   s->getShape().setOrigin(8.f, 8.f);
+		//   auto p = bullet->addComponent<PhysicsComponent>(true, Vector2f(8.f, 8.f));
+		//   p->setRestitution(.4f);
+		//   p->setFriction(.005f);
+		//   p->impulse(sf::rotate(Vector2f(0, 15.f), -_parent->getRotation()));
 }
 
 void BulletComponent::update(double dt) 
@@ -27,19 +35,18 @@ void BulletComponent::update(double dt)
 		_parent->setForDelete();
 	}
 
-	PhysicsComponent::update(dt);
+	_parent->setPosition(invert_height(bv2_to_sv2(_body->GetPosition())));
+	//PhysicsComponent::update(dt);
 }
 
-BulletComponent::BulletComponent(Entity* p, const Vector2f& size, float lifetime, b2FixtureDef& fixtureDef)
-	: PhysicsComponent(p, true, size, fixtureDef), _lifetime(lifetime)
+BulletComponent::BulletComponent(Entity* p, std::shared_ptr<defs::Projectile> definition, float lifetime, b2FixtureDef& fixtureDef)
+	: PhysicsComponent(p, true, definition->size, fixtureDef), _lifetime(lifetime)
 {
-	_size = sv2_to_bv2(size, true);
+	_projectileDefinition = definition;
 
 	_body->SetSleepingAllowed(false);
 	_body->SetFixedRotation(false);
 	_body->SetBullet(true);
-	
-	_projectileDefinition = Resources::get<defs::Projectile>("test");
 
 	_initialSpeed = _projectileDefinition->initialSpeed;
 	_affectedByGravity = _projectileDefinition->gravityAffects;

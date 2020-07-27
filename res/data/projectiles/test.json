@@ -1,6 +1,10 @@
 {
   "Projectile": {
-    "InitialSpeed": 3000.0
+    "InitialSpeed": 3000.0,
+    "Size": {
+      "X": 15.0,
+      "Y": 5.0
+    }
   },
   "Physics": {
     "Mass":  0.1,

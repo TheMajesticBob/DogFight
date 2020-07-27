@@ -43,5 +43,5 @@ class PlanePhysicsComponent : public PhysicsComponent
 		sf::Vector2f getForwardVector();
 
 		PlanePhysicsComponent() = delete;
-  		explicit PlanePhysicsComponent(Entity* p, const sf::Vector2f& size, b2FixtureDef& fixtureDef = b2FixtureDef());
+  		explicit PlanePhysicsComponent(Entity* p, const sf::Vector2f& size, std::shared_ptr<defs::Plane> definition, b2FixtureDef& fixtureDef = b2FixtureDef());
 };

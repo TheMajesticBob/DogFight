@@ -6,8 +6,6 @@
 class BulletComponent : public PhysicsComponent 
 {
 protected:
-	b2Vec2 _size;
-
 	float _lifetime;
 	float _initialSpeed;
 	sf::Vector2f _velocity;
@@ -21,6 +19,6 @@ public:
 
 	void update(double dt) override;
 	void render() override {}
-	explicit BulletComponent(Entity* p, const sf::Vector2f& size, float lifetime = 3.f, b2FixtureDef& fixtureDef = b2FixtureDef());
+	explicit BulletComponent(Entity* p, std::shared_ptr<defs::Projectile> definition, float lifetime = 3.f, b2FixtureDef& fixtureDef = b2FixtureDef());
 	BulletComponent() = delete;
 };
