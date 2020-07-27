@@ -121,3 +121,15 @@ public:
     return ret;
   }
 };
+
+class Pawn : public Entity{
+    // base class for a controllable entity with a pointer to its controller
+protected:
+    //Controller
+public:
+    Pawn() = delete;
+    Pawn(Scene* const s);
+
+    void update(double dt) override;
+    class Controller *ptrControl;
+};

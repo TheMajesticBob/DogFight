@@ -31,6 +31,17 @@ namespace defs
 		bool gravityAffects;
 	};
 
+	struct Controls
+	{
+		Controls() {}
+			   
+		int accelerate;
+		int turnLeft;
+		int turnRight;
+
+		int shoot;
+	};
+
 	inline void from_json(const json &j, Plane &p)
 	{
 		j.at("PlaneControl").at("MaxSpeed").get_to(p.maxSpeed);

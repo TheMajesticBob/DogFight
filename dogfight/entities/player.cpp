@@ -7,7 +7,7 @@
 
 using namespace sf;
 
-Player::Player(Scene* const s) : Entity(s)
+Player::Player(Scene* const s) : Pawn(s)
 {
 	Vector2f size = { 30.0f, 30.0f };
 
@@ -73,5 +73,5 @@ void Player::update(double dt)
 		fireCooldown = 1.0f / fireRate;
 	}
 
-	Entity::update(dt);
+	Pawn::update(dt);
 }

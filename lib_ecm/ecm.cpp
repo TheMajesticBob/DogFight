@@ -131,3 +131,13 @@ EntityManager::find(const vector<string>& tags) const {
   }
   return ret;
 }
+
+Pawn::Pawn(Scene* const s):Entity(s)
+{
+    
+}
+
+void Pawn::update(double dt)
+{
+    Entity::update(dt);
+}

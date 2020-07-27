@@ -34,4 +34,20 @@ namespace Resources
 		*f = j.get<defs::Projectile>();
 		return f;
 	};
+
+	template<>
+	std::shared_ptr<defs::Controls> load(const std::string& name)
+	{
+		auto f = std::make_shared<defs::Controls>();
+		std::ifstream file("res/data/settings" + name + ".json");
+		if (!file.is_open())
+		{
+			throw("not found: " + name);
+		};
+		json j;
+		file >> j;
+		*f = j.get<defs::Controls>();
+		return f;
+	};
+
 }
