@@ -4,7 +4,7 @@
 #include "../components/cmp_sprite.h"
 #include <SFML/Graphics.hpp>
 
-class Ship : public Entity
+class Ship : public Pawn
 {
 	public:
 		Ship() = delete;

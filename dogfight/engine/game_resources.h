@@ -11,4 +11,7 @@ namespace Resources
 
 	template <> // explicit specialization for T = Projectile
 	std::shared_ptr<defs::Projectile> load(const std::string& name);
+
+	template <> // explicit specialization for T = Projectile
+	std::shared_ptr<defs::Controls> load(const std::string& name);
 }

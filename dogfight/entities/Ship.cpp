@@ -5,7 +5,7 @@
 
 using namespace sf;
 
-Ship::Ship(Scene* const s) : Entity(s)
+Ship::Ship(Scene* const s) : Pawn(s)
 {
 	Vector2f size = { 30.0f, 30.0f };
 
@@ -94,5 +94,5 @@ void Player::update(double dt)
 	}
 
 	thrusterComponent->setVisibility(movementComponent->isAccelerating());
-	Entity::update(dt);
+	Pawn::update(dt);
 }
