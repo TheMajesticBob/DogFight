@@ -1,4 +1,4 @@
-#include "Ship.h"
+#include "ship.h"
 #include <engine.h>
 #include "projectile.h"
 #include "system_physics.h"
@@ -10,24 +10,26 @@ using namespace sf;
 
 Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 {
+	// Get the ship definition
 	_shipDefinition = Resources::get<defs::Plane>(shipDefinition);
 
+	// Size?
 	Vector2f size = { 30.0f, 30.0f };
 
+	// Setup collision filters for the entity
 	b2FixtureDef FixtureDef;
 	FixtureDef.filter.categoryBits = Physics::COLLISION_DYNAMIC;
 	FixtureDef.filter.maskBits = Physics::MASK_DYNAMIC;
 
+	// Setup ship movement, health and weapon components based on ship definition
 	movementComponent = addComponent<PlanePhysicsComponent>(size, _shipDefinition, FixtureDef);
-	movementComponent->setDebugDraw(true);
-
 	healthComponent = addComponent<HealthComponent>(_shipDefinition->health);
-
 	for (auto& w : _shipDefinition->weapons)
 	{
 		weaponComponents.push_back(addComponent<WeaponComponent>(w));
 	}
 
+	// Thruster shape lol its ugly af. TODO: Replace this shiiiit
 	thrusterComponent = addComponent<ShapeComponent>();
 	thrusterComponent->setShape<RectangleShape>(Vector2f(size.x, size.y / 2.0f));
 	thrusterComponent->getShape().setFillColor(Color::Yellow);
@@ -35,27 +37,35 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 	thrusterComponent->setVisibility(false);
 	thrusterComponent->setLayer(-1);
 
+	// Currently this is how we draw the ship
+	movementComponent->setDebugDraw(true);
+
 	// The following does not match the actual triangle shape of movement component, therefore I left the drawing to it
 	// We should definitely look into that when we get assets
-
-	// shapeComponent = addComponent<ShapeComponent>();
-	// shapeComponent->setShape<CircleShape>(size.x / 2.0f, 3);
-	// shapeComponent->getShape().setFillColor(Color::Blue);
-	// shapeComponent->getShape().setOrigin({15.0f, 10.0f});
-	// shapeComponent->getShape().setRotation(45.0f);
+// 	float radius = size.x / 2.0f;
+// 
+// 	shapeComponent = addComponent<ShapeComponent>();
+// 	shapeComponent->setShape<CircleShape>(radius, 30);
+// 	shapeComponent->getShape().setFillColor(Color::Blue);
+// 	shapeComponent->getShape().setOrigin(Vector2f(0.0f, 0.0f));
 }
 
 void Ship::update(double dt)
 {
-	if (fireCooldown > 0.0f)
-	{
-		fireCooldown -= dt;
-	}
+	// Update thruster visibility based on whether the ship is accelerating
+	thrusterComponent->setVisibility(movementComponent->isAccelerating());
+
+	Pawn::update(dt);
+
+//	shapeComponent->getShape().setRotation(getRotation() + 150.0f);
 }
 
 void Ship::OnHit(float damage)
 {
+	// Pass the damage to health component
 	healthComponent->onHit(damage);
+
+	// Destroy ship when at 0hp
 	if (healthComponent->getCurrentHealth() <= 0.0f)
 	{
 		OnDestroyed();
@@ -65,7 +75,7 @@ void Ship::OnHit(float damage)
 
 void Ship::OnDestroyed()
 {
-	//TODO: Make Boom!
+	// TODO: Make Boom!
 }
 
 void Ship::Accelerate(float Value)
@@ -87,46 +97,4 @@ void Ship::Fire()
 			weapon->fire(movementComponent->getForwardVector());
 		}
 	}
-// 	if (fireCooldown <= 0.0f)
-// 	{
-// 		auto projectile = scene->makeEntity<Projectile>("test", this);
-// 		projectile->fire();
-// 		fireCooldown = 1.0f / fireRate;
-// 	}
-}
-
-Player::Player(Scene* const s, std::string shipDefinition) : Ship(s, shipDefinition)
-{
-	addTag("Player");
-}
-
-void Player::update(double dt)
-{
-	Ship::update(dt);
-
-	if (Keyboard::isKeyPressed(Keyboard::W))
-	{
-		Accelerate(1.0f);
-	}
-	if(Keyboard::isKeyPressed(Keyboard::A))
-	{
-		Turn(-1.0f);
-	}
-	else if (Keyboard::isKeyPressed(Keyboard::D))
-	{
-		Turn(1.0f);
-	}
-
-	if(Keyboard::isKeyPressed(Keyboard::P))
-	{
-		// movementComponent->setDebugDraw(!movementComponent->getDebugDraw());
-	}
-
-	if (Keyboard::isKeyPressed(Keyboard::Space))
-	{
-		Fire();
-	}
-
-	thrusterComponent->setVisibility(movementComponent->isAccelerating());
-	Pawn::update(dt);
 }

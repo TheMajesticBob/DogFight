@@ -56,6 +56,8 @@ public:
 	virtual void update(double dt) override;
 	virtual void render() override;
 
+	void setDrawDebugText(bool draw) { _drawDebugText = draw; }
+
 	// Create nodes
 	template<typename T, typename... Targs>
 	std::shared_ptr<T> makeNode(Targs... params)
@@ -82,6 +84,7 @@ protected:
 	friend class BTDecorator;
 
 private:
+	bool _drawDebugText;
 	sf::Text _debugText;
 	std::shared_ptr<sf::Font> _font;
 };
@@ -105,6 +108,7 @@ private:
 	BehaviourTree* _behaviourTree;
 };
 
+// Base node class
 class BTNode : public std::enable_shared_from_this<BTNode>
 {
 public:
@@ -207,6 +211,7 @@ protected:
 	std::vector<std::shared_ptr<BTDecorator>> _decorators;
 };
 
+// There is always only one root node which the BehaviourTree runs
 class RootNode : public BTNode
 {
 public:

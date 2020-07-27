@@ -4,6 +4,7 @@
 #include "Box2D/Dynamics/b2WorldCallbacks.h"
 #include <string.h>
 
+// Rotates and accelerates the ship towards target entity
 class BTT_MoveTowardsEntity : public BTTask
 {
 public:
@@ -30,12 +31,13 @@ private:
 	}
 
 	class Entity* _targetEntity;
-	class Enemy* _myPawn;
+	class Ship* _myPawn;
 	bool _isAccelerating;
 	float _timer;
 	float _timeToSwap;
 };
 
+// Decorator using a raycast to check whether there are no obstacles between entities
 class BTD_IsTargetInFront : public BTDecorator
 {
 public:
@@ -44,24 +46,43 @@ public:
 
 	virtual bool evaluate(Entity*) override;
 
-	float RayLength = 35;
-
 protected:
 	class Entity* _targetEntity;
-	class Enemy* _myPawn;
+	class Ship* _myPawn;
 };
 
+// Raycast callback used in above decorator
+class RaycastCallback : public b2RayCastCallback
+{
+public:
+	std::vector<b2Body*> ignoredBodies;
+	b2Body* foundBody;
+
+	float32 ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction) override
+	{
+		foundBody = fixture->GetBody();
+		if (std::find(ignoredBodies.begin(), ignoredBodies.end(), foundBody) != ignoredBodies.end())
+		{
+			foundBody = nullptr;
+			return 1;
+		}
+
+		return fraction;
+	}
+};
+
+// Simple decorator only allowing a task to run every set interval
 class BTD_Cooldown : public BTDecorator
 {
 public:
 	BTD_Cooldown(BehaviourTree* const bt, std::string name, float time)
-		: BTDecorator(bt, name), _time(time), _currentTime(0) {}
+		: BTDecorator(bt, name), _intervalTime(time), _timeToUnlock(0) {}
 
 	virtual bool evaluate(Entity*) override
 	{
-		if (_currentTime <= 0.0f)
+		if (_timeToUnlock <= 0.0f)
 		{
-			_currentTime = _time;
+			_timeToUnlock = _intervalTime;
 			return true;
 		}
 
@@ -70,17 +91,18 @@ public:
 
 	virtual void update(double& dt, Entity*) override
 	{
-		if (_currentTime >= 0.0f)
+		if (_timeToUnlock >= 0.0f)
 		{
-			_currentTime -= dt;
+			_timeToUnlock -= dt;
 		}
 	}
 
 protected:
-	float _time;
-	float _currentTime;
+	float _intervalTime;
+	float _timeToUnlock;
 };
 
+// Task shoots at entity for n seconds
 class BTT_FireAtEntity : public BTTask
 {
 public:
@@ -101,6 +123,7 @@ private:
 	float _currentTime;
 };
 
+// Two testing tasks. One runs for set amount of time, the other one fails immediately.
 class TestingTask : public BTTask
 {
 public:
@@ -133,23 +156,4 @@ public:
 
 		onFinished(false);
 	};
-};
-
-class RaycastCallback : public b2RayCastCallback
-{
-public:
-	std::vector<b2Body*> ignoredBodies;
-	b2Body* foundBody;
-
-	float32 ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction) override
-	{
-		foundBody = fixture->GetBody();
-		if (std::find(ignoredBodies.begin(), ignoredBodies.end(), foundBody) != ignoredBodies.end())
-		{
-			foundBody = nullptr;
-			return 1;
-		}
-
-		return fraction;
-	}
 };

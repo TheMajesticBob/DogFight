@@ -22,13 +22,12 @@ void BehaviourTree::startBehaviourTree(Entity* controlledEntity)
 {
 	_controlledEntity = controlledEntity;
 
+	// Start with the root node
 	if (_rootNode != nullptr)
 	{
 		_rootNode->run(controlledEntity);
 	}
 }
-
-// Root node does not go into its child?
 
 void BehaviourTree::update(double dt)
 {
@@ -37,6 +36,7 @@ void BehaviourTree::update(double dt)
 		return;
 	}
 
+	// Update all decorators
 	for (auto decorator : _decorators)
 	{
 		if (decorator != nullptr)
@@ -45,6 +45,7 @@ void BehaviourTree::update(double dt)
 		}
 	}
 
+	// Then update current node
 	if (_currentNode != nullptr)
 	{
 		_currentNode->update(dt, _controlledEntity);

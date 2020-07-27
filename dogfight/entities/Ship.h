@@ -35,28 +35,3 @@ class Ship : public Pawn
 		float fireRate = 3.0f;
 		float fireCooldown = 0.0f;
 };
-
-class Player : public Ship
-{
-public:
-	Player() = delete;
-	Player(Scene* const s, std::string shipDefinition);
-
-	void update(double) override;
-};
-
-class TriangleShape : sf::CircleShape
-{
-	public :
-
-    explicit TriangleShape(const sf::Vector2f radius = {0.0f, 0.0f}) :
-    m_radius(radius)
-    {
-        update();
-		setPointCount(3);
-    }
-
-	private:
-		sf::Vector2f m_radius;
-
-};
