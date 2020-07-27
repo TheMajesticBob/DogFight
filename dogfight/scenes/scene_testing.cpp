@@ -3,7 +3,7 @@
 #include "../entities/player.h"
 #include "../entities/enemy.h"
 #include "../entities/camera.h"
-
+#include "../controllers/shipPlayerController.h"
 #include "../ai/ai_basicbehaviourtree.h"
 
 #include <SFML/Graphics.hpp>
@@ -15,6 +15,8 @@ void TestingScene::Load()
 {
 	auto player = makeEntity<Player>("player");
 	player->GetMovementComponent()->teleport(Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2));
+
+	auto controller = makeEntity<ShipPlayerController>("Player1controls",player.get());	
 
 	auto enemy = makeEntity<Enemy>("player");
 	enemy->GetMovementComponent()->teleport((Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2) + Vector2f(50.0f,0.0f)));

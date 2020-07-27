@@ -96,5 +96,9 @@ namespace defs
 
 	inline void from_json(const json &j, Controls &c)
 	{
+		j.at("Movement").at("Accelerate").get_to(c.accelerate);
+		j.at("Movement").at("Left").get_to(c.turnLeft);
+		j.at("Movement").at("Right").get_to(c.turnRight);
+		j.at("Weapons").at("BasicAttack").get_to(c.shoot);
 	}
 }
