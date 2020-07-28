@@ -2,6 +2,7 @@
 #include <ecm.h>
 #include "../components/cmp_plane_physics.h"
 #include "../components/cmp_sprite.h"
+#include "GL/glew.h"
 #include <SFML/Graphics.hpp>
 #include "SFML/OpenGL.hpp"
 

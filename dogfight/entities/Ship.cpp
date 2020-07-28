@@ -5,7 +5,6 @@
 #include "../components/cmp_health_component.h"
 #include "../components/cmp_weapon.h"
 #include "../engine/game_resources.h"
-#include "GL/glew.h"
 
 using namespace sf;
 
