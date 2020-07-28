@@ -37,8 +37,30 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 	thrusterComponent->setVisibility(false);
 	thrusterComponent->setLayer(-1);
 
+	// Setup draw shape
+	// Right vertex
+	drawVerts[0] = 0.0f;
+	drawVerts[1] = -size.x / 2.0f;
+
+	// Top vertex
+	drawVerts[2] = -size.x * sqrt(3) / 2.0f;
+	drawVerts[3] = 0; // -1.0f * Physics::physics_scale;
+
+	// Left vertex
+	drawVerts[4] = 0;
+	drawVerts[5] = size.x / 2.0f;
+
+	// Bottom vertex
+	drawVerts[6] = -size.x * sqrt(3) / 12.0f;
+	drawVerts[7] = 0;
+
+	for (int i = 0; i < 8; ++i)
+	{
+		drawVerts[i] = drawVerts[i];
+	}
+
 	// Currently this is how we draw the ship
-	movementComponent->setDebugDraw(true);
+	movementComponent->setDebugDraw(false);
 
 	// The following does not match the actual triangle shape of movement component, therefore I left the drawing to it
 	// We should definitely look into that when we get assets
@@ -53,11 +75,54 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 void Ship::update(double dt)
 {
 	// Update thruster visibility based on whether the ship is accelerating
+	// TODO: Replace with particle system
 	thrusterComponent->setVisibility(movementComponent->isAccelerating());
 
 	Pawn::update(dt);
+}
 
-//	shapeComponent->getShape().setRotation(getRotation() + 150.0f);
+void Ship::render()
+{
+	//Ball::render
+
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
+
+	glPushMatrix();
+	glTranslatef(getPosition().x, getPosition().y, 0);
+	glRotatef(-getRotation(), 0, 0, 1);
+	
+	glEnable(GL_LINE_SMOOTH);
+	glEnable(GL_TEXTURE_2D);
+
+	
+
+	glVertexPointer(2, GL_FLOAT, 0, drawVerts);
+
+	//glColor4f(0.0f, 0.0f, 0.0f, 1);
+	//glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+		glLineWidth(2);
+		//glColor4f(color.r, color.g, color.b, 1);
+		// glColor4f(1, 0, 0, 1);
+		glColor3f(1, 0, 0);
+		glDrawArrays(GL_LINE_LOOP, 0, 4);
+
+// 		glColor3f(1, 1, 1);//white
+// 
+// 
+// 		//circle outline
+// 		glBegin(GL_LINE_LOOP);
+// 		for (float a = 0; a < deg2rad(360); a += deg2rad(30))
+// 		{
+// 			sf::Vector2f vert = Physics::bv2_to_sv2(b2Vec2(sinf(a), cosf(a)));
+// 			glVertex2f(vert.x, vert.y);
+// 		}
+// 		glEnd();
+
+	glPopMatrix();
+
+	Pawn::render();
+	// movementComponent->getFixture()->GetShape().
 }
 
 void Ship::OnHit(float damage)

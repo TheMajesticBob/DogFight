@@ -77,6 +77,11 @@ void Engine::Render(RenderWindow& window) {
   }
 
   Renderer::render();
+
+  if (Physics::GetWorld())
+  {
+	  Physics::GetWorld()->DrawDebugData();
+  }
 }
 
 void Engine::Start(unsigned int width, unsigned int height,

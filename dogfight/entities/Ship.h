@@ -3,6 +3,7 @@
 #include "../components/cmp_plane_physics.h"
 #include "../components/cmp_sprite.h"
 #include <SFML/Graphics.hpp>
+#include "SFML/OpenGL.hpp"
 
 class Ship : public Pawn
 {
@@ -11,6 +12,8 @@ class Ship : public Pawn
 		Ship(Scene* const s, std::string shipDefinition);
 
 		void update(double) override;
+		void render() override;
+
 		void OnHit(float damage) override;
 		virtual void OnDestroyed();
 
@@ -34,4 +37,7 @@ class Ship : public Pawn
 
 		float fireRate = 3.0f;
 		float fireCooldown = 0.0f;
+
+		GLfloat drawVerts[8];
+		sf::Color color;
 };

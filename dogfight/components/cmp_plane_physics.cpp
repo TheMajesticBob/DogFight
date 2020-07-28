@@ -70,8 +70,8 @@ void PlanePhysicsComponent::accelerate(float value)
 
 	_isAccelerating = true;
 
-	double angle = _body->GetAngle() * 180.0f / M_PI;
-	forceApplied = _planeDefinition->acceleration * b2Vec2(-cos(deg2rad(angle)), sin(deg2rad(angle)));
+	// double angle = _body->GetAngle() * 180.0f / M_PI;
+	forceApplied = _planeDefinition->acceleration * sv2_to_bv2(getForwardVector(), false); // b2Vec2(-cos(deg2rad(angle)), sin(deg2rad(angle)));
 
 	_body->ApplyForce(forceApplied, _body->GetPosition(), true);
 }
@@ -85,7 +85,7 @@ void PlanePhysicsComponent::turn(float value)
 	}
 
 	// Clamp value between -1 and 1
-	value = max(-1.0f, min(value, 1.0f));
+	value = -max(-1.0f, min(value, 1.0f));
 
 	auto accelerationMultiplier = _isAccelerating ? _planeDefinition->accelerationRotationMultiplier : 1.0f;
 	_body->SetAngularVelocity(_body->GetAngularVelocity() + deg2rad(value * accelerationMultiplier * _planeDefinition->rotationSpeed));
@@ -94,7 +94,7 @@ void PlanePhysicsComponent::turn(float value)
 sf::Vector2f PlanePhysicsComponent::getForwardVector()
 {
 	double angle = _body->GetAngle() * 180.0f / M_PI;
-	return normalize(sf::Vector2f(-cos(deg2rad(angle)), sin(deg2rad(angle))));
+	return normalize(sf::Vector2f(-cos(deg2rad(angle)), -sin(deg2rad(angle))));
 }
 
 PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
@@ -134,7 +134,7 @@ PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
 	{
 		// We have to scale the points properly by using sv2_to_bv2
 		b2Vec2 point = sv2_to_bv2(points[i]);
-		vertices[i].Set(-point.x, point.y);
+		vertices[i].Set(point.x, point.y);
 	}
 	Shape.Set(vertices, 3);
 

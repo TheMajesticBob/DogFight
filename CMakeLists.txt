@@ -9,6 +9,26 @@ elseif(APPLE)
   set(CMAKE_CXX_FLAGS "${CXXFLAGS} ${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++ -std=c++1y --debug")
 endif()
 
+#GLFW options
+option(GLFW_BUILD_DOCS "" OFF)
+option(GLFW_BUILD_EXAMPLES "" OFF)
+option(GLFW_BUILD_TESTS "" OFF)
+option(GLFW_DOCUMENT_INTERNALS "" OFF)
+option(GLFW_INSTALL "" OFF)
+#GLEW options
+option(BUILD_UTILS "" OFF)
+option(BUILD_SHARED_LIBS "" ON)
+option(glew-cmake_BUILD_MULTI_CONTEXT "" OFF)
+option(glew-cmake_BUILD_SHARED "" ON)
+option(glew-cmake_BUILD_SINGLE_CONTEXT "" ON)
+option(glew-cmake_BUILD_STATIC "" OFF)
+#GLM options
+option(GLM_DYNAMIC_LIBRARY_ENABLE "" OFF)
+option(GLM_INSTALL_ENABLE "" OFF)
+option(GLM_TEST_ENABLE "" OFF)
+
+set(BuildTests OFF CACHE BOOL "" FORCE)
+
 # Require modern C++
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -72,6 +92,14 @@ link_directories("${CMAKE_BINARY_DIR}/lib/json/lib")
 add_subdirectory("lib/glfw" EXCLUDE_FROM_ALL)
 set(GLFW_INCS "lib/glfw/include")
 link_directories("${CMAKE_BINARY_DIR}/lib/glfw/lib")
+# GLM
+add_subdirectory("lib/glm" EXCLUDE_FROM_ALL)
+set(GLM_INCS "lib/glm/include")
+link_directories("${CMAKE_BINARY_DIR}/lib/glm/lib")
+# GLEW
+add_subdirectory("lib/glew" EXCLUDE_FROM_ALL)
+set(GLEW_INCS "lib/glew/include")
+link_directories("${CMAKE_BINARY_DIR}/lib/glew/lib")
 
 ### Resources ###
 file(GLOB_RECURSE RESOURCE_FILES "res/*.*")
@@ -81,8 +109,18 @@ file(GLOB_RECURSE RESOURCE_FILES "res/*.*")
 file(GLOB_RECURSE SOURCE_FILES engine/*.cpp engine/*.h)
 add_library(lib_engine STATIC ${SOURCE_FILES} ${RESOURCE_FILES})
 assign_source_group(${SOURCE_FILES} ${RESOURCE_FILES})
-target_include_directories(lib_engine INTERFACE "${CMAKE_SOURCE_DIR}/engine/" PUBLIC SYSTEM ${B2D_INCS})
-target_link_libraries(lib_engine lib_maths lib_ecm Box2D sfml-graphics sfml-audio glfw opengl32)
+target_include_directories(lib_engine INTERFACE "${CMAKE_SOURCE_DIR}/engine/" PUBLIC SYSTEM ${B2D_INCS} ${GLEW_INCS})
+target_link_libraries(lib_engine 
+	PUBLIC lib_maths 
+	PUBLIC lib_ecm 
+	PUBLIC Box2D 
+	PUBLIC sfml-graphics 
+	PUBLIC sfml-audio 
+	PUBLIC glfw 
+	PUBLIC glm 
+	PUBLIC libglew_shared 
+	PUBLIC opengl32
+)
 
 ### Maths lib
 add_library(lib_maths INTERFACE)
