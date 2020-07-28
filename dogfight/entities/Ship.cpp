@@ -2,6 +2,7 @@
 #include <engine.h>
 #include "projectile.h"
 #include "system_physics.h"
+#include "../components/cmp_particlesystem.h"
 #include "../components/cmp_health_component.h"
 #include "../components/cmp_weapon.h"
 #include "../engine/game_resources.h"
@@ -28,6 +29,9 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 	{
 		weaponComponents.push_back(addComponent<WeaponComponent>(w));
 	}
+
+	// Thruster Particle System
+	thrusterPS = addComponent<ThrusterParticleSystem>();
 
 	// Thruster shape lol its ugly af. TODO: Replace this shiiiit
 	thrusterComponent = addComponent<ShapeComponent>();
@@ -76,7 +80,13 @@ void Ship::update(double dt)
 {
 	// Update thruster visibility based on whether the ship is accelerating
 	// TODO: Replace with particle system
-	// thrusterComponent->setVisibility(movementComponent->isAccelerating());
+
+	thrusterPS->setOffset(getPosition() - movementComponent->getForwardVector());
+
+	if (movementComponent->isAccelerating())
+	{
+		thrusterPS->fire();
+	}
 
 	Pawn::update(dt);
 }

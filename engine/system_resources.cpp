@@ -1,4 +1,5 @@
 #include "system_resources.h"
+#include <fstream>
 
 namespace Resources {
 
@@ -20,6 +21,42 @@ namespace Resources {
     };
     return tex;
   };
+
+  template <> // explicit specialization for T = texture
+  std::shared_ptr<sf::Shader> load(const std::string& name) 
+  {
+	  auto shader = std::make_shared<sf::Shader>();
+	  std::ifstream frag(("res/shaders/" + name + ".frag").c_str());
+	  std::ifstream vert(("res/shaders/" + name + ".vert").c_str());
+
+	  if (frag.good() && vert.good())
+	  {
+		  if (!shader->loadFromFile("res/shaders/" + name + ".vert", "res/shaders/" + name + ".frag")) 
+		  {
+			  throw("not found: " + name);
+		  }
+	  }
+	  else 
+	  {
+		  if (frag.good())
+		  {
+			  if (!shader->loadFromFile("res/shaders/" + name + ".frag", sf::Shader::Fragment))
+			  {
+				  throw("not found: " + name);
+			  }
+		  }
+		  if (vert.good())
+		  {
+			  if (!shader->loadFromFile("res/shaders/" + name + ".vert", sf::Shader::Vertex))
+			  {
+				  throw("not found: " + name);
+			  }
+		  }
+	  }
+
+	  return shader;
+  };
+
 #ifdef SOUND
   template <> // explicit specialization for T = SoundBuffer
   std::shared_ptr<sf::SoundBuffer> load(const std::string& name) {

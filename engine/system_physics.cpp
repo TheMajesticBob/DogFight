@@ -101,7 +101,7 @@ namespace Physics
 
 	void initialise() 
 	{
-		b2Vec2 gravity(0.0f, -10.0f);
+		b2Vec2 gravity(0.0f, 0.0f); // -10.0f);
 		debugDraw = new PhysicsDebugDraw();
 
 		// Construct a world object, which will hold and simulate the rigid bodies.

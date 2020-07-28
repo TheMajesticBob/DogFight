@@ -19,9 +19,9 @@ option(GLFW_INSTALL "" OFF)
 option(BUILD_UTILS "" OFF)
 option(BUILD_SHARED_LIBS "" ON)
 option(glew-cmake_BUILD_MULTI_CONTEXT "" OFF)
-option(glew-cmake_BUILD_SHARED "" ON)
+option(glew-cmake_BUILD_SHARED "" OFF)
 option(glew-cmake_BUILD_SINGLE_CONTEXT "" ON)
-option(glew-cmake_BUILD_STATIC "" OFF)
+option(glew-cmake_BUILD_STATIC "" ON)
 #GLM options
 option(GLM_DYNAMIC_LIBRARY_ENABLE "" OFF)
 option(GLM_INSTALL_ENABLE "" OFF)
@@ -120,16 +120,16 @@ target_link_libraries(lib_engine
 	PUBLIC sfml-audio 
 	PUBLIC glfw 
 	PUBLIC glm 
-	PUBLIC libglew_shared
+	PUBLIC libglew_static
 	PUBLIC opengl32
 )
 
 # OpenGL
-FIND_PACKAGE( OpenGL REQUIRED)
+FIND_PACKAGE(OpenGL REQUIRED)
 if(NOT ${OPENGL_FOUND})
   message(FATAL_ERROR "OPENGL NOT FOUND")
 endif()
-set(deps glfw libglew_shared)
+set(deps glfw libglew_static)
 
 FOREACH(jnk ${junk})
 	#Hide junks in junk VS project folder

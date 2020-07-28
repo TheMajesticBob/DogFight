@@ -30,6 +30,7 @@ class Ship : public Pawn
 	protected:
 		std::shared_ptr<defs::Plane> _shipDefinition;
 
+		std::shared_ptr<class ThrusterParticleSystem> thrusterPS;
 		std::shared_ptr<PlanePhysicsComponent> movementComponent;
 		std::shared_ptr<class HealthComponent> healthComponent;
 		std::vector<std::shared_ptr<class WeaponComponent>> weaponComponents;
