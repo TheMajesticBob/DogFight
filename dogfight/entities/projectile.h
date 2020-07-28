@@ -12,6 +12,8 @@ public:
 	Projectile(Scene* const s, std::string definition, Entity* const owner);
 
 	void update(double) override;
+	void render() override;
+
 	void fire(sf::Vector2f direction);
 
 	void setDamage(float& damage) { _damage = damage; }

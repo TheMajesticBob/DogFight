@@ -26,6 +26,13 @@ void Projectile::update(double dt)
 	Entity::update(dt);
 }
 
+void Projectile::render()
+{
+	shapeComponent->getShape().setRotation(-getRotation());
+
+	Entity::render();
+}
+
 void Projectile::fire(sf::Vector2f direction)
 {
 	setRotation(_owner->getRotation());

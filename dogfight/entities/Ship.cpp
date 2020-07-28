@@ -5,6 +5,7 @@
 #include "../components/cmp_health_component.h"
 #include "../components/cmp_weapon.h"
 #include "../engine/game_resources.h"
+#include "GL/glew.h"
 
 using namespace sf;
 
@@ -76,17 +77,18 @@ void Ship::update(double dt)
 {
 	// Update thruster visibility based on whether the ship is accelerating
 	// TODO: Replace with particle system
-	thrusterComponent->setVisibility(movementComponent->isAccelerating());
+	// thrusterComponent->setVisibility(movementComponent->isAccelerating());
 
 	Pawn::update(dt);
 }
 
 void Ship::render()
 {
-	//Ball::render
+	Engine::GetWindow().pushGLStates();
+	Pawn::render();
+	Engine::GetWindow().popGLStates();
 
-		// glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
-
+	glColor3f(1, 0, 0);
 	glPushMatrix();
 	glTranslatef(getPosition().x, getPosition().y, 0);
 	glRotatef(-getRotation(), 0, 0, 1);
@@ -94,9 +96,17 @@ void Ship::render()
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_TEXTURE_2D);
 
-	
+	GLfloat colors[] =
+	{
+		color.r, color.g, color.b,
+		color.r, color.g, color.b,
+		color.r, color.g, color.b,
+		color.r, color.g, color.b
+	};
 
+	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_FLOAT, 0, drawVerts);
+	//glDisableClientState(GL_VERTEX_ARRAY);
 
 	//glColor4f(0.0f, 0.0f, 0.0f, 1);
 	//glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -105,6 +115,9 @@ void Ship::render()
 		//glColor4f(color.r, color.g, color.b, 1);
 		// glColor4f(1, 0, 0, 1);
 		glColor3f(1, 0, 0);
+		glEnableClientState(GL_COLOR_ARRAY);
+		glColorPointer(3, GL_FLOAT, 0, colors);
+		//glDisableClientState(GL_COLOR_ARRAY);
 		glDrawArrays(GL_LINE_LOOP, 0, 4);
 
 // 		glColor3f(1, 1, 1);//white
@@ -121,7 +134,6 @@ void Ship::render()
 
 	glPopMatrix();
 
-	Pawn::render();
 	// movementComponent->getFixture()->GetShape().
 }
 

@@ -27,6 +27,8 @@ option(GLM_DYNAMIC_LIBRARY_ENABLE "" OFF)
 option(GLM_INSTALL_ENABLE "" OFF)
 option(GLM_TEST_ENABLE "" OFF)
 
+add_definitions(-DGLEW_STATIC)
+
 set(BuildTests OFF CACHE BOOL "" FORCE)
 
 # Require modern C++
@@ -118,9 +120,30 @@ target_link_libraries(lib_engine
 	PUBLIC sfml-audio 
 	PUBLIC glfw 
 	PUBLIC glm 
-	PUBLIC libglew_shared 
+	PUBLIC libglew_shared
 	PUBLIC opengl32
 )
+
+# OpenGL
+FIND_PACKAGE( OpenGL REQUIRED)
+if(NOT ${OPENGL_FOUND})
+  message(FATAL_ERROR "OPENGL NOT FOUND")
+endif()
+set(deps glfw libglew_shared)
+
+FOREACH(jnk ${junk})
+	#Hide junks in junk VS project folder
+	set_target_properties(${jnk} PROPERTIES FOLDER "JUNK")
+ENDFOREACH()
+
+FOREACH(dep ${deps})
+	#Hide deps in dep VS project folder
+	set_target_properties(${dep} PROPERTIES FOLDER "DEPS")
+	#Disable warnings for deps
+	target_compile_options(${dep} PUBLIC "/W0")
+	#use all core compilation
+	target_compile_options(${dep} PUBLIC "/MP")
+ENDFOREACH()
 
 ### Maths lib
 add_library(lib_maths INTERFACE)

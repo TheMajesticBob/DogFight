@@ -10,7 +10,7 @@
 #endif
 
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
-#define VC_EXTRALEAN
+// #define VC_EXTRALEAN
 #define GLFW_INCLUDE_GLU
 #define GLFW_DLL 1
 #define GLM_FORCE_RADIANS
@@ -20,8 +20,13 @@
 #define NDEBUG
 #endif
 
+
 // TODO: reference additional headers your program requires here
+#ifndef GLEW_STATIC
+#define GLEW_STATIC
+#endif
 #include <GL/glew.h>
+
 #include <GLFW/glfw3.h>
 #include <algorithm>
 #include <array>
