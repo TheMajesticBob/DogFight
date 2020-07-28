@@ -3,6 +3,7 @@
 #include "../entities/player.h"
 #include "../entities/enemy.h"
 #include "../entities/camera.h"
+#include "../entities/planet.h"
 #include "../controllers/shipPlayerController.h"
 #include "../ai/ai_basicbehaviourtree.h"
 
@@ -13,8 +14,15 @@ using namespace sf;
 
 void TestingScene::Load()
 {
+	float planetRadius = 1000.0f;
+	float planetMass = 1000000.0f;
+
+	// Create planet
+	auto planet = makeEntity<Planet>(planetRadius, planetMass);
+
+
 	auto player = makeEntity<Player>("player");
-	player->GetMovementComponent()->teleport(Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2));
+	player->GetMovementComponent()->teleport(Vector2f(planetRadius, planetRadius + 100.0f)); // Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2));
 
 	auto controller = makeEntity<ShipPlayerController>("Player1controls",player.get());	
 
@@ -23,6 +31,7 @@ void TestingScene::Load()
 
 	auto camera = makeEntity<Camera>();
 	camera->AddFollow(player);
+	camera->AddFollow(planet);
 
 	Vector2f boxSizes[] = 
 	{
@@ -40,17 +49,19 @@ void TestingScene::Load()
 	    {5.0f, Engine::getWindowSize().y / 2.0f}
 	};
 
-	for(int i = 0; i < 4; ++i)
-	{
-	    auto box = makeEntity();
-	    box->setPosition(boxPositions[i]);
+	// planet->GetPhysicsComponent()->teleport()
 
-	    box->addComponent<PhysicsComponent>(false, boxSizes[i]);
-	    auto shape = box->addComponent<ShapeComponent>();
-		shape->setShape<RectangleShape>(boxSizes[i]);
-		shape->getShape().setFillColor(Color::White);
-		shape->getShape().setOrigin(boxSizes[i] / 2.0f);
-	}
+// 	for(int i = 0; i < 4; ++i)
+// 	{
+// 	    auto box = makeEntity();
+// 	    box->setPosition(boxPositions[i]);
+// 
+// 	    box->addComponent<PhysicsComponent>(false, boxSizes[i]);
+// 	    auto shape = box->addComponent<ShapeComponent>();
+// 		shape->setShape<RectangleShape>(boxSizes[i]);
+// 		shape->getShape().setFillColor(Color::White);
+// 		shape->getShape().setOrigin(boxSizes[i] / 2.0f);
+// 	}
 
 	setLoaded(true);
 }

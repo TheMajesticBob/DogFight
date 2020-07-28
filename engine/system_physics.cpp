@@ -69,7 +69,15 @@ namespace Physics
 
 		virtual void DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color) override
 		{
-			throw std::logic_error("The method or operation is not implemented.");
+// 			const int vertexCount = 50;
+// 			glBegin(GL_LINE_LOOP);
+// 			for (int i = 0; i < vertexCount; ++i)
+// 			{
+// 				float angle = deg2rad(360.0f / i);
+// 				sf::Vector2f pos = invert_height(sf::Vector2f((center.x + sinf(angle) * radius) * physics_scale, (center.y + cosf(angle) * radius) * physics_scale));
+// 				glVertex2f(pos.x, pos.y);
+// 			}
+// 			glEnd();
 		}
 
 

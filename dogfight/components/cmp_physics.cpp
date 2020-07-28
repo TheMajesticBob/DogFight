@@ -12,6 +12,28 @@ void PhysicsComponent::update(double dt) {
 }
 
 PhysicsComponent::PhysicsComponent(Entity* p, bool dyn,
+	b2Shape& Shape, b2FixtureDef& FixtureDef)
+	: Component(p), _dynamic(dyn)
+{
+	b2BodyDef BodyDef;
+	// Is Dynamic(moving), or static(Stationary)
+	BodyDef.type = _dynamic ? b2_dynamicBody : b2_staticBody;
+	BodyDef.position = sv2_to_bv2(invert_height(p->getPosition()));
+
+	// Create the body
+	_body = Physics::GetWorld()->CreateBody(&BodyDef);
+	_body->SetActive(true);
+	_body->SetUserData(p);
+	{
+		FixtureDef.friction = _dynamic ? 0.1f : 0.8f;
+		FixtureDef.restitution = .2;
+		FixtureDef.shape = &Shape;
+		// Add to body
+		_fixture = _body->CreateFixture(&FixtureDef);
+	}
+}
+
+PhysicsComponent::PhysicsComponent(Entity* p, bool dyn,
                                    const Vector2f& size, b2FixtureDef& FixtureDef)
     : Component(p), _dynamic(dyn) {
 

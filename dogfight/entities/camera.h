@@ -7,6 +7,9 @@ class Camera : public Entity
 	protected:
 		std::vector<std::shared_ptr<Entity>> _entitiesToFollow;
 		sf::View _view;
+		sf::Vector2f _viewSize;
+
+		float distToZoom = 500.0f;
 
 	public:
 		Camera() = delete;
