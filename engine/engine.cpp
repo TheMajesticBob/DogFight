@@ -139,7 +139,7 @@ void Engine::ChangeScene(Scene* s) {
     loadingTime =0;
     _activeScene->LoadAsync();
     loading = true;
-  }
+  }  
 }
 
 void Scene::Update(const double& dt) { ents.update(dt); }
