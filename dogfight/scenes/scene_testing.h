@@ -10,5 +10,9 @@ public:
 
   void Update(const double& dt) override;
 
+  void UnLoad() override;
+
+
   std::shared_ptr<class BasicBehaviourTree> bt;
+  std::shared_ptr<class Camera> _camera;
 };

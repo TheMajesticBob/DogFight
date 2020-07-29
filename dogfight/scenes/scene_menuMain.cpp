@@ -1,4 +1,4 @@
-#include "scene_mainMenu.h"
+#include "scene_menuMain.h"
 #include "../game.h"
 #include "../entities/planet.h"
 #include "system_resources.h"
@@ -29,10 +29,19 @@ void MainMenu::Load()
 	setLoaded(true);
 }
 
+void MainMenu::UnLoad()
+{
+	Scene::UnLoad();
+}
+
 void MainMenu::Update(const double& dt)
 {	
 	if (Keyboard::isKeyPressed(Keyboard::Num1)) {
 		Engine::ChangeScene((Scene*)&testing);
 	}
+	if (Keyboard::isKeyPressed(Keyboard::Num2)) {
+		Engine::ChangeScene((Scene*)&settings);
+	}
+
 	Scene::Update(dt);
 }

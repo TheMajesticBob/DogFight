@@ -6,7 +6,7 @@
 #include "../entities/planet.h"
 #include "../controllers/shipPlayerController.h"
 #include "../ai/ai_basicbehaviourtree.h"
-#include "scene_mainMenu.h"
+#include "scene_menuMain.h"
 
 #include <SFML/Graphics.hpp>
 
@@ -69,9 +69,19 @@ void TestingScene::Load()
 
 void TestingScene::Update(const double& dt)
 {
-	/*if (Keyboard::isKeyPressed(Keyboard::P)) {
+	if (Keyboard::isKeyPressed(Keyboard::BackSpace)) {
 		Engine::ChangeScene((Scene*)&menu);
-	}*/
+	}
 
 	Scene::Update(dt);
+}
+
+void TestingScene::UnLoad()
+{
+	cout << "Eng: Game Scene Unload" << endl;
+	if (_camera != nullptr) {
+		_camera->setForDelete();
+	}	
+	
+	Scene::UnLoad();
 }
