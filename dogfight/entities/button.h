@@ -1,6 +1,7 @@
 #pragma once
 #include <ecm.h>
 #include "../components/cmp_sprite.h"
+#include "../components/cmp_text.h"
 #include "GL/glew.h"
 #include <SFML/Graphics.hpp>
 #include "SFML/OpenGL.hpp"
@@ -15,13 +16,16 @@ public:
 	void render() override;
 
 	bool isMouseOver();
-	bool MouseClick();	
+	bool MouseClick();
+
+	void setText(std::string text);
 
 protected:	
 
 	std::shared_ptr<ShapeComponent> shapeComponent;
+	std::shared_ptr<TextComponent> textComponent;
 	sf::Vector2f mp;
-	//Event event;
+	bool pressedState = false;
 
 	sf::Color color;
 };

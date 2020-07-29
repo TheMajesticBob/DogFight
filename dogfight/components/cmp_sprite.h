@@ -9,14 +9,14 @@ class DrawableComponent : public Component
 {
 protected:
 	std::shared_ptr<FDrawable> _drawable;
-    bool _drawOnUI;
+    bool _drawOnUI = false;
 
 public:
 	DrawableComponent() = delete;
 	explicit DrawableComponent(Entity* p) : Component(p) {}
     void render() override;
 	void setLayer(int layer) { _drawable->layer = layer; }
-    void setDrawOnUI(bool drawOnUI) { _drawOnUI = drawOnUI; }
+    void setDrawOnUI(bool drawOnUI ) { _drawOnUI = drawOnUI; }
 };
 
 class SpriteComponent : public DrawableComponent {

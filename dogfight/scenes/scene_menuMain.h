@@ -7,8 +7,8 @@ protected:
     //Entity text_mainTitle;// = makeEntity();
     //sf::Font font_mainTitle;
     //RectangleShape _rectangle;
-    /*Button _play;
-    Button _settings;*/
+    std::shared_ptr<class Button> _play;
+    std::shared_ptr<class Button> _settings;
 
 public:
     MainMenu() = default;
