@@ -30,8 +30,9 @@ void TestingScene::Load()
 	enemy->GetMovementComponent()->teleport((Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2) + Vector2f(50.0f,0.0f)));
 
 	auto camera = makeEntity<Camera>();
-	camera->AddFollow(player);
-	camera->AddFollow(planet);
+	
+	camera->AddFollow(player, 3);
+	camera->AddFollow(planet, 0.2f);
 
 	Vector2f boxSizes[] = 
 	{

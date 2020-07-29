@@ -68,11 +68,9 @@ void PlanePhysicsComponent::accelerate(float value)
 	// Clamp value between 0 and 1
 	value = max(0.0f, min(value, 1.0f));
 
+	// Apply force
 	_isAccelerating = true;
-
-	// double angle = _body->GetAngle() * 180.0f / M_PI;
-	forceApplied = _planeDefinition->acceleration * sv2_to_bv2(getForwardVector(), false); // b2Vec2(-cos(deg2rad(angle)), sin(deg2rad(angle)));
-
+	forceApplied = _planeDefinition->acceleration * sv2_to_bv2(getForwardVector(), false);
 	_body->ApplyForce(forceApplied, _body->GetPosition(), true);
 }
 

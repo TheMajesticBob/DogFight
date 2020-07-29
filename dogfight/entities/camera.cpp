@@ -19,20 +19,20 @@ void Camera::update(double dt)
 	float maxDistance = 0;
 
 	// Calculate average position
-	int n = 0;
+	float w = 0;
 	for(auto e : _entitiesToFollow)
 	{
-		sf::Vector2f entityPosition = e->getPosition();
+		sf::Vector2f entityPosition = e.getEntity()->getPosition();
 		float distance = sf::length(position - entityPosition);
 		if (distance > maxDistance)
 		{
 			maxDistance = distance;
 		}
-		newPosition += entityPosition;
-		++n;
+		newPosition += entityPosition * e.getWeight();
+		w += e.getWeight();
 	}
 
-	newPosition = newPosition / (float)n;
+	newPosition = newPosition / (float)w;
 
 	// Interpolate between old and new
 	setPosition(lerp<sf::Vector2f>(position, newPosition, 0.01f));

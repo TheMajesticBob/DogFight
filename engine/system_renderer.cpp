@@ -64,7 +64,11 @@ void Renderer::render()
 		// Get main camera (renderwindow) view to determine the UI position in world-space and set the sprite position
 		View mainView = rw->getView();
 		uiSprite.setPosition(mainView.getCenter() - (mainView.getSize() / 2.0f));
-	
+
+		// Calculate UI scale in case the view size is not default
+		sf::Vector2f uiScale = sf::Vector2f(mainView.getSize().x / rw->getDefaultView().getSize().x, mainView.getSize().y / rw->getDefaultView().getSize().y);
+		uiSprite.setScale(uiScale);
+
 		// Draw UI
 		rw->draw(uiSprite);
 	}
