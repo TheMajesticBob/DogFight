@@ -3,9 +3,12 @@
 #include <SFML/Graphics.hpp>
 
 class MainMenu : public Scene {
-private:
+protected:
     //Entity text_mainTitle;// = makeEntity();
     //sf::Font font_mainTitle;
+    //RectangleShape _rectangle;
+    /*Button _play;
+    Button _settings;*/
 
 public:
     MainMenu() = default;
