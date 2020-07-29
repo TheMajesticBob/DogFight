@@ -1,5 +1,5 @@
 {
-  "Projectile": "test",
+  "Projectile": "bomb",
   "Damage": 10.0,
   "RateOfFire": 5.0,
   "ProjectilesPerRound": 1

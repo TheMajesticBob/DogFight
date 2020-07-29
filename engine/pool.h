@@ -17,6 +17,7 @@ public:
 	}
 
 	bool IsAvailable() { return _isAvailable; }
+	void SetAvailable(bool available) { _isAvailable = available; }
 
 private:
 	bool _isAvailable;
@@ -59,6 +60,8 @@ public:
 		if (_expandable)
 		{
 			std::shared_ptr<T> newObject = _newObjectFunction();
+			std::shared_ptr<Poolable> poolable = std::static_pointer_cast<Poolable>(newObject);
+			poolable->SetAvailable(false);
 			_pool.push_back(newObject);
 			return newObject;
 		}

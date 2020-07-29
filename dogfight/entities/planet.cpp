@@ -39,7 +39,7 @@ void Planet::update(double dt)
 
 		b2Vec2 forceDirection = Physics::sv2_to_bv2(sf::normalize(Physics::bv2_to_sv2(m_body->GetPosition() - b->GetPosition())));
 
-		float force = _radius * _mass / magnitude;
+		float force = _radius * _mass / magnitude * b->GetGravityScale();
 		b->ApplyForceToCenter(force * forceDirection, true);
 	}
 }
