@@ -86,7 +86,8 @@ void PlanePhysicsComponent::turn(float value)
 	value = -max(-1.0f, min(value, 1.0f));
 
 	auto accelerationMultiplier = _isAccelerating ? _planeDefinition->accelerationRotationMultiplier : 1.0f;
-	_body->SetAngularVelocity(_body->GetAngularVelocity() + deg2rad(value * accelerationMultiplier * _planeDefinition->rotationSpeed));
+	float torqueValue = 1.0f * deg2rad(value * accelerationMultiplier * _planeDefinition->rotationSpeed);
+	_body->ApplyAngularImpulse(torqueValue, true); // SetAngularVelocity(_body->GetAngularVelocity() + deg2rad(value * accelerationMultiplier * _planeDefinition->rotationSpeed));
 }
 
 sf::Vector2f PlanePhysicsComponent::getForwardVector()
@@ -138,7 +139,7 @@ PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
 
     b2FixtureDef FixtureDef;
     // Fixture properties
-    //FixtureDef.density = _dynamic ? 10.f : 0.f;
+    FixtureDef.density = _dynamic ? 10.f : 0.f;
     FixtureDef.friction = _dynamic ? 0.1f : 0.8f;
     FixtureDef.restitution = .2;
     FixtureDef.shape = &Shape;

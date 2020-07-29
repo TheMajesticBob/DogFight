@@ -17,15 +17,15 @@ SpriteComponent::SpriteComponent(Entity* p)
 }
 
 void SpriteComponent::update(double dt) {
-  _sprite->setPosition(_parent->getPosition());
-  _sprite->setRotation(_parent->getRotation());
+	_sprite->setPosition(_parent->getPosition());
+	_sprite->setRotation(_parent->getRotation());
 }
 
 void SpriteComponent::render() { Renderer::queue(_drawable.get()); }
 
 void ShapeComponent::update(double dt) {
   _shape->setPosition(_parent->getPosition());
-  _shape->setRotation(_parent->getRotation());
+  _shape->setRotation(-_parent->getRotation());
 }
 
 void ShapeComponent::render() { Renderer::queue(_drawable.get()); }

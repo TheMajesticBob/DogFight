@@ -4,7 +4,7 @@ Player::Player(Scene* const s, std::string shipDefinition) : Ship(s, shipDefinit
 {
 	// Required for the AI to find players
 	addTag("Player");
-	color = sf::Color(0.0f, 1.0f, 0.0f);
+	SetColor(sf::Color(0, 255, 0));
 }
 
 void Player::update(double dt)

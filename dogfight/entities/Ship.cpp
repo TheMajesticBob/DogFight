@@ -41,6 +41,17 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 	thrusterComponent->setVisibility(false);
 	thrusterComponent->setLayer(-1);
 
+	shapeComponent = addComponent<ShapeComponent>();
+	shapeComponent->setShape<sf::ConvexShape>(4);
+	sf::ConvexShape* shape = (sf::ConvexShape*)&shapeComponent->getShape(); 
+	shape->setPoint(0, { 0.0f, -size.x / 2.0f });
+	shape->setPoint(1, { -size.x * sqrt(3.0f) / 2.0f, 0.0f });
+	shape->setPoint(2, { 0.0f, size.x / 2.0f });
+	shape->setPoint(3, { -size.x * sqrt(3.0f) / 12.0f, 0.0f });
+	shape->setFillColor(sf::Color::Black);
+	shape->setOutlineColor(sf::Color::White);
+	shape->setOutlineThickness(2.0f);
+
 	// Setup draw shape
 	// Right vertex
 	drawVerts[0] = 0.0f;
@@ -93,57 +104,7 @@ void Ship::update(double dt)
 
 void Ship::render()
 {
-	Engine::GetWindow().pushGLStates();
 	Pawn::render();
-	Engine::GetWindow().popGLStates();
-
-	glColor3f(1, 0, 0);
-	glPushMatrix();
-	glTranslatef(getPosition().x, getPosition().y, 0);
-	glRotatef(-getRotation(), 0, 0, 1);
-	
-	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_TEXTURE_2D);
-
-	GLfloat colors[] =
-	{
-		color.r, color.g, color.b,
-		color.r, color.g, color.b,
-		color.r, color.g, color.b,
-		color.r, color.g, color.b
-	};
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, drawVerts);
-	//glDisableClientState(GL_VERTEX_ARRAY);
-
-	//glColor4f(0.0f, 0.0f, 0.0f, 1);
-	//glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-
-		glLineWidth(2);
-		//glColor4f(color.r, color.g, color.b, 1);
-		// glColor4f(1, 0, 0, 1);
-		glColor3f(1, 0, 0);
-		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer(3, GL_FLOAT, 0, colors);
-		//glDisableClientState(GL_COLOR_ARRAY);
-		glDrawArrays(GL_LINE_LOOP, 0, 4);
-
-// 		glColor3f(1, 1, 1);//white
-// 
-// 
-// 		//circle outline
-// 		glBegin(GL_LINE_LOOP);
-// 		for (float a = 0; a < deg2rad(360); a += deg2rad(30))
-// 		{
-// 			sf::Vector2f vert = Physics::bv2_to_sv2(b2Vec2(sinf(a), cosf(a)));
-// 			glVertex2f(vert.x, vert.y);
-// 		}
-// 		glEnd();
-
-	glPopMatrix();
-
-	// movementComponent->getFixture()->GetShape().
 }
 
 void Ship::OnHit(float damage)

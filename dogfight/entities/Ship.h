@@ -18,6 +18,16 @@ class Ship : public Pawn
 		void OnHit(float damage) override;
 		virtual void OnDestroyed();
 
+		void SetColor(sf::Color color)
+		{
+			_color = color;
+			sf::ConvexShape* shape = (sf::ConvexShape*)&shapeComponent->getShape();
+			if (shape)
+			{
+				shape->setOutlineColor(color);
+			}
+		}
+
 		std::shared_ptr<PlanePhysicsComponent> GetMovementComponent() { return movementComponent; }
 		std::shared_ptr<class HealthComponent> GetHealthComponent() { return healthComponent; }
 
@@ -41,5 +51,5 @@ class Ship : public Pawn
 		float fireCooldown = 0.0f;
 
 		GLfloat drawVerts[8];
-		sf::Color color;
+		sf::Color _color;
 };

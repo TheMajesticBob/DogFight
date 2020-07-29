@@ -16,13 +16,12 @@ Enemy::Enemy(Scene* const s, std::string shipDefinition)
 	_behaviourTree = s->makeEntity<BasicBehaviourTree>(_blackboard);
 	_behaviourTree->startBehaviourTree(this);
 
-	color = sf::Color(1.0f, 0.0f, 0.0f);
+	SetColor(sf::Color(255, 0, 0));
 }
 
 void Enemy::update(double dt)
 {
 	Ship::update(dt);
-	Entity::update(dt);
 }
 
 void Enemy::OnDestroyed()
