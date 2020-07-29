@@ -21,14 +21,21 @@ void SpriteComponent::update(double dt) {
   _sprite->setRotation(_parent->getRotation());
 }
 
-void SpriteComponent::render() { Renderer::queue(_drawable.get()); }
+void DrawableComponent::render() { 
+    if (_drawOnUI) {
+        UI::queue(_drawable.get());
+    }
+    else {
+        Renderer::queue(_drawable.get());
+    }    
+}
 
 void ShapeComponent::update(double dt) {
   _shape->setPosition(_parent->getPosition());
   _shape->setRotation(_parent->getRotation());
 }
 
-void ShapeComponent::render() { Renderer::queue(_drawable.get()); }
+//void ShapeComponent::render() { Renderer::queue(_drawable.get()); }
 
 sf::Shape& ShapeComponent::getShape() const { return *_shape; }
 

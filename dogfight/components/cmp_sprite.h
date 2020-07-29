@@ -9,12 +9,14 @@ class DrawableComponent : public Component
 {
 protected:
 	std::shared_ptr<FDrawable> _drawable;
+    bool _drawOnUI;
 
 public:
 	DrawableComponent() = delete;
 	explicit DrawableComponent(Entity* p) : Component(p) {}
-
+    void render() override;
 	void setLayer(int layer) { _drawable->layer = layer; }
+    void setDrawOnUI(bool drawOnUI) { _drawOnUI = drawOnUI; }
 };
 
 class SpriteComponent : public DrawableComponent {
@@ -27,7 +29,7 @@ public:
 
   explicit SpriteComponent(Entity* p);
   void update(double dt) override;
-  void render() override;
+ 
 
   void setTexure(std::shared_ptr<sf::Texture> tex);
 
@@ -44,7 +46,7 @@ public:
   explicit ShapeComponent(Entity* p);
 
   void update(double dt) override;
-  void render() override;
+  
 
   sf::Shape& getShape() const;
 

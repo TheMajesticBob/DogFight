@@ -20,7 +20,8 @@ public:
 protected:	
 
 	std::shared_ptr<ShapeComponent> shapeComponent;
+	sf::Vector2f mp;
+	//Event event;
 
-	GLfloat drawVerts[8];
 	sf::Color color;
 };
