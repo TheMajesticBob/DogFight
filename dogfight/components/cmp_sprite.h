@@ -48,6 +48,13 @@ public:
 
   sf::Shape& getShape() const;
 
+  template <typename T>
+  void setShapeExplicit(std::shared_ptr<T> shape)
+  {
+	  _shape = shape;
+	  _drawable->drawable = _shape;
+  }
+
   template <typename T, typename... Targs> 
   void setShape(Targs... params) 
   {

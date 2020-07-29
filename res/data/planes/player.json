@@ -3,6 +3,7 @@
     "Hull": 100.0,
     "Shield": 50.0
   },
+  "Shape": "ship",
   "Weapons": [
     "basic"
   ],

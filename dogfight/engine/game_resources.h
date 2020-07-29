@@ -17,4 +17,7 @@ namespace Resources
 
 	template <> // explicit specialization for T = Controls
 	std::shared_ptr<defs::Controls> load(const std::string& name);
+
+	template <> // explicit specialization for T = Controls
+	std::shared_ptr<defs::GameShape> load(const std::string& name);
 }

@@ -64,4 +64,19 @@ namespace Resources
 		*f = j.get<defs::Controls>();
 		return f;
 	};
+
+	template<>
+	std::shared_ptr<defs::GameShape> load(const std::string& name)
+	{
+		auto f = std::make_shared<defs::GameShape>();
+		std::ifstream file("res/data/shapes/" + name + ".json");
+		if (!file.is_open())
+		{
+			throw("not found: " + name);
+		};
+		json j;
+		file >> j;
+		*f = j.get<defs::GameShape>();
+		return f;
+	};
 }

@@ -13,6 +13,7 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 {
 	// Get the ship definition
 	_shipDefinition = Resources::get<defs::Plane>(shipDefinition);
+	std::shared_ptr<defs::GameShape> _shipShape = Resources::get<defs::GameShape>(_shipDefinition->shape);
 
 	// Size?
 	Vector2f size = { 30.0f, 30.0f };
@@ -42,13 +43,14 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 	thrusterComponent->setLayer(-1);
 
 	shapeComponent = addComponent<ShapeComponent>();
-	shapeComponent->setShape<sf::ConvexShape>(4);
-	sf::ConvexShape* shape = (sf::ConvexShape*)&shapeComponent->getShape(); 
+	shapeComponent->setShapeExplicit<sf::Shape>(_shipShape->getShape());
+	sf::ConvexShape* shape = (sf::ConvexShape*)&shapeComponent->getShape();
+	/*
 	shape->setPoint(0, { 0.0f, -size.x / 2.0f });
 	shape->setPoint(1, { -size.x * sqrt(3.0f) / 2.0f, 0.0f });
 	shape->setPoint(2, { 0.0f, size.x / 2.0f });
 	shape->setPoint(3, { -size.x * sqrt(3.0f) / 12.0f, 0.0f });
-	// shape->setOrigin()
+	*/
 	shape->setFillColor(sf::Color::Black);
 	shape->setOutlineColor(sf::Color::White);
 	shape->setOutlineThickness(2.0f);
