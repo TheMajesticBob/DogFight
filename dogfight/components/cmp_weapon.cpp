@@ -22,10 +22,13 @@ void WeaponComponent::fire(sf::Vector2f directionVector)
 	{
 		for (int i = 0; i < _weaponDefinition->projectilesPerRound; ++i)
 		{
-			auto projectile = _parent->scene->makeEntity<Projectile>(_weaponDefinition->projectile, _parent);
-			projectile->setDamage(_weaponDefinition->damage);
-			projectile->fire(directionVector);
-		}
+			auto projectile = Pool<Projectile>::Get(); // _parent->scene->makeEntity<Projectile>();
+			if (projectile)
+			{
+				projectile->setDamage(_weaponDefinition->damage);
+				projectile->fire(_weaponDefinition->projectile, _parent, directionVector);
+			}
+ 		}
 		
 		_fireCooldown = 1.0f / _weaponDefinition->rateOfFire;
 	}

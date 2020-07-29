@@ -9,6 +9,11 @@ using namespace Physics;
 void PhysicsComponent::update(double dt) {
   _parent->setPosition(invert_height(bv2_to_sv2(_body->GetPosition())));
   _parent->setRotation((180 / b2_pi) * _body->GetAngle());
+
+  if (_body && _body->IsActive() != _desiredActive && !Physics::GetWorld()->IsLocked()) 
+  { 
+	  _body->SetActive(_desiredActive);
+  }
 }
 
 PhysicsComponent::PhysicsComponent(Entity* p, bool dyn,
@@ -23,6 +28,7 @@ PhysicsComponent::PhysicsComponent(Entity* p, bool dyn,
 	// Create the body
 	_body = Physics::GetWorld()->CreateBody(&BodyDef);
 	_body->SetActive(true);
+	_desiredActive = true;
 	_body->SetUserData(p);
 	{
 		FixtureDef.friction = _dynamic ? 0.1f : 0.8f;
@@ -45,6 +51,7 @@ PhysicsComponent::PhysicsComponent(Entity* p, bool dyn,
   // Create the body
   _body = Physics::GetWorld()->CreateBody(&BodyDef);
   _body->SetActive(true);
+  _desiredActive = true;
   _body->SetUserData(p);
   {
     // Create the fixture shape
@@ -92,8 +99,20 @@ void PhysicsComponent::setFriction(float r) { _fixture->SetFriction(r); }
 
 void PhysicsComponent::setMass(float m) { _fixture->SetDensity(m); }
 
-void PhysicsComponent::teleport(const sf::Vector2f& v) {
-  _body->SetTransform(sv2_to_bv2(invert_height(v)), _body->GetAngle());
+void PhysicsComponent::teleport(const sf::Vector2f& v) 
+{
+	if (!Physics::GetWorld()->IsLocked())
+	{
+		_body->SetTransform(sv2_to_bv2(invert_height(v)), _body->GetAngle());
+	}
+}
+
+void PhysicsComponent::setRotation(const float rotation)
+{
+	if (!Physics::GetWorld()->IsLocked())
+	{
+		_body->SetTransform(_body->GetPosition(), rotation);
+	}
 }
 
 const sf::Vector2f PhysicsComponent::getVelocity() const {
@@ -107,10 +126,12 @@ b2Fixture* const PhysicsComponent::getFixture() const { return _fixture; }
 
 PhysicsComponent::~PhysicsComponent() {
   auto a = Physics::GetWorld();
-  _body->SetActive(false);
-  Physics::GetWorld()->DestroyBody(_body);
-  // delete _body;
-  _body = nullptr;
+  if (a && _body)
+  {
+	  _body->SetActive(false);
+	  Physics::GetWorld()->DestroyBody(_body);
+	  _body = nullptr;
+  }
 }
 
 void PhysicsComponent::render() {}

@@ -7,6 +7,9 @@
 #include "../controllers/shipPlayerController.h"
 #include "../ai/ai_basicbehaviourtree.h"
 
+#include "pool.h"
+#include "../entities/projectile.h"
+
 #include <SFML/Graphics.hpp>
 
 using namespace std;
@@ -14,8 +17,10 @@ using namespace sf;
 
 void TestingScene::Load()
 {
-	float planetRadius = 1000.0f;
-	float planetMass = 1000000.0f;
+	Pool<Projectile>::Initialize(0, true, [&] { return makeEntity<Projectile>(); });
+
+	float planetRadius = 100.0f;
+	float planetMass = 10000.0f;
 
 	// Create planet
 	auto planet = makeEntity<Planet>(planetRadius, planetMass);
@@ -26,8 +31,8 @@ void TestingScene::Load()
 
 	auto controller = makeEntity<ShipPlayerController>("Player1controls",player.get());	
 
-	auto enemy = makeEntity<Enemy>("player");
-	enemy->GetMovementComponent()->teleport((Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2) + Vector2f(50.0f,0.0f)));
+	//auto enemy = makeEntity<Enemy>("player");
+	//enemy->GetMovementComponent()->teleport((Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2) + Vector2f(50.0f,0.0f)));
 
 	auto camera = makeEntity<Camera>();
 	

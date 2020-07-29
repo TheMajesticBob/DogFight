@@ -118,6 +118,8 @@ PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
 		{-sqrt(3.0f) / 2.0f * size.y, 0.0f}
 	};
 
+	sf::Vector2f center = { -size.x * sqrt(3.0f) / 6.0f, 0.0f };
+
 	// Set debug shape points
 	_debugShape.setPointCount(3);
 	for( int i = 0; i < 3; ++i )
@@ -132,7 +134,7 @@ PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
 	for(int i = 0; i < 3; ++i )
 	{
 		// We have to scale the points properly by using sv2_to_bv2
-		b2Vec2 point = sv2_to_bv2(points[i]);
+		b2Vec2 point = sv2_to_bv2(points[i] - center);
 		vertices[i].Set(point.x, point.y);
 	}
 	Shape.Set(vertices, 3);

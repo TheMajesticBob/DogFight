@@ -40,11 +40,10 @@ namespace defs
 		Projectile() {}
 
 		sf::Vector2f size;
-		float sizeX;
-		float sizeY;
 
 		float initialSpeed;
 		float linearDamping;
+		float lifetime;
 
 		float mass;
 
@@ -89,6 +88,7 @@ namespace defs
 		j.at("Projectile").at("Size").at("X").get_to(p.size.x);
 		j.at("Projectile").at("Size").at("Y").get_to(p.size.y);
 		j.at("Projectile").at("InitialSpeed").get_to(p.initialSpeed);
+		j.at("Projectile").at("Lifetime").get_to(p.lifetime);
 		j.at("Physics").at("Mass").get_to(p.mass);
 		j.at("Physics").at("LinearDamping").get_to(p.linearDamping);
 		j.at("Physics").at("GravityAffects").get_to(p.gravityAffects);

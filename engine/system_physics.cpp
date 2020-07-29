@@ -39,25 +39,25 @@ namespace Physics
 
 		virtual void DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override
 		{
-// 			GLfloat verts[16];
-// 
-// 			glVertexPointer(2, GL_FLOAT, 0, verts);
-// 			glEnableClientState(GL_VERTEX_ARRAY);
-// 
-// 			for (int i = 0; i < vertexCount; ++i)
-// 			{
-// 				verts[i * 2] = bv2_to_sv2(vertices[i]).x;
-// 				verts[i * 2 + 1] = invert_height(bv2_to_sv2(vertices[i])).y;
-// 			}
-// 
-// 			// Draw solid
-// 			glColor4f(0, 0, 0, 0);
-// 			glDrawArrays(GL_TRIANGLE_FAN, 0, vertexCount);
-// 
-// 			// Draw lines
-// 			glLineWidth(0.1f);
-// 			glColor4f(color.r, color.g, color.b, color.a);
-// 			glDrawArrays(GL_LINE_LOOP, 0, vertexCount);
+			GLfloat verts[16];
+
+			glVertexPointer(2, GL_FLOAT, 0, verts);
+			glEnableClientState(GL_VERTEX_ARRAY);
+
+			for (int i = 0; i < vertexCount; ++i)
+			{
+				verts[i * 2] = bv2_to_sv2(vertices[i]).x;
+				verts[i * 2 + 1] = invert_height(bv2_to_sv2(vertices[i])).y;
+			}
+
+			// Draw solid
+			glColor4f(0, 0, 0, 0);
+			glDrawArrays(GL_TRIANGLE_FAN, 0, vertexCount);
+
+			// Draw lines
+			glLineWidth(1.0f);
+			glColor4f(color.r, color.g, color.b, color.a);
+			glDrawArrays(GL_LINE_LOOP, 0, vertexCount);
 		}
 
 
@@ -117,9 +117,11 @@ namespace Physics
 
 		// Set our contact listener
 		world->SetContactListener(&contactListener);
+		
+		// Setup debug draw
 		world->SetDebugDraw(debugDraw);
 
-		debugDraw->SetFlags(b2Draw::e_shapeBit);
+		// debugDraw->SetFlags(b2Draw::e_shapeBit);
 	}
 
 	void shutdown() 
@@ -163,4 +165,10 @@ namespace Physics
 	{
 		return Vector2f(in.x, 720 - in.y);
 	}
+
+	const float vector_to_angle(const sf::Vector2f& in)
+	{
+		return atan2(in.y, in.x);
+	}
+
 } // namespace Physics

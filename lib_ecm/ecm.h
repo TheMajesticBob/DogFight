@@ -1,5 +1,6 @@
 #pragma once
 #include "maths.h"
+#include <SFML/Graphics/Transform.hpp>
 #include <algorithm>
 #include <memory>
 #include <set>
@@ -13,26 +14,44 @@ class Component {
   friend Entity;
 
 protected:
-  Entity* const _parent;
-  bool _fordeletion; // should be removed
-  bool _isVisible;
-  explicit Component(Entity* const p);
+
+	Entity* const _parent;
+	Component* _parentComponent;
+
+	sf::Transform _transform;
+
+	bool _fordeletion; // should be removed
+	bool _isVisible;
+	explicit Component(Entity* const p);
 
 public:
-  Component() = delete;
+	Component() = delete;
 
-  bool is_fordeletion() const;
-  bool is_visible() const { return _isVisible; }
+	bool is_fordeletion() const;
+	bool is_visible() const { return _isVisible; }
+
+	sf::Transform getLocalTransform() { return _transform; }
+	
+	sf::Transform getTransform() 
+	{
+		if (_parentComponent) 
+		{
+			return _transform * _parentComponent->getTransform();
+		}
+
+		return _transform;
+	}
+
   
-  void setVisibility(bool visible) { _isVisible = visible; }
+	void setVisibility(bool visible) { _isVisible = visible; }
 
-  virtual void onBeginPlay() {}
+	virtual void onBeginPlay() {}
 
-  virtual void update(double dt) = 0;
+	virtual void update(double dt) = 0;
 
-  virtual void render() = 0;
+	virtual void render() = 0;
 
-  virtual ~Component();
+	virtual ~Component();
 };
 
 struct EntityManager {

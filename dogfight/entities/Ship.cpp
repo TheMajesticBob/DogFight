@@ -48,31 +48,13 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 	shape->setPoint(1, { -size.x * sqrt(3.0f) / 2.0f, 0.0f });
 	shape->setPoint(2, { 0.0f, size.x / 2.0f });
 	shape->setPoint(3, { -size.x * sqrt(3.0f) / 12.0f, 0.0f });
+	// shape->setOrigin()
 	shape->setFillColor(sf::Color::Black);
 	shape->setOutlineColor(sf::Color::White);
 	shape->setOutlineThickness(2.0f);
 
-	// Setup draw shape
-	// Right vertex
-	drawVerts[0] = 0.0f;
-	drawVerts[1] = -size.x / 2.0f;
-
-	// Top vertex
-	drawVerts[2] = -size.x * sqrt(3) / 2.0f;
-	drawVerts[3] = 0; // -1.0f * Physics::physics_scale;
-
-	// Left vertex
-	drawVerts[4] = 0;
-	drawVerts[5] = size.x / 2.0f;
-
-	// Bottom vertex
-	drawVerts[6] = -size.x * sqrt(3) / 12.0f;
-	drawVerts[7] = 0;
-
-	for (int i = 0; i < 8; ++i)
-	{
-		drawVerts[i] = drawVerts[i];
-	}
+	sf::Vector2f center =  { -size.x * sqrt(3.0f) / 6.0f, 0.0f };
+	shape->setOrigin(center);
 
 	// Currently this is how we draw the ship
 	movementComponent->setDebugDraw(false);
