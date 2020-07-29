@@ -1,6 +1,5 @@
 #pragma once
-
-#include "engine.h"
+#include <engine.h>
 
 class TestingScene : public Scene {
 public:
@@ -11,7 +10,8 @@ public:
 
   void Update(const double& dt) override;
 
-  std::shared_ptr<class BasicBehaviourTree> bt;
+  void UnLoad() override;
 
 private:
+  std::shared_ptr<class FollowCamera> _camera;
 };

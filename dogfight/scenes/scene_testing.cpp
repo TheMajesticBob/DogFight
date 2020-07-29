@@ -6,6 +6,7 @@
 #include "../entities/planet.h"
 #include "../controllers/shipPlayerController.h"
 #include "../ai/ai_basicbehaviourtree.h"
+#include "scene_menuMain.h"
 
 #include "pool.h"
 #include "../entities/projectile.h"
@@ -34,10 +35,9 @@ void TestingScene::Load()
 	//auto enemy = makeEntity<Enemy>("player");
 	//enemy->GetMovementComponent()->teleport((Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2) + Vector2f(50.0f,0.0f)));
 
-	auto camera = makeEntity<Camera>();
-	
-	camera->AddFollow(player, 3);
-	camera->AddFollow(planet, 0.2f);
+	_camera = makeEntity<FollowCamera>();
+	_camera->AddFollow(player, 3);
+	_camera->AddFollow(planet, 0.2f);
 
 	Vector2f boxSizes[] = 
 	{
@@ -74,5 +74,19 @@ void TestingScene::Load()
 
 void TestingScene::Update(const double& dt)
 {
+	if (Keyboard::isKeyPressed(Keyboard::BackSpace)) {
+		Engine::ChangeScene((Scene*)&menu);
+	}
+
 	Scene::Update(dt);
+}
+
+void TestingScene::UnLoad()
+{
+	cout << "Eng: Game Scene Unload" << endl;
+	if (_camera != nullptr) {
+		_camera->setForDelete();
+	}	
+	
+	Scene::UnLoad();
 }
