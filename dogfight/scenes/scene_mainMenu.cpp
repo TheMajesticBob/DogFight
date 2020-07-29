@@ -1,6 +1,8 @@
 #include "scene_mainMenu.h"
 #include "../game.h"
 #include "../entities/planet.h"
+#include "system_resources.h"
+#include "../components/cmp_text.h"
 #include <SFML/Graphics.hpp>
 
 using namespace sf;
@@ -15,20 +17,20 @@ void MainMenu::Load()
 
 	// Create planet
 	auto planet = makeEntity<Planet>(planetRadius, planetMass);	
+	
+	// Create menu text
+	auto text_mainTitle = makeEntity();	
+	auto t = text_mainTitle->addComponent<TextComponent>("\n\n\n\n\n\n\n\n\n\n\n\n                                                1 - Play\n                                               2 - Settings");
 
-	if (!font_mainTitle.loadFromFile("res/fonts/Misdemeanor-Oyx8.ttf"))
-	{
-		std::cout << "Couldn't load font!" << std::endl;
-	}
-
-	text_mainTitle.setFont(font_mainTitle);
-	text_mainTitle.setCharacterSize(24);
+	auto text_menu1 = makeEntity();
+	auto a = text_menu1->addComponent<TextComponent>("\n\n\n\n\n\n\n\n\n\n                                                  SPACE WARZ");
+	//text_mainTitle->setPosition(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y));
 
 	setLoaded(true);
 }
 
 void MainMenu::Update(const double& dt)
-{
+{	
 	if (Keyboard::isKeyPressed(Keyboard::Num1)) {
 		Engine::ChangeScene((Scene*)&testing);
 	}

@@ -3,8 +3,8 @@
 #include <SFML/Graphics.hpp>
 
 class MainMenu : public Scene {
-protected:
-    sf::Text text_mainTitle;
+private:
+    //Entity text_mainTitle;// = makeEntity();
     sf::Font font_mainTitle;
 
 public:
