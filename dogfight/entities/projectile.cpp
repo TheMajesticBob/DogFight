@@ -43,9 +43,10 @@ void Projectile::render()
 	Entity::render();
 }
 
-void Projectile::fire(std::string definition, Entity* const owner, sf::Vector2f direction)
+void Projectile::fire(std::string definition, Entity* const owner, sf::Vector2f position, sf::Vector2f direction)
 {
 	_projectileDefiniton = Resources::get<defs::Projectile>(definition);
+	std::shared_ptr<defs::GameShape> _projectileShape = Resources::get<defs::GameShape>(_projectileDefiniton->shape);
 	_owner = owner;
 	
 	b2Vec2 collisionSize = Physics::sv2_to_bv2(_projectileDefiniton->size);
@@ -60,16 +61,17 @@ void Projectile::fire(std::string definition, Entity* const owner, sf::Vector2f 
 	fixtureDef.shape = &shape;
 	
 	bulletComponent->redefine(_projectileDefiniton, fixtureDef);
-	shapeComponent->setShape<sf::RectangleShape>(_projectileDefiniton->size*2.0f);
+
+
+	shapeComponent->setShape<sf::Shape>(_projectileShape->getShape());
 	shapeComponent->getShape().setFillColor(sf::Color::Yellow);
-	shapeComponent->getShape().setOrigin(_projectileDefiniton->size / 2.0f);
 	shapeComponent->setLayer(1);
 
 	setRotation(_owner->getRotation());
 
-	bulletComponent->teleport(_owner->getPosition());
-	bulletComponent->fire(_owner->getPosition(), direction);
-	bulletComponent->setActive(true);
+	//bulletComponent->teleport(position);
+	bulletComponent->fire(position, direction);
+	//bulletComponent->setActive(true);
 
 	setAlive(true);
 	setVisible(true);

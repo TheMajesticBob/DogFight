@@ -55,7 +55,14 @@ public:
 	  _drawable->drawable = _shape;
   }
 
-  template <typename T, typename... Targs> 
+  template <typename T>
+  void setShape(std::shared_ptr<T> shape)
+  {
+	  _shape = shape;
+	  _drawable->drawable = _shape;
+  }
+
+  template <typename T, typename... Targs>
   void setShape(Targs... params) 
   {
     _shape.reset(new T(params...));

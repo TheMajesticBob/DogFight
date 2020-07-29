@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "system_ui.h"
 //#include "cmp_sprite.h"
 
 struct FDrawable
@@ -14,8 +13,9 @@ struct FDrawable
 
 	}
 };
-
 namespace Renderer {
+
+
 void initialise(sf::RenderWindow&);
 
 void shutdown();

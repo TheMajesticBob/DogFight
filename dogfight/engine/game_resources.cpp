@@ -1,5 +1,6 @@
 #include "game_resources.h"
 #include <fstream>
+#include <iostream>
 
 using json = nlohmann::json;
 
@@ -15,9 +16,16 @@ namespace Resources
       		throw("not found: " + name);
     	};
 		json j;
-		file >> j;
-		*f = j.get<defs::Plane>();
-    	return f;
+		try
+		{
+			file >> j;
+			*f = j.get<defs::Plane>();
+			return f;
+		}
+		catch (std::exception e)
+		{
+			std::cerr << e.what();
+		}
 	};
 
 	template<>
@@ -30,9 +38,18 @@ namespace Resources
 			throw("not found: " + name);
 		};
 		json j;
-		file >> j;
-		*f = j.get<defs::Weapon>();
-		return f;
+		try
+		{
+			file >> j;
+			*f = j.get<defs::Weapon>();
+			return f;
+		}
+		catch (std::exception e)
+		{
+			std::cerr << e.what();
+		}
+
+		return nullptr;
 	};
 
 	template<>
@@ -45,9 +62,16 @@ namespace Resources
 			throw("not found: " + name);
 		};
 		json j;
-		file >> j;
-		*f = j.get<defs::Projectile>();
-		return f;
+		try
+		{
+			file >> j;
+			*f = j.get<defs::Projectile>();
+			return f;
+		}
+		catch (std::exception e)
+		{
+			std::cerr << e.what();
+		}
 	};
 
 	template<>
@@ -60,9 +84,16 @@ namespace Resources
 			throw("not found: " + name);
 		};
 		json j;
-		file >> j;
-		*f = j.get<defs::Controls>();
-		return f;
+		try
+		{
+			file >> j;
+			*f = j.get<defs::Controls>();
+			return f;
+		}
+		catch (std::exception e)
+		{
+			std::cerr << e.what();
+		}
 	};
 
 	template<>
@@ -75,8 +106,15 @@ namespace Resources
 			throw("not found: " + name);
 		};
 		json j;
-		file >> j;
-		*f = j.get<defs::GameShape>();
-		return f;
+		try
+		{
+			file >> j;
+			*f = j.get<defs::GameShape>();
+			return f;
+		}
+		catch (std::exception e)
+		{
+			std::cerr << e.what();
+		}
 	};
 }

@@ -18,7 +18,7 @@ public:
 	void update(double) override;
 	void render() override;
 
-	void fire(std::string definition, Entity* const owner, sf::Vector2f direction);
+	void fire(std::string definition, Entity* const owner, sf::Vector2f position, sf::Vector2f direction);
 
 	void setDamage(float& damage) { _damage = damage; }
 

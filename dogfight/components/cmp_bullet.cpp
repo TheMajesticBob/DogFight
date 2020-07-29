@@ -15,12 +15,7 @@ void BulletComponent::fire(const Vector2f& position, Vector2f& direction)
 	direction = normalize(direction);
 	//impulse(sf::rotate(Vector2f(0, 15.f), -_parent->getRotation()));
 	_body->SetLinearVelocity(_initialSpeed*sv2_to_bv2(direction));
-		//   s->getShape().setFillColor(Color::Red);
-		//   s->getShape().setOrigin(8.f, 8.f);
-		//   auto p = bullet->addComponent<PhysicsComponent>(true, Vector2f(8.f, 8.f));
-		//   p->setRestitution(.4f);
-		//   p->setFriction(.005f);
-		//   p->impulse(sf::rotate(Vector2f(0, 15.f), -_parent->getRotation()));
+	setActive(true);
 }
 
 void BulletComponent::redefine(std::shared_ptr<defs::Projectile> definition, b2FixtureDef& fixtureDef)

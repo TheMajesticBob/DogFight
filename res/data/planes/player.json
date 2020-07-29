@@ -5,7 +5,14 @@
   },
   "Shape": "ship",
   "Weapons": [
-    "basic"
+    {
+      "Name": "basic",
+      "Position": {
+        "X": -25,
+        "Y": 0
+      },
+      "Layer": -1
+    }
   ],
   "PlaneControl": {
     "MaxSpeed": 30.0,

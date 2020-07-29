@@ -1,7 +1,8 @@
 {
   "Projectile": {
     "InitialSpeed": 30.0,
-    "Lifetime":  10.0,
+    "Lifetime": 10.0,
+    "Shape": "bomb",
     "Size": {
       "X": 15.0,
       "Y": 15.0

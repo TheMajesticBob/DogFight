@@ -1,5 +1,6 @@
 #pragma once
 #include <ecm.h>
+#include "../components/cmp_weapon.h"
 #include "../components/cmp_plane_physics.h"
 #include "../components/cmp_sprite.h"
 #include "GL/glew.h"
@@ -18,6 +19,8 @@ class Ship : public Pawn
 		void OnHit(float damage) override;
 		virtual void OnDestroyed();
 
+		sf::Color GetColor() { return _color; }
+
 		void SetColor(sf::Color color)
 		{
 			_color = color;
@@ -25,6 +28,10 @@ class Ship : public Pawn
 			if (shape)
 			{
 				shape->setOutlineColor(color);
+			}
+			for (std::shared_ptr<WeaponComponent> w : weaponComponents)
+			{
+				w->getShape().setOutlineColor(color);
 			}
 		}
 

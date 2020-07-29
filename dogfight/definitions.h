@@ -15,7 +15,13 @@ namespace sf
 
 namespace defs
 {
-	struct Shape;
+	struct WeaponSlot
+	{
+		WeaponSlot() {}
+
+		std::string weaponName;
+		sf::Vector2f relativePosition;
+	};
 
 	struct Plane
 	{
@@ -26,7 +32,7 @@ namespace defs
 
 		std::string shape;
 
-		std::vector<std::string> weapons;
+		std::vector<WeaponSlot> weapons;
 
 		float maxSpeed;
 		float acceleration;
@@ -43,7 +49,8 @@ namespace defs
 		Weapon() {}
 
 		std::string projectile;
-
+		std::string shape;
+		
 		float damage;
 		float rateOfFire;
 		float projectilesPerRound;
@@ -54,6 +61,8 @@ namespace defs
 		Projectile() {}
 
 		sf::Vector2f size;
+
+		std::string shape;
 
 		float initialSpeed;
 		float linearDamping;
@@ -91,6 +100,8 @@ namespace defs
 		float scale;
 		float radius;
 		sf::Vector2f size;
+		sf::Vector2f origin;
+
 		std::vector<sf::Vector2f> points;
 
 		std::shared_ptr<sf::Shape> getShape()
@@ -119,15 +130,22 @@ namespace defs
 				break;
 			}
 
+			returnShape->setOrigin(origin * scale);
 			return returnShape;
 		}
 	};
+
+	inline void from_json(const json &j, WeaponSlot &ws)
+	{
+		j.at("Name").get_to(ws.weaponName);
+		j.at("Position").get_to(ws.relativePosition);
+	}
 
 	inline void from_json(const json &j, Plane &p)
 	{
 		j.at("Health").at("Hull").get_to(p.health);
 		j.at("Health").at("Shield").get_to(p.shield);
-		j.at("Weapons").get_to(p.weapons);
+		j.at("Weapons").get_to<std::vector<WeaponSlot>>(p.weapons);
 
 		j.at("Shape").get_to(p.shape);
 
@@ -142,6 +160,7 @@ namespace defs
 	inline void from_json(const json &j, Weapon &w)
 	{
 		j.at("Projectile").get_to(w.projectile);
+		j.at("Shape").get_to(w.shape);
 		j.at("Damage").get_to(w.damage);
 		j.at("RateOfFire").get_to(w.rateOfFire);
 		j.at("ProjectilesPerRound").get_to(w.projectilesPerRound);
@@ -153,6 +172,7 @@ namespace defs
 		j.at("Projectile").at("Size").at("Y").get_to(p.size.y);
 		j.at("Projectile").at("InitialSpeed").get_to(p.initialSpeed);
 		j.at("Projectile").at("Lifetime").get_to(p.lifetime);
+		j.at("Projectile").at("Shape").get_to(p.shape);
 		j.at("Physics").at("Mass").get_to(p.mass);
 		j.at("Physics").at("LinearDamping").get_to(p.linearDamping);
 		j.at("Physics").at("GravityAffects").get_to(p.gravityAffects);
@@ -185,6 +205,7 @@ namespace defs
 
 		}
 
+		j.at("Origin").get_to(s.origin);
 		j.at("Scale").get_to(s.scale);
 	}
 }

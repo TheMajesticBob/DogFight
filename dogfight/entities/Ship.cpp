@@ -28,7 +28,11 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 	healthComponent = addComponent<HealthComponent>(_shipDefinition->health);
 	for (auto& w : _shipDefinition->weapons)
 	{
-		weaponComponents.push_back(addComponent<WeaponComponent>(w));
+		auto newWeapon = addComponent<WeaponComponent>(w);
+		newWeapon->getShape().setFillColor(sf::Color::Black);
+		newWeapon->getShape().setOutlineColor(sf::Color::White);
+		newWeapon->getShape().setOutlineThickness(2.0f);
+		weaponComponents.push_back(newWeapon);
 	}
 
 	// Thruster Particle System
@@ -43,7 +47,7 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 	thrusterComponent->setLayer(-1);
 
 	shapeComponent = addComponent<ShapeComponent>();
-	shapeComponent->setShapeExplicit<sf::Shape>(_shipShape->getShape());
+	shapeComponent->setShape<sf::Shape>(_shipShape->getShape());
 	sf::ConvexShape* shape = (sf::ConvexShape*)&shapeComponent->getShape();
 	/*
 	shape->setPoint(0, { 0.0f, -size.x / 2.0f });
@@ -56,7 +60,7 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 	shape->setOutlineThickness(2.0f);
 
 	sf::Vector2f center =  { -size.x * sqrt(3.0f) / 6.0f, 0.0f };
-	shape->setOrigin(center);
+	// shape->setOrigin(center);
 
 	// Currently this is how we draw the ship
 	movementComponent->setDebugDraw(false);
