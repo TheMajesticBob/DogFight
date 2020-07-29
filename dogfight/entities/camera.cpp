@@ -9,7 +9,28 @@ Camera::Camera(Scene* const s)
 	_viewSize = _view.getSize();
 }
 
-void Camera::update(double dt)
+void Camera::update(double)
+{
+	Engine::GetWindow().setView(_view);
+}
+
+void Camera::setPosition(sf::Vector2f position)
+{
+	Entity::setPosition(position);
+	_view.setCenter(position);
+}
+
+void Camera::setScale(float scale)
+{
+	_view.setSize(scale * _viewSize);
+}
+
+FollowCamera::FollowCamera(Scene* const s) : Camera(s)
+{
+
+}
+
+void FollowCamera::update(double dt)
 {
 	sf::FloatRect bounds;
 
@@ -41,7 +62,6 @@ void Camera::update(double dt)
 	{
 		float s = maxDistance / distToZoom;
 		_view.setSize(s * _viewSize);
-	}
-
-	Engine::GetWindow().setView(_view);
+	}	
+	Camera::update(dt);
 }

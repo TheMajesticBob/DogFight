@@ -30,7 +30,7 @@ void TestingScene::Load()
 	auto enemy = makeEntity<Enemy>("player");
 	enemy->GetMovementComponent()->teleport((Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2) + Vector2f(50.0f,0.0f)));
 
-	auto camera = makeEntity<Camera>();
+	auto camera = makeEntity<FollowCamera>();
 	camera->AddFollow(player);
 	camera->AddFollow(planet);
 

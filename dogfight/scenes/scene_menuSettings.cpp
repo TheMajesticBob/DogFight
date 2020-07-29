@@ -9,8 +9,9 @@ using namespace std;
 
 void Settings::Load()
 {
+
 	auto text_mainTitle = makeEntity();
-	auto t = text_mainTitle->addComponent<TextComponent>("Settings");
+	auto t = text_mainTitle->addComponent<TextComponent>("      Settings");
 }
 
 void Settings::Update(const double& dt)
