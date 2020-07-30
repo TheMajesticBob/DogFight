@@ -11,9 +11,10 @@ Button::Button(Scene* const s, Vector2f size) : Entity(s)
 	textComponent->setLayer(1);
 	shapeComponent = addComponent<ShapeComponent>();
 	shapeComponent->setShape<RectangleShape>(Vector2f(size.x, size.y));
+	shapeComponent->getShape().setFillColor(Color::Black);
 	shapeComponent->getShape().setOutlineColor(Color::Magenta);
 	shapeComponent->getShape().setOutlineThickness(2);
-	shapeComponent->getShape().setOrigin(size.x/2,size.y/2);
+	shapeComponent->getShape().setOrigin(size.x/2,size.y/2); 
 	shapeComponent->setDrawOnUI(true);	
 }
 
@@ -24,17 +25,19 @@ void Button::update(double dt)
 	mp.y = Mouse::getPosition(Engine::GetWindow()).y;
 		
 	//mouse over change colour of buton to a dark grey
-	if (isMouseOver()) {
-		shapeComponent->getShape().setFillColor(Color::Green);
-	}
-	else {
-		shapeComponent->getShape().setFillColor(Color::Black);
-	}
-	if (MouseClick()) {
-		onButtonClicked.invokeSafe();
-		return;
-		std::cout << "Success" << std::endl;
-	}
+	if (isActive()) {
+		if (isMouseOver()) {
+			shapeComponent->getShape().setFillColor(Color::Color(100,30,140,255));
+		}
+		else {
+			shapeComponent->getShape().setFillColor(Color::Black);
+		}
+		if (MouseClick()) {
+			onButtonClicked.invokeSafe();
+			return;
+			std::cout << "Success" << std::endl;
+		}
+	}	
 
 	Entity::update(dt);
 }
@@ -62,27 +65,28 @@ bool Button::MouseClick()
 {
 	Event _event;
 	sf::RenderWindow& window = Engine::GetWindow();
-
-	//while (window.pollEvent(_event)) {		
-		if (isMouseOver()) {
-			if (Mouse::isButtonPressed(Mouse::Button::Left)/*_event.type == Event::MouseButtonReleased && _event.mouseButton.button == Mouse::Left*/) {
-				pressedState = true;				
-			}
-			else if (pressedState == true){
-				pressedState = false;
-				return true;
-			}				
-		}
-		else {
-			if (!Mouse::isButtonPressed(Mouse::Button::Left)/*_event.type == Event::MouseButtonReleased && _event.mouseButton.button == Mouse::Left*/) {
-				pressedState = false;
-			}
-		}
-
-		return false;
-	//}
 		
+	if (isMouseOver()) {
+		if (Mouse::isButtonPressed(Mouse::Button::Left)) {
+			pressedState = true;
+		}
+		else if (pressedState == true) {
+			pressedState = false;
+			return true;
+		}
+	}
+	else {
+		if (!Mouse::isButtonPressed(Mouse::Button::Left)) {
+			pressedState = false;
+		}
+	}
+
+		return false;		
 }
+
+bool Button::isActive() const { return _active; }
+
+void Button::setActive(bool _active) { Button::_active = _active; }
 
 void Button::setText(std::string text)
 {	
