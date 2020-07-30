@@ -10,7 +10,11 @@ Enemy::Enemy(Scene* const s, std::string shipDefinition)
 	// Create a blackboard and set required variables
 	_blackboard = std::make_shared<Blackboard>();
 	_blackboard->setEntity("MyPawn", this);
-	_blackboard->setEntity("TargetEntity", s->ents.find("Player")[0].get()); // TODO: Create a task/service to automatically look for targets
+	auto playerArray = s->ents.find("Player");
+	if (playerArray.size() > 0)
+	{
+		_blackboard->setEntity("TargetEntity", playerArray[0].get()); // TODO: Create a task/service to automatically look for targets
+	}
 
 	// Create and run the behaviour tree
 	_behaviourTree = s->makeEntity<BasicBehaviourTree>(_blackboard);

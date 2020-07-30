@@ -7,6 +7,7 @@
 #include "../controllers/shipPlayerController.h"
 #include "../ai/ai_basicbehaviourtree.h"
 #include "scene_menuMain.h"
+#include "../engine/game_resources.h"
 
 #include "pool.h"
 #include "../entities/projectile.h"
@@ -20,6 +21,11 @@ void TestingScene::Load()
 {
 	Pool<Projectile>::Initialize(0, true, [&] { return makeEntity<Projectile>(); });
 
+	_currentLevel = Resources::get<defs::Level>("1");
+	_waveData = _currentLevel->waves;
+	_waveId = 0;
+	_timeToNextWave = 0.0f;
+	
 	float planetRadius = 1000.0f;
 	float planetMass = 5000.0f;
 
@@ -27,7 +33,7 @@ void TestingScene::Load()
 	_camera = makeEntity<FollowCamera>();
 
 	// Create the planet
-	_planet = makeEntity<Planet>(planetRadius, planetMass);
+	_planet = makeEntity<Planet>(_currentLevel->planetRadius, _currentLevel->planetMass);
 	_camera->AddFollow(_planet, 0.2f);
 
 	_player = makeEntity<Player>("player");
@@ -36,43 +42,17 @@ void TestingScene::Load()
 
 	auto controller = makeEntity<ShipPlayerController>("Player1controls",_player.get());	
 
-	auto enemy = makeEntity<Enemy>("basic");
-	enemy->GetMovementComponent()->teleport(_player->getPosition() + Vector2f(50.0f,0.0f));
-	_camera->AddFollow(enemy, 1);
-
-	enemy = makeEntity<Enemy>("bomber");
-	enemy->GetMovementComponent()->teleport(_player->getPosition() + Vector2f(150.0f, 0.0f));
-	_camera->AddFollow(enemy, 1);
-
-	Vector2f boxSizes[] = 
-	{
-		{(float)Engine::getWindowSize().x * 3.0f, 10.0f},
-		{(float)Engine::getWindowSize().x * 3.0f, 10.0f},
-		{10.0f, (float)Engine::getWindowSize().y},
-		{10.0f, (float)Engine::getWindowSize().y}
-	};
-
-	Vector2f boxPositions[] = 
-	{
-	    {Engine::getWindowSize().x * 3.0f / 2.0f, 5.0f},
-	    {Engine::getWindowSize().x * 3.0f / 2.0f, Engine::getWindowSize().y - 5.0f},
-	    {Engine::getWindowSize().x * 3.0f - 5.0f, Engine::getWindowSize().y / 2.0f},
-	    {5.0f, Engine::getWindowSize().y / 2.0f}
-	};
-
-	// planet->GetPhysicsComponent()->teleport()
-
-// 	for(int i = 0; i < 4; ++i)
-// 	{
-// 	    auto box = makeEntity();
-// 	    box->setPosition(boxPositions[i]);
+// 	auto enemy = makeEntity<Enemy>("basic");
+// 	enemy->GetMovementComponent()->teleport(_player->getPosition() + Vector2f(50.0f,0.0f));
+// 	enemy->SetTeam(Ship::Team::T_ENEMY);
+// 	_camera->AddFollow(enemy, 1);
 // 
-// 	    box->addComponent<PhysicsComponent>(false, boxSizes[i]);
-// 	    auto shape = box->addComponent<ShapeComponent>();
-// 		shape->setShape<RectangleShape>(boxSizes[i]);
-// 		shape->getShape().setFillColor(Color::White);
-// 		shape->getShape().setOrigin(boxSizes[i] / 2.0f);
-// 	}
+// 	enemy = makeEntity<Enemy>("bomber");
+// 	enemy->GetMovementComponent()->teleport(_player->getPosition() + Vector2f(150.0f, 0.0f));
+// 	enemy->SetTeam(Ship::Team::T_ENEMY);
+// 	_camera->AddFollow(enemy, 1);
+
+	StartNextWave();
 
 	setLoaded(true);
 }
@@ -81,6 +61,60 @@ void TestingScene::Update(const double& dt)
 {
 	if (Keyboard::isKeyPressed(Keyboard::BackSpace)) {
 		Engine::ChangeScene((Scene*)&menu);
+	}
+
+	if (_currentLevel != nullptr && _waveRunning)
+	{
+		_timeToNextWave -= dt;
+		if(_timeToNextWave <= 0.0f)
+		{
+			StartNextWave();
+		}
+
+		for (auto& s : currentWave.spawners)
+		{
+			s.currentDelay += dt;
+			if (s.currentDelay >= s.delayBetweenSpawns)
+			{
+				{
+					// Spawn enemies
+					for (int i = 0; i < s.maxShipsPerSpawn; ++i)
+					{
+						std::vector<std::string> ships;
+						for (auto& eg : s.enemyGroups)
+						{
+							for (int j = 0; j < eg.count; ++j)
+							{
+								ships.push_back(eg.shipName);
+							}
+						}
+
+						if (ships.size() > 0)
+						{
+							int randomShip = rand() % ships.size();
+							std::string shipName = ships[randomShip];
+							for (auto& eg : s.enemyGroups)
+							{
+								if (eg.shipName == shipName)
+								{
+									--eg.count;
+									break;
+								}
+							}
+
+							sf::Vector2f randomOffset((rand() % 2000 - 1000) / 10.0f, (rand() % 2000 - 1000) / 10.0f);
+
+							auto enemy = makeEntity<Enemy>(shipName);
+							enemy->GetMovementComponent()->teleport(s.position + randomOffset);
+							enemy->SetTeam(Ship::Team::T_ENEMY);
+							_camera->AddFollow(enemy, 0.05f);
+						}
+					}
+				}
+
+				s.currentDelay -= s.delayBetweenSpawns;
+			}
+		}
 	}
 
 	Scene::Update(dt);
@@ -94,4 +128,37 @@ void TestingScene::UnLoad()
 	}	
 	
 	Scene::UnLoad();
+}
+
+void TestingScene::StartNextWave()
+{
+	if (_currentLevel)
+	{
+		if (_currentLevel->waves.size() > _waveId++)
+		{
+			currentWave = _currentLevel->waves[_waveId - 1];
+
+			for (auto& s : currentWave.spawners)
+			{
+				float angle = std::rand() % 360;
+				s.position = sf::Vector2f(cos(deg2rad(angle)), sin(deg2rad(angle))) * _currentLevel->planetRadius*1.5f;
+			}
+
+			if (_currentLevel->waves.size() > _waveId)
+			{
+				_timeToNextWave = _currentLevel->waves[_waveId].delay;
+			}
+
+			_waveRunning = true;
+		}
+		else
+		{
+			LevelCompleted();
+		}
+	}
+}
+
+void TestingScene::LevelCompleted()
+{
+	_waveId = 0;
 }

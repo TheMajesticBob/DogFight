@@ -27,7 +27,7 @@ WeaponComponent::WeaponComponent(Entity* p, defs::WeaponSlot& weaponSlotDefiniti
 	std::shared_ptr<defs::GameShape> _weaponShape = Resources::get<defs::GameShape>(_weaponDefinition->shape);
 	setShape<sf::Shape>(_weaponShape->getShape());
 	
-	setLayer(-1);
+	setLayer(1);
 }
 
 void WeaponComponent::fire(sf::Vector2f directionVector)

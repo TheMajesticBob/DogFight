@@ -8,7 +8,7 @@
     {
       "Name": "laser_basic",
       "Position": {
-        "X": -25,
+        "X": -15,
         "Y": 0
       },
       "Layer": -1
@@ -21,6 +21,7 @@
     "AccelerationRotationMultiplier": 0.45
   },
   "Physics": {
+    "Mass": 100.0,
     "AngularDamping": 10.0,
     "LinearDamping": 0.3
   }

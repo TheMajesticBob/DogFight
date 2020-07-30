@@ -36,7 +36,7 @@ void Projectile::update(double dt)
 
 void Projectile::render()
 {
-	shapeComponent->getShape().setRotation(-getRotation());
+	// shapeComponent->getShape().setRotation(-getRotation());
 
 	Entity::render();
 }
@@ -46,7 +46,7 @@ void Projectile::fire(std::string definition, Entity* const owner, sf::Vector2f 
 	// Get correct projectile and shape definitions, setup owner
 	_projectileDefiniton = Resources::get<defs::Projectile>(definition);
 	std::shared_ptr<defs::GameShape> _projectileShape = Resources::get<defs::GameShape>(_projectileDefiniton->shape);
-	_owner = owner;
+	_owner = static_cast<Ship*>(owner);
 	
 	// Setup physics fixture
 	b2FixtureDef fixtureDef;
@@ -59,9 +59,15 @@ void Projectile::fire(std::string definition, Entity* const owner, sf::Vector2f 
 	bulletComponent->redefine(_projectileDefiniton, fixtureDef);
 
 	// Set our new shape
+	sf::Color color = _owner->GetColor();
+	sf::Color outlineColor = color;
+	outlineColor.a = 127;
+
 	shapeComponent->setShape<sf::Shape>(_projectileShape->getShape());
-	shapeComponent->getShape().setFillColor(sf::Color::Yellow);
-	shapeComponent->setLayer(1);
+	shapeComponent->getShape().setFillColor(color);
+	shapeComponent->getShape().setOutlineColor(outlineColor);
+	shapeComponent->getShape().setOutlineThickness(0.75f);
+	shapeComponent->setLayer(-1);
 
 	// Set rotation
 	setRotation(_owner->getRotation());
@@ -76,13 +82,18 @@ void Projectile::OnBeginOverlap(Entity* const e)
 {
 	if (_alive && e != _owner)
 	{
-		Destroy();
-		std::cout << "Projectile hit " << std::endl;
-		
 		Ship* ship = static_cast<Ship*>(e);
-		if(ship)
+		if (ship)
 		{
-			ship->OnHit(_damage);
+			if (ship->GetTeam() != _owner->GetTeam())
+			{
+				ship->OnHit(_damage);
+				Destroy();
+			}
+		}
+		else 
+		{
+			Destroy();
 		}
 	}
 }

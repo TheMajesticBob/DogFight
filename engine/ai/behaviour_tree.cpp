@@ -52,6 +52,11 @@ void BehaviourTree::update(double dt)
 
 		_debugText.setString(_currentNode->getName());
 		_debugText.setPosition(_controlledEntity->getPosition() - sf::Vector2f(_debugText.getLocalBounds().width / 2.0f, -30.0f));
+
+		if (_currentNode == _rootNode.get())
+		{
+			_currentNode->run(_controlledEntity);
+		}
 	}
 }
 

@@ -51,7 +51,6 @@ public:
 			std::shared_ptr<Poolable> poolable = std::static_pointer_cast<Poolable>(o);
 			if (poolable && poolable->IsAvailable())
 			{
-				std::cout << "Found an entity in pool. Returning..." << std::endl;
 				poolable->Reset();
 				return o;
 			}

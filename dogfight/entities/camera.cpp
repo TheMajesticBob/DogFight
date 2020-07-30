@@ -43,14 +43,17 @@ void FollowCamera::update(double dt)
 	float w = 0;
 	for(auto e : _entitiesToFollow)
 	{
-		sf::Vector2f entityPosition = e.getEntity()->getPosition();
-		float distance = sf::length(position - entityPosition);
-		if (distance > maxDistance)
+		if (e.getEntity()->isAlive())
 		{
-			maxDistance = distance;
+			sf::Vector2f entityPosition = e.getEntity()->getPosition();
+			float distance = sf::length(position - entityPosition);
+			if (distance > maxDistance)
+			{
+				maxDistance = distance;
+			}
+			newPosition += entityPosition * e.getWeight();
+			w += e.getWeight();
 		}
-		newPosition += entityPosition * e.getWeight();
-		w += e.getWeight();
 	}
 
 	newPosition = newPosition / (float)w;

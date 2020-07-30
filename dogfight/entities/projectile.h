@@ -30,6 +30,6 @@ protected:
 
 	std::shared_ptr<defs::Projectile> _projectileDefiniton;
 
-	Entity* _owner;
+	class Ship* _owner;
 	float _damage;
 };

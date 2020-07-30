@@ -27,17 +27,6 @@ void PlanePhysicsComponent::update(double dt)
 	auto speed = velocity.Length();
 	velocity.Normalize();
 
-	// Draw debug stuff
-	auto angle = _body->GetAngle() * 180.0f / M_PI;
-	auto angleVector = b2Vec2(-cos(deg2rad(angle)), sin(deg2rad(angle)));
-
-	_debugText.setString(
-		"Angle: " + to_string(angle) + "\n" +
-		"Angle vector: " + to_string(angleVector.x) + ", " + to_string(angleVector.y) + "\n" +
-		"Velocity: " + to_string(velocity.x * speed) + ", " + to_string(velocity.y * speed) + "\n" +
-		"Speed: " + to_string(speed)
-	);
-
 	// Clamp speed
 	auto clampedSpeed = min(speed, _planeDefinition->maxSpeed);
 	velocity *= clampedSpeed;
@@ -48,7 +37,7 @@ void PlanePhysicsComponent::update(double dt)
 
 void PlanePhysicsComponent::render()
 {
-	UI::queue(&_debugText);
+
 }
 
 void PlanePhysicsComponent::accelerate(float value)
@@ -126,9 +115,4 @@ PlanePhysicsComponent::PlanePhysicsComponent(Entity* p, std::shared_ptr<defs::Sh
 	_rotationSpeed = _planeDefinition->rotationSpeed;
 	_body->SetAngularDamping(_planeDefinition->angularDamping);
 	_body->SetLinearDamping(_planeDefinition->linearDamping);
-
-	// Debug
-  	_font = Resources::get<sf::Font>("RobotoMono-Regular.ttf");
-  	_debugText.setFont(*_font);
-	_debugText.setPosition({20.0f, 20.0f});
 }

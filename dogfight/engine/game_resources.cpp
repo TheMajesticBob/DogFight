@@ -37,12 +37,16 @@ namespace Resources
 		{
 			appendix += "projectiles/" + subDirectory + "projectile_";
 		}
+		else if (std::is_base_of_v<T, defs::Level>)
+		{
+			appendix += "levels/level_" + subDirectory;
+		}
 		else if (std::is_base_of_v<T, defs::Controls>)
 		{
 			appendix += "settings/" + subDirectory;
 		}
 
-		return appendix + fileName + ".json"; // .substr(name.find("_") + 1);
+		return appendix + fileName + ".json";
 	}
 
 	template<>
@@ -154,6 +158,29 @@ namespace Resources
 		{
 			file >> j;
 			*f = j.get<defs::GameShape>();
+			return f;
+		}
+		catch (std::exception e)
+		{
+			std::cerr << e.what();
+		}
+	};
+
+	template<>
+	std::shared_ptr<defs::Level> load(const std::string& name)
+	{
+		std::string filename = makeName<defs::Level>(name);
+		auto f = std::make_shared<defs::Level>();
+		std::ifstream file(filename);
+		if (!file.is_open())
+		{
+			throw("not found: " + name);
+		};
+		json j;
+		try
+		{
+			file >> j;
+			*f = j.get<defs::Level>();
 			return f;
 		}
 		catch (std::exception e)

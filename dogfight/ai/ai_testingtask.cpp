@@ -49,6 +49,7 @@ void BTT_MoveTowardsEntity::update(const double& dt, Entity* e)
 			if (!_targetEntity)
 			{
 				onFinished(false);
+				return;
 			}
 
 			// Calculate direction and distance to target
@@ -59,6 +60,14 @@ void BTT_MoveTowardsEntity::update(const double& dt, Entity* e)
 
 			// Calculate shortest angle towards the target
 			float angle = sf::rad2deg(atan2(direction.x * forward.y - forward.x * direction.y, direction.x * forward.x + direction.y * forward.y)); // +90.0f;
+			
+			// Check if we're close enough
+			if (distance < MinThrottleDistance)
+			{
+				// Finished successfully when within set range
+				onFinished(true);
+				return;
+			}
 
 			// Rotate towards the target and accelerate
 			_myPawn->Turn(angle);
@@ -69,16 +78,7 @@ void BTT_MoveTowardsEntity::update(const double& dt, Entity* e)
 			}
 			else
 			{
-				// Go full throttle if too far
-				if (distance > MinThrottleDistance)
-				{
-					_myPawn->Accelerate(1.0f);
-				}
-				else
-				{
-					// Finished successfully when within set range
-					onFinished(true);
-				}
+				_myPawn->Accelerate(1.0f);
 			}
 		}
 	}
@@ -98,7 +98,7 @@ bool BTD_IsTargetInFront::evaluate(Entity* e)
 			_myPawn = static_cast<Ship*>(blackboard->getEntity("MyPawn"));
 			_targetEntity = blackboard->getEntity("TargetEntity");
 
-			if (_myPawn && _targetEntity)
+			if (_myPawn && _targetEntity && _targetEntity->isAlive())
 			{
 				sf::Vector2f forward = _myPawn->GetMovementComponent()->getForwardVector();
 				forward.y = -forward.y;
@@ -110,27 +110,42 @@ bool BTD_IsTargetInFront::evaluate(Entity* e)
 				RaycastCallback* callback = new RaycastCallback();
 				callback->ignoredBodies.push_back(_myPawn->GetMovementComponent()->getFixture()->GetBody());
 
-				Physics::GetWorld()->RayCast(callback, Physics::sv2_to_bv2(myPosition), Physics::sv2_to_bv2(targetPosition));
+				Physics::GetWorld()->RayCast(callback, Physics::sv2_to_bv2(Physics::invert_height(myPosition)), Physics::sv2_to_bv2(Physics::invert_height(targetPosition)));
+
+				glLineWidth(.1f);
+				glColor4f(0, 255, 0, 255);
+				glBegin(GL_LINES);
+				glVertex2f(myPosition.x, myPosition.y);
+				glVertex2f(targetPosition.x, targetPosition.y);
 
 				// If we found a body, check whether it's our target
 				if (callback->foundBody)
 				{
+					glColor4f(255, 0, 0, 255);
+					glVertex2f(myPosition.x, myPosition.y);
+					glVertex2f(Physics::invert_height(Physics::bv2_to_sv2(callback->foundBody->GetPosition())).x, Physics::invert_height(Physics::bv2_to_sv2(callback->foundBody->GetPosition())).y);
+
 					Entity* target = static_cast<Entity*>(callback->foundBody->GetUserData());
-					if (target != _targetEntity)
+					if (target == _targetEntity)
 					{
+						glEnd();
 						return true;
 					}
 				}
+
+				glEnd();
 			}
 		}
 	}
 
+	//std::cout << "Target not in front" << std::endl;
 	// If we got this far, target is not in front of us
 	return false;
 }
 
 void BTT_FireAtEntity::run(Entity* e)
 {
+	//std::cout << "Running fire at entity" << std::endl;
 	BTTask::run(e);
 
 	// Setup the timer

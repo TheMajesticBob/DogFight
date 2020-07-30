@@ -69,6 +69,7 @@ namespace defs
 		std::string shape;
 
 		float initialSpeed;
+		float initialRotation = 0;
 		float linearDamping;
 		float lifetime;
 
@@ -88,6 +89,51 @@ namespace defs
 		int shoot;
 	};
 
+	struct EnemyGroup
+	{
+		EnemyGroup() {}
+
+		std::string shipName;
+		std::string aiType;
+		int count;
+	};
+
+	struct Spawner
+	{
+		Spawner() {}
+
+		sf::Vector2f position;
+		std::vector<EnemyGroup> enemyGroups;
+		float delayBetweenSpawns;
+		float currentDelay = 0;
+		int maxShipsPerSpawn;
+	};
+
+	struct Wave
+	{
+		Wave() {}
+		Wave(const Wave& w)
+		{
+			name = w.name;
+			spawners = w.spawners;
+			delay = w.delay;
+		}
+
+		std::string name;
+		std::vector<Spawner> spawners;
+		float delay;
+	}; 
+	
+	struct Level
+	{
+		Level() {}
+
+		float planetRadius;
+		float planetMass;
+
+		std::vector<Wave> waves;
+	};
+
 	struct GameShape
 	{
 		GameShape() {}
@@ -102,6 +148,7 @@ namespace defs
 		Type type;
 
 		float scale;
+		int sides;
 		float radius;
 		sf::Vector2f size;
 		sf::Vector2f origin;
@@ -165,7 +212,7 @@ namespace defs
 				break;
 
 			case Type::Circle:
-				returnShape.reset(new sf::CircleShape(radius * scale, 100));
+				returnShape.reset(new sf::CircleShape(radius * scale, sides));
 				break;
 
 			case Type::Polygon:
@@ -221,6 +268,10 @@ namespace defs
 		j.at("Projectile").at("Size").at("X").get_to(p.size.x);
 		j.at("Projectile").at("Size").at("Y").get_to(p.size.y);
 		j.at("Projectile").at("InitialSpeed").get_to(p.initialSpeed);
+		if (j.at("Projectile").find("InitialRotation") != j.at("Projectile").end())
+		{
+			j.at("Projectile").at("InitialRotation").get_to(p.initialRotation);
+		}
 		j.at("Projectile").at("Lifetime").get_to(p.lifetime);
 		j.at("Projectile").at("Shape").get_to(p.shape);
 		j.at("Physics").at("Mass").get_to(p.mass);
@@ -236,12 +287,41 @@ namespace defs
 		j.at("Weapons").at("BasicAttack").get_to(c.shoot);
 	}
 
+	inline void from_json(const json &j, EnemyGroup &eg)
+	{
+		j.at("ShipType").get_to(eg.shipName);
+		j.at("AIType").get_to(eg.aiType);
+		j.at("Amount").get_to(eg.count);
+	}
+
+	inline void from_json(const json &j, Spawner &s)
+	{
+		j.at("DelayBetweenSpawns").get_to(s.delayBetweenSpawns);
+		j.at("MaxShipsPerSpawn").get_to(s.maxShipsPerSpawn);
+		j.at("Ships").get_to(s.enemyGroups);
+	}
+
+	inline void from_json(const json &j, Wave &w)
+	{
+		j.at("Name").get_to(w.name);
+		j.at("Delay").get_to(w.delay);
+		j.at("Spawners").get_to(w.spawners);
+	}
+
+	inline void from_json(const json &j, Level &l)
+	{
+		j.at("Planet").at("Radius").get_to(l.planetRadius);
+		j.at("Planet").at("Mass").get_to(l.planetMass);
+		j.at("Waves").get_to(l.waves);
+	}
+	
 	inline void from_json(const json &j, GameShape &s)
 	{
 		if(j.find("Circle") != j.end())
 		{
 			s.type = GameShape::Circle;
-			j.at("Circle").get_to(s.radius);
+			j.at("Circle").at("Radius").get_to(s.radius);
+			j.at("Circle").at("Sides").get_to(s.sides);
 		}
 		else if (j.find("Rectangle") != j.end())
 		{

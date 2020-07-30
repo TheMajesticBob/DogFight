@@ -1,0 +1,116 @@
+{
+  "Planet": {
+    "Radius": 1000.0,
+    "Mass": 10000.0
+  },
+  "Waves": [
+    {
+      "Name": "Wave 1",
+      "Delay": 5.0,
+      "Spawners": [
+        {
+          "DelayBetweenSpawns": 5.0,
+          "MaxShipsPerSpawn": 1,
+          "Ships": [
+            {
+              "ShipType": "basic",
+              "AIType": "basic",
+              "Amount": 6
+            },
+            {
+              "ShipType": "bomber",
+              "AIType": "basic",
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "DelayBetweenSpawns": 4.0,
+          "MaxShipsPerSpawn": 1,
+          "Ships": [
+            {
+              "ShipType": "basic",
+              "AIType": "basic",
+              "Amount": 6
+            },
+            {
+              "ShipType": "bomber",
+              "AIType": "basic",
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "DelayBetweenSpawns": 7.0,
+          "MaxShipsPerSpawn": 2,
+          "Ships": [
+            {
+              "ShipType": "basic",
+              "AIType": "basic",
+              "Amount": 6
+            },
+            {
+              "ShipType": "bomber",
+              "AIType": "basic",
+              "Amount": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Wave 2",
+      "Delay": 250.0,
+      "Spawners": [
+        {
+          "DelayBetweenSpawns": 3.75,
+          "MaxShipsPerSpawn": 2,
+          "Ships": [
+            {
+              "ShipType": "basic",
+              "AIType": "basic",
+              "Amount": 6
+            },
+            {
+              "ShipType": "bomber",
+              "AIType": "basic",
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "DelayBetweenSpawns": 3.75,
+          "MaxShipsPerSpawn": 2,
+          "Ships": [
+            {
+              "ShipType": "basic",
+              "AIType": "basic",
+              "Amount": 6
+            },
+            {
+              "ShipType": "bomber",
+              "AIType": "basic",
+              "Amount": 2
+            }
+          ]
+        },
+        {
+          "DelayBetweenSpawns": 0.75,
+          "MaxShipsPerSpawn": 3,
+          "Ships": [
+            {
+              "ShipType": "basic",
+              "AIType": "basic",
+              "Amount": 6
+            },
+            {
+              "ShipType": "bomber",
+              "AIType": "basic",
+              "Amount": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

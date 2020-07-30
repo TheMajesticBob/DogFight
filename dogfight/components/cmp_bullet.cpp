@@ -10,11 +10,11 @@ using namespace Physics;
 
 void BulletComponent::fire(const Vector2f& position, Vector2f& direction)
 {
-	teleport(position);
-	setRotation(vector_to_angle(normalize(direction)));
 	direction = normalize(direction);
-	//impulse(sf::rotate(Vector2f(0, 15.f), -_parent->getRotation()));
+
+	_body->SetTransform(sv2_to_bv2(invert_height(position)), vector_to_angle(normalize(direction)));
 	_body->SetLinearVelocity(_initialSpeed*sv2_to_bv2(direction));
+	_body->SetAngularVelocity(_projectileDefinition->initialRotation);
 	setActive(true);
 }
 
@@ -31,6 +31,7 @@ void BulletComponent::redefine(std::shared_ptr<defs::Projectile> definition, b2F
 	_lifetime = _projectileDefinition->lifetime;
 	_initialSpeed = _projectileDefinition->initialSpeed;
 	_affectedByGravity = _projectileDefinition->gravityAffects;
+	_body->SetFixedRotation(true);
 	_body->SetLinearDamping(_projectileDefinition->linearDamping);
 	_body->SetGravityScale(_projectileDefinition->gravityAffects ? 1.0f : 0.0f);
 	setMass(_projectileDefinition->mass);
@@ -51,8 +52,8 @@ void BulletComponent::update(double dt)
 		parentProjectile->Destroy();
 	}
 
-	_parent->setPosition(invert_height(bv2_to_sv2(_body->GetPosition())));
-	//PhysicsComponent::update(dt);
+	// _parent->setPosition(invert_height(bv2_to_sv2(_body->GetPosition())));
+	PhysicsComponent::update(dt);
 }
 
 BulletComponent::BulletComponent(Entity* p, float lifetime, b2FixtureDef& fixtureDef)

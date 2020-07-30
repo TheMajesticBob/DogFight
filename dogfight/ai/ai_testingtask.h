@@ -1,6 +1,6 @@
 #pragma once
-#include "ai/task.h"
 #include "system_physics.h"
+#include "ai/task.h"
 #include "Box2D/Dynamics/b2WorldCallbacks.h"
 #include <string.h>
 
@@ -69,6 +69,22 @@ public:
 
 		return fraction;
 	}
+};
+
+// Simple decorator checking whether entity is alive
+class BTD_IsAlive : public BTDecorator
+{
+public:
+	BTD_IsAlive(BehaviourTree* const bt, std::string name)
+		: BTDecorator(bt, name) {}
+
+	virtual bool evaluate(Entity*) override
+	{
+		Entity* entity = getBehaviourTree()->getBlackboard()->getEntity(key);
+		return (entity != nullptr && entity->isAlive());
+	}
+
+	std::string key;
 };
 
 // Simple decorator only allowing a task to run every set interval

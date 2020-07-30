@@ -40,11 +40,12 @@
   ],
   "PlaneControl": {
     "MaxSpeed": 30.0,
-    "RotationSpeed": 8.0,
+    "RotationSpeed": 80.0,
     "Acceleration": 30.0,
     "AccelerationRotationMultiplier": 0.75
   },
   "Physics": {
+    "Mass": 200.0,
     "AngularDamping": 10.0,
     "LinearDamping": 0.1
   }

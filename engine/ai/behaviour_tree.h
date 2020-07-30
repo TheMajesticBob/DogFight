@@ -24,7 +24,7 @@ public:
 	inline int getInt(std::string key) { return intMap[key]; }
 
 	inline void setEntity(std::string key, Entity* value) { entityMap[key] = value; }
-	inline Entity* getEntity(std::string key) { return entityMap[key]; }
+	Entity* getEntity(std::string key) { return entityMap[key]; }
 
 private:
 	std::map<std::string, bool> boolMap;
@@ -168,6 +168,8 @@ public:
 		return (RootNode*)this;
 	}
 
+	BehaviourTree* const getBehaviourTree() { return _behaviourTree; }
+
 	// Returns parent node
 	BTNode* const getParentNode() { return _parent; }
 
@@ -241,7 +243,7 @@ public:
 	virtual void onChildFinished(bool success)
 	{
 		// Root node always restarts once the child is finished
-		run(_myEntity);
+		BTNode::run(_myEntity);
 	}
 
 private:

@@ -11,6 +11,7 @@ public:
   Scene() = default;
   virtual ~Scene();
   virtual void Load() = 0;
+
   virtual void LoadAsync();
   virtual void UnLoad();
   virtual void Update(const double& dt);

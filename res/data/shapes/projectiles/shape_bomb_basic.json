@@ -1,8 +1,10 @@
 {
-  "Scale": 15.0,
-  "Circle": 1.0,
-  "Origin": 
-  {
+  "Scale": 11.0,
+  "Circle": {
+    "Radius": 1.0,
+    "Sides": 6
+  },
+  "Origin": {
     "X": 1,
     "Y": 1
   }

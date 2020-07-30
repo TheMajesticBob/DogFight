@@ -19,8 +19,6 @@ class PlanePhysicsComponent : public PhysicsComponent
 		std::shared_ptr<defs::Ship> _planeDefinition;
 
 		b2Vec2 forceApplied;
-		sf::Text _debugText;
-		std::shared_ptr<sf::Font> _font;
 
 	public:
   		void update(double dt) override;
