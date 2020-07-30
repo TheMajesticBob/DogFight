@@ -58,11 +58,13 @@ public:
   static Scene* const GetScene() { return _activeScene; }
   static sf::RenderWindow& GetWindow();
   static sf::Vector2u getWindowSize();
+  static void setFramerateCap(double newCap) { _framerateCap = newCap; }
   static void setVsync(bool b);
 
 private:
   static Scene* _activeScene;
   static std::string _gameName;
+  static double _framerateCap;
   static void Update(double dt);
   static void Render(sf::RenderWindow& window);
 };
