@@ -1,0 +1,11 @@
+{
+  "Scale": 1.0,
+  "Origin": {
+    "X": 1,
+    "Y": 1
+  },
+  "Circle": {
+    "Radius": 1.0,
+    "Sides": 7
+  }
+}

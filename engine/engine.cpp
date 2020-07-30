@@ -3,6 +3,7 @@
 #include "system_physics.h"
 #include "system_renderer.h"
 #include "system_resources.h"
+#include "input_handler.h"
 #include "system_ui.h"
 #include <SFML/Graphics.hpp>
 #include <future>
@@ -127,6 +128,15 @@ void Engine::Start(unsigned int width, unsigned int height,
 			{
 				Physics::setDebugDraw(!Physics::getDebugDraw());
 			}
+
+			if (event.type == Event::KeyPressed)
+			{
+				InputHandler::KeyboardHandler(event.key.code, 0, Event::KeyPressed, 0);
+			}
+			if (event.type == Event::KeyReleased)
+			{
+				InputHandler::KeyboardHandler(event.key.code, 0, Event::KeyReleased, 0);
+			}
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Escape)) 
 		{
@@ -134,10 +144,11 @@ void Engine::Start(unsigned int width, unsigned int height,
 		}
 
 		window.clear();
-
+		
 		acc += frameTime;
 		while (acc >= _framerateCap)
 		{
+			InputHandler::Update(_framerateCap);
 			Update(_framerateCap);
 
 			acc -= _framerateCap;

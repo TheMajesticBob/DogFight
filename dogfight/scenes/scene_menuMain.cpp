@@ -70,6 +70,5 @@ void MainMenu::Update(const double& dt)
 	{
 		Engine::ChangeScene(&testing, true);
 	}
-
 	Scene::Update(dt);
 }
