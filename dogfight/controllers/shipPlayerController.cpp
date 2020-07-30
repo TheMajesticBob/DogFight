@@ -11,7 +11,14 @@ ShipPlayerController::ShipPlayerController(Scene* const s, std::string controlsc
 	_controls = Resources::get<defs::Controls>(controlscheme);
 	_ship = ship;
 
-	InputHandler::BindKey(_controls->shoot, Event::KeyPressed, FKeyDelegate::from_function<Ship, &Ship::StartFiring>(_ship));
+	// Bind keyboard events
+	InputHandler::BindKey(	_controls->shoot,				// Keycode to bind to
+							Event::KeyPressed,				// KeyPressed or KeyReleased, we don't handle any other kinds
+							FKeyDelegate::from_function<	// Create delegate to a member method
+							Ship,	 						// in class Ship
+							&Ship::StartFiring				// take a pointer to Ship::StartFiring method
+							>(_ship));						// and pass in a pointer to the instance (our controlled ship in this case)
+
 	InputHandler::BindKey(_controls->shoot, Event::KeyReleased, FKeyDelegate::from_function<Ship, &Ship::StopFiring>(_ship));
 	InputHandler::BindAxis(_controls->accelerate, 1.0f, FAxisDelegate::from_function<Ship, &Ship::Accelerate>(_ship));
 	InputHandler::BindAxis(_controls->turnLeft, -1.0f, FAxisDelegate::from_function<Ship, &Ship::Turn>(_ship));
