@@ -3,10 +3,10 @@
     "Hull": 100.0,
     "Shield": 50.0
   },
-  "Shape": "ship",
+  "Shape": "ships/player",
   "Weapons": [
     {
-      "Name": "basic",
+      "Name": "laser_basic",
       "Position": {
         "X": -25,
         "Y": 0
@@ -15,13 +15,13 @@
     }
   ],
   "PlaneControl": {
-    "MaxSpeed": 30.0,
+    "MaxSpeed": 10.0,
     "RotationSpeed": 3.0,
-    "Acceleration": 40.0,
+    "Acceleration": 30.0,
     "AccelerationRotationMultiplier": 0.45
   },
   "Physics": {
     "AngularDamping": 10.0,
-    "LinearDamping": 0.1
+    "LinearDamping": 0.3
   }
 }

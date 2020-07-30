@@ -6,7 +6,6 @@ Projectile::Projectile(Scene* const s)
 	: Entity(s)
 {
 	bulletComponent = addComponent<BulletComponent>(2.0f);
-	bulletComponent->teleport(sf::Vector2f(-100000000000000.0f, -100000000000000.0f));
 	bulletComponent->setActive(false);
 
 	sf::Vector2f _size(1,1);
@@ -24,7 +23,6 @@ void Projectile::Destroy()
 {
 	Poolable::Destroy();
 
-	bulletComponent->teleport(sf::Vector2f(-100000000000000.0f, -100000000000000.0f));
 	bulletComponent->setActive(false);
 
 	setAlive(false);
@@ -45,34 +43,31 @@ void Projectile::render()
 
 void Projectile::fire(std::string definition, Entity* const owner, sf::Vector2f position, sf::Vector2f direction)
 {
+	// Get correct projectile and shape definitions, setup owner
 	_projectileDefiniton = Resources::get<defs::Projectile>(definition);
 	std::shared_ptr<defs::GameShape> _projectileShape = Resources::get<defs::GameShape>(_projectileDefiniton->shape);
 	_owner = owner;
 	
-	b2Vec2 collisionSize = Physics::sv2_to_bv2(_projectileDefiniton->size);
-
-	b2PolygonShape shape;
-	shape.SetAsBox(collisionSize.x, collisionSize.y);
-
+	// Setup physics fixture
 	b2FixtureDef fixtureDef;
 	fixtureDef.filter.categoryBits = Physics::COLLISION_BULLET;
 	fixtureDef.filter.maskBits = Physics::MASK_PROJECTILE;
 	fixtureDef.isSensor = true;
-	fixtureDef.shape = &shape;
+	fixtureDef.shape = _projectileShape->getPhysicsShape();
 	
+	// Redefine bullet component with new data
 	bulletComponent->redefine(_projectileDefiniton, fixtureDef);
 
-
+	// Set our new shape
 	shapeComponent->setShape<sf::Shape>(_projectileShape->getShape());
 	shapeComponent->getShape().setFillColor(sf::Color::Yellow);
 	shapeComponent->setLayer(1);
 
+	// Set rotation
 	setRotation(_owner->getRotation());
 
-	//bulletComponent->teleport(position);
+	// Fire
 	bulletComponent->fire(position, direction);
-	//bulletComponent->setActive(true);
-
 	setAlive(true);
 	setVisible(true);
 }

@@ -15,6 +15,7 @@ protected:
   bool _desiredActive;
 
 public:
+	PhysicsComponent(Entity* p, bool dyn);
 	PhysicsComponent(Entity* p, bool dyn, b2Shape& Shape, b2FixtureDef& FixtureDef = b2FixtureDef());
 	PhysicsComponent(Entity* p, bool dyn, const sf::Vector2f& size, b2FixtureDef& FixtureDef = b2FixtureDef());
 

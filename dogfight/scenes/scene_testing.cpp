@@ -20,24 +20,29 @@ void TestingScene::Load()
 {
 	Pool<Projectile>::Initialize(0, true, [&] { return makeEntity<Projectile>(); });
 
-	float planetRadius = 100.0f;
-	float planetMass = 10000.0f;
+	float planetRadius = 1000.0f;
+	float planetMass = 5000.0f;
 
-	// Create planet
-	auto planet = makeEntity<Planet>(planetRadius, planetMass);
-
-
-	auto player = makeEntity<Player>("player");
-	player->GetMovementComponent()->teleport(Vector2f(planetRadius, planetRadius + 100.0f)); // Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2));
-
-	auto controller = makeEntity<ShipPlayerController>("Player1controls",player.get());	
-
-	//auto enemy = makeEntity<Enemy>("player");
-	//enemy->GetMovementComponent()->teleport((Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2) + Vector2f(50.0f,0.0f)));
-
+	// Create a camera
 	_camera = makeEntity<FollowCamera>();
-	_camera->AddFollow(player, 3);
-	_camera->AddFollow(planet, 0.2f);
+
+	// Create the planet
+	_planet = makeEntity<Planet>(planetRadius, planetMass);
+	_camera->AddFollow(_planet, 0.2f);
+
+	_player = makeEntity<Player>("player");
+	_player->GetMovementComponent()->teleport(Vector2f(planetRadius, planetRadius + 100.0f));
+	_camera->AddFollow(_player, 10);
+
+	auto controller = makeEntity<ShipPlayerController>("Player1controls",_player.get());	
+
+	auto enemy = makeEntity<Enemy>("basic");
+	enemy->GetMovementComponent()->teleport(_player->getPosition() + Vector2f(50.0f,0.0f));
+	_camera->AddFollow(enemy, 1);
+
+	enemy = makeEntity<Enemy>("bomber");
+	enemy->GetMovementComponent()->teleport(_player->getPosition() + Vector2f(150.0f, 0.0f));
+	_camera->AddFollow(enemy, 1);
 
 	Vector2f boxSizes[] = 
 	{

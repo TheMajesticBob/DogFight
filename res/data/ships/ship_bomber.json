@@ -1,0 +1,51 @@
+{
+  "Health": {
+    "Hull": 100.0,
+    "Shield": 0.0
+  },
+  "Shape": "ships/bomber_enemy",
+  "Weapons": [
+    {
+      "Name": "bomb_basic",
+      "Position": {
+        "X": -25,
+        "Y": 0
+      },
+      "Layer": -1
+    },
+    {
+      "Name": "bomb_basic",
+      "Position": {
+        "X": 25,
+        "Y": 0
+      },
+      "Layer": -1
+    },
+    {
+      "Name": "bomb_basic",
+      "Position": {
+        "X": 0,
+        "Y": 25
+      },
+      "Layer": -1
+    },
+    {
+      "Name": "bomb_basic",
+      "Position": {
+        "X": 0,
+        "Y": -25
+      },
+      "Layer": -1
+    }
+  ],
+  "PlaneControl": {
+    "MaxSpeed": 30.0,
+    "RotationSpeed": 8.0,
+    "Acceleration": 30.0,
+    "AccelerationRotationMultiplier": 0.75
+  },
+  "Physics": {
+    "AngularDamping": 10.0,
+    "LinearDamping": 0.1
+  }
+}

@@ -3,8 +3,16 @@
     "Hull": 100.0,
     "Shield": 0.0
   },
+  "Shape": "ships/basic_enemy",
   "Weapons": [
-    "basic"
+    {
+      "Name": "laser_basic",
+      "Position": {
+        "X": -25,
+        "Y": 0
+      },
+      "Layer": -1
+    }
   ],
   "PlaneControl": {
     "MaxSpeed": 30.0,

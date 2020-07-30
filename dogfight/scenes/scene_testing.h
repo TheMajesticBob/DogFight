@@ -14,4 +14,6 @@ public:
 
 private:
   std::shared_ptr<class FollowCamera> _camera;
+  std::shared_ptr<class Player> _player;
+  std::shared_ptr<class Planet> _planet;
 };

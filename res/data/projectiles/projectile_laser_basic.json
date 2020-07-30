@@ -1,11 +1,11 @@
 {
   "Projectile": {
-    "InitialSpeed": 30.0,
-    "Lifetime": 10.0,
-    "Shape": "bomb",
+    "InitialSpeed": 1500.0,
+    "Lifetime": 3.0,
+    "Shape": "projectiles/laser_basic",
     "Size": {
       "X": 15.0,
-      "Y": 15.0
+      "Y": 5.0
     }
   },
   "Physics": {

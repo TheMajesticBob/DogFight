@@ -45,7 +45,7 @@ class Ship : public Pawn
 		void Fire();
 
 	protected:
-		std::shared_ptr<defs::Plane> _shipDefinition;
+		std::shared_ptr<defs::Ship> _shipDefinition;
 
 		std::shared_ptr<class ThrusterParticleSystem> thrusterPS;
 		std::shared_ptr<PlanePhysicsComponent> movementComponent;

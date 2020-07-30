@@ -95,6 +95,11 @@ PhysicsComponent::PhysicsComponent(Entity* p, bool dyn,
   */
 }
 
+PhysicsComponent::PhysicsComponent(Entity* p, bool dyn) : Component(p), _dynamic(dyn)
+{
+
+}
+
 void PhysicsComponent::setFriction(float r) { _fixture->SetFriction(r); }
 
 void PhysicsComponent::setMass(float m) { _fixture->SetDensity(m); }

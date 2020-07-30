@@ -12,11 +12,8 @@ using namespace sf;
 Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 {
 	// Get the ship definition
-	_shipDefinition = Resources::get<defs::Plane>(shipDefinition);
+	_shipDefinition = Resources::get<defs::Ship>(shipDefinition);
 	std::shared_ptr<defs::GameShape> _shipShape = Resources::get<defs::GameShape>(_shipDefinition->shape);
-
-	// Size?
-	Vector2f size = { 30.0f, 30.0f };
 
 	// Setup collision filters for the entity
 	b2FixtureDef FixtureDef;
@@ -24,7 +21,7 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 	FixtureDef.filter.maskBits = Physics::MASK_DYNAMIC;
 
 	// Setup ship movement, health and weapon components based on ship definition
-	movementComponent = addComponent<PlanePhysicsComponent>(size, _shipDefinition, FixtureDef);
+	movementComponent = addComponent<PlanePhysicsComponent>(_shipDefinition, FixtureDef);
 	healthComponent = addComponent<HealthComponent>(_shipDefinition->health);
 	for (auto& w : _shipDefinition->weapons)
 	{
@@ -38,48 +35,18 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 	// Thruster Particle System
 	thrusterPS = addComponent<ThrusterParticleSystem>();
 
-	// Thruster shape lol its ugly af. TODO: Replace this shiiiit
-	thrusterComponent = addComponent<ShapeComponent>();
-	thrusterComponent->setShape<RectangleShape>(Vector2f(size.x, size.y / 2.0f));
-	thrusterComponent->getShape().setFillColor(Color::Yellow);
-	thrusterComponent->getShape().setOrigin(Vector2f(size.x / 2.0f, size.y / 4.0f));
-	thrusterComponent->setVisibility(false);
-	thrusterComponent->setLayer(-1);
-
+	// Setup ship shape
 	shapeComponent = addComponent<ShapeComponent>();
 	shapeComponent->setShape<sf::Shape>(_shipShape->getShape());
 	sf::ConvexShape* shape = (sf::ConvexShape*)&shapeComponent->getShape();
-	/*
-	shape->setPoint(0, { 0.0f, -size.x / 2.0f });
-	shape->setPoint(1, { -size.x * sqrt(3.0f) / 2.0f, 0.0f });
-	shape->setPoint(2, { 0.0f, size.x / 2.0f });
-	shape->setPoint(3, { -size.x * sqrt(3.0f) / 12.0f, 0.0f });
-	*/
 	shape->setFillColor(sf::Color::Black);
 	shape->setOutlineColor(sf::Color::White);
 	shape->setOutlineThickness(2.0f);
-
-	sf::Vector2f center =  { -size.x * sqrt(3.0f) / 6.0f, 0.0f };
-	// shape->setOrigin(center);
-
-	// Currently this is how we draw the ship
-	movementComponent->setDebugDraw(false);
-
-	// The following does not match the actual triangle shape of movement component, therefore I left the drawing to it
-	// We should definitely look into that when we get assets
-// 	float radius = size.x / 2.0f;
-// 
-// 	shapeComponent = addComponent<ShapeComponent>();
-// 	shapeComponent->setShape<CircleShape>(radius, 30);
-// 	shapeComponent->getShape().setFillColor(Color::Blue);
-// 	shapeComponent->getShape().setOrigin(Vector2f(0.0f, 0.0f));
 }
 
 void Ship::update(double dt)
 {
-	// Update thruster visibility based on whether the ship is accelerating
-	// TODO: Replace with particle system
-
+	// Setup correct particle system offset and fire if we're accelerating
 	thrusterPS->setOffset(getPosition() - movementComponent->getForwardVector());
 
 	if (movementComponent->isAccelerating())

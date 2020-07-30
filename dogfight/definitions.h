@@ -1,6 +1,10 @@
 #pragma once
 #include "nlohmann/json.hpp"
+#include <Box2d/Collision/Shapes/b2Shape.h>
+#include <Box2d/Collision/Shapes/b2PolygonShape.h>
+#include <Box2d/Collision/Shapes/b2CircleShape.h>
 #include <SFML/Graphics.hpp>
+#include <system_physics.h>
 
 using nlohmann::json;
 
@@ -23,9 +27,9 @@ namespace defs
 		sf::Vector2f relativePosition;
 	};
 
-	struct Plane
+	struct Ship
 	{
-		Plane() {}
+		Ship() {}
 
 		float health;
 		float shield;
@@ -104,6 +108,52 @@ namespace defs
 
 		std::vector<sf::Vector2f> points;
 
+		b2Shape* getPhysicsShape()
+		{
+			b2Shape* returnShape;
+
+			switch (type)
+			{
+			case Type::Rectangle:
+			{
+				returnShape = new b2PolygonShape();
+				b2PolygonShape* polygonShape = (b2PolygonShape*)returnShape;
+				polygonShape->SetAsBox(size.x * scale * Physics::physics_scale_inv, size.y * scale * Physics::physics_scale_inv, b2Vec2_zero, 0);
+
+			}
+				break;
+
+			case Type::Circle:
+			{
+				returnShape = new b2CircleShape();
+				b2CircleShape* circleShape = (b2CircleShape*)returnShape;
+				circleShape->m_radius = radius * scale * Physics::physics_scale_inv;
+			}
+				break;
+
+			case Type::Polygon:
+			default:
+				{
+					returnShape = new b2PolygonShape();
+					b2PolygonShape* polygonShape = (b2PolygonShape*)returnShape;
+
+					// Set triangle vertices
+					std::vector<b2Vec2> vertices;
+					for (int i = 0; i < points.size(); ++i)
+					{
+						// We have to scale the points properly by using sv2_to_bv2
+						b2Vec2 point = scale * Physics::sv2_to_bv2(points[i] - origin);
+						vertices.push_back(b2Vec2(point.x, point.y));
+					}
+
+					polygonShape->Set(&vertices[0], points.size());
+				}
+				break;
+			}
+
+			return returnShape;
+		}
+
 		std::shared_ptr<sf::Shape> getShape()
 		{
 			std::shared_ptr<sf::Shape> returnShape;
@@ -111,7 +161,7 @@ namespace defs
 			switch (type)
 			{
 			case Type::Rectangle:
-				returnShape.reset(new sf::RectangleShape(size * scale));
+				returnShape.reset(new sf::RectangleShape(size * scale * 2.0f));
 				break;
 
 			case Type::Circle:
@@ -141,7 +191,7 @@ namespace defs
 		j.at("Position").get_to(ws.relativePosition);
 	}
 
-	inline void from_json(const json &j, Plane &p)
+	inline void from_json(const json &j, Ship &p)
 	{
 		j.at("Health").at("Hull").get_to(p.health);
 		j.at("Health").at("Shield").get_to(p.shield);

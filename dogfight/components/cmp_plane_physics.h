@@ -16,14 +16,11 @@ class PlanePhysicsComponent : public PhysicsComponent
 		float _rotationSpeed;
 		float _accelerationRotationMultiplier;
 
-		std::shared_ptr<defs::Plane> _planeDefinition;
+		std::shared_ptr<defs::Ship> _planeDefinition;
 
 		b2Vec2 forceApplied;
 		sf::Text _debugText;
 		std::shared_ptr<sf::Font> _font;
-
-		bool _debugDraw;
-		sf::ConvexShape _debugShape;
 
 	public:
   		void update(double dt) override;
@@ -35,13 +32,10 @@ class PlanePhysicsComponent : public PhysicsComponent
 		// Turns the plane left or right based on the value <-1; 1>
 		void turn(float value);
 
-		void setDebugDraw(bool draw) { _debugDraw = draw; }
-		bool getDebugDraw() { return _debugDraw; }
-
 		bool isAccelerating() { return _isAccelerating; }
 
 		sf::Vector2f getForwardVector();
 
 		PlanePhysicsComponent() = delete;
-  		explicit PlanePhysicsComponent(Entity* p, const sf::Vector2f& size, std::shared_ptr<defs::Plane> definition, b2FixtureDef& fixtureDef = b2FixtureDef());
+  		explicit PlanePhysicsComponent(Entity* p, std::shared_ptr<defs::Ship> definition, b2FixtureDef& fixtureDef = b2FixtureDef());
 };

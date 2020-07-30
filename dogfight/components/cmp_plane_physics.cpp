@@ -2,6 +2,7 @@
 #include "system_physics.h"
 #include "system_renderer.h"
 #include "system_resources.h"
+#include "../engine/game_resources.h"
 #include "system_ui.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -42,20 +43,12 @@ void PlanePhysicsComponent::update(double dt)
 	velocity *= clampedSpeed;
 	_body->SetLinearVelocity(velocity);
 
-	_debugShape.setRotation(angle);
-	_debugShape.setPosition(_parent->getPosition());
-
 	PhysicsComponent::update(dt);
 }
 
 void PlanePhysicsComponent::render()
 {
 	UI::queue(&_debugText);
-
-	if(_debugDraw)
-	{
-		Renderer::queue(&_debugShape);
-	}
 }
 
 void PlanePhysicsComponent::accelerate(float value)
@@ -97,59 +90,38 @@ sf::Vector2f PlanePhysicsComponent::getForwardVector()
 	return normalize(sf::Vector2f(-cos(deg2rad(angle)), -sin(deg2rad(angle))));
 }
 
-PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
-											 const Vector2f& size, std::shared_ptr<defs::Plane> definition, b2FixtureDef& fixtureDef)
-	: PhysicsComponent(p, true, size, fixtureDef)
+PlanePhysicsComponent::PlanePhysicsComponent(Entity* p, std::shared_ptr<defs::Ship> definition, b2FixtureDef& fixtureDef)
+	: PhysicsComponent(p, true)
 {
 	_planeDefinition = definition;
+	std::shared_ptr<defs::GameShape> _shapeDefinition = Resources::get<defs::GameShape>(_planeDefinition->shape);
 
-	_size = sv2_to_bv2(size, true);
+	b2FixtureDef FixtureDef;
+	// Fixture properties
+	FixtureDef.density = _dynamic ? 10.f : 0.f;
+	FixtureDef.friction = _dynamic ? 0.1f : 0.8f;
+	FixtureDef.restitution = .2;
+	FixtureDef.shape = _shapeDefinition->getPhysicsShape();
 
+	b2BodyDef BodyDef;
+	// Is Dynamic(moving), or static(Stationary)
+	BodyDef.type = _dynamic ? b2_dynamicBody : b2_staticBody;
+	BodyDef.position = sv2_to_bv2(invert_height(p->getPosition()));
+
+	// Create the body
+	_body = Physics::GetWorld()->CreateBody(&BodyDef);
+	_body->SetActive(true);
+	_body->SetUserData(p);
 	_body->SetSleepingAllowed(false);
 	_body->SetFixedRotation(false);
 	_body->SetBullet(true);
 
-	b2Fixture* fixtures = _body->GetFixtureList();
-	_body->DestroyFixture(fixtures);
-
-	// Define triangle points
-	sf::Vector2f points[] = {
-		{0.0f, -0.5f * size.x},
-		{0.0f, 0.5f * size.x},
-		{-sqrt(3.0f) / 2.0f * size.y, 0.0f}
-	};
-
-	sf::Vector2f center = { -size.x * sqrt(3.0f) / 6.0f, 0.0f };
-
-	// Set debug shape points
-	_debugShape.setPointCount(3);
-	for( int i = 0; i < 3; ++i )
-	{
-		_debugShape.setPoint(i, points[i]);
-	}
-
-    // Create the fixture shape
-    b2PolygonShape Shape;
-	// Set triangle vertices
-	b2Vec2 vertices[3];
-	for(int i = 0; i < 3; ++i )
-	{
-		// We have to scale the points properly by using sv2_to_bv2
-		b2Vec2 point = sv2_to_bv2(points[i] - center);
-		vertices[i].Set(point.x, point.y);
-	}
-	Shape.Set(vertices, 3);
-
-    b2FixtureDef FixtureDef;
-    // Fixture properties
-    FixtureDef.density = _dynamic ? 10.f : 0.f;
-    FixtureDef.friction = _dynamic ? 0.1f : 0.8f;
-    FixtureDef.restitution = .2;
-    FixtureDef.shape = &Shape;
+	_desiredActive = true;
 
     // Add to body
     _fixture = _body->CreateFixture(&FixtureDef);
 
+	// Setup ship properties
 	_maxSpeed = _planeDefinition->maxSpeed;
 	_rotationSpeed = _planeDefinition->rotationSpeed;
 	_body->SetAngularDamping(_planeDefinition->angularDamping);
@@ -159,6 +131,4 @@ PlanePhysicsComponent::PlanePhysicsComponent(Entity* p,
   	_font = Resources::get<sf::Font>("RobotoMono-Regular.ttf");
   	_debugText.setFont(*_font);
 	_debugText.setPosition({20.0f, 20.0f});
-
-	_body->SetTransform(_body->GetPosition(), 90.0f / 180.0f * M_PI);
 }

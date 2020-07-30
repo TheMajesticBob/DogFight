@@ -7,7 +7,7 @@
 namespace Resources
 {
 	template <> // explicit specialization for T = Plane
-	std::shared_ptr<defs::Plane> load(const std::string& name);
+	std::shared_ptr<defs::Ship> load(const std::string& name);
 
 	template <> // explicit specialization for T = Weapon
 	std::shared_ptr<defs::Weapon> load(const std::string& name);

@@ -36,11 +36,15 @@ void WeaponComponent::fire(sf::Vector2f directionVector)
 	{
 		for (int i = 0; i < _weaponDefinition->projectilesPerRound; ++i)
 		{
-			auto projectile = Pool<Projectile>::Get(); // _parent->scene->makeEntity<Projectile>();
+			// Get available projectile from the pool
+			auto projectile = Pool<Projectile>::Get();
+
+			// Make sure we got one
 			if (projectile)
 			{
+				// Setup damage and fire using component's projectile definition
 				projectile->setDamage(_weaponDefinition->damage);
-				projectile->fire(_weaponDefinition->projectile, _parent, _parent->getPosition() + rotate(_relativePosition, -_parent->getRotation()), directionVector);
+				projectile->fire(_weaponDefinition->projectile, _parent, _shape->getPosition(), directionVector);
 			}
  		}
 		
