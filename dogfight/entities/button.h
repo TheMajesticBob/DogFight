@@ -5,6 +5,9 @@
 #include "GL/glew.h"
 #include <SFML/Graphics.hpp>
 #include "SFML/OpenGL.hpp"
+#include "delegates.h"
+
+DEFINE_DELEGATE(FButtonClicked);
 
 class Button : public Entity
 {
@@ -19,6 +22,8 @@ public:
 	bool MouseClick();
 
 	void setText(std::string text);
+
+	FButtonClicked onButtonClicked;
 
 protected:	
 

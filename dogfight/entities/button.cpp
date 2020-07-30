@@ -31,6 +31,8 @@ void Button::update(double dt)
 		shapeComponent->getShape().setFillColor(Color::Black);
 	}
 	if (MouseClick()) {
+		onButtonClicked.invokeSafe();
+		return;
 		std::cout << "Success" << std::endl;
 	}
 

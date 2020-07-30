@@ -7,6 +7,9 @@ protected:
     std::shared_ptr<class Button> _play;
     std::shared_ptr<class Button> _settings;
 
+	void MoveToGame();
+	void MoveToSettings();
+
 public:
     MainMenu() = default;
     ~MainMenu() override = default;

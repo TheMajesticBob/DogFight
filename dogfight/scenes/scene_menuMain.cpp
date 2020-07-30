@@ -10,6 +10,16 @@
 using namespace sf;
 using namespace std;
 
+void MainMenu::MoveToGame()
+{
+	Engine::ChangeScene(&testing, true);
+}
+
+void MainMenu::MoveToSettings()
+{
+	Engine::ChangeScene((Scene*)&settings);
+}
+
 void MainMenu::Load()
 {
 	//create camera view
@@ -26,10 +36,12 @@ void MainMenu::Load()
 	Vector2f buttonSize(400.0f, 75.0f);
 
 	_play = makeEntity<Button>(buttonSize);
+	_play->onButtonClicked = FButtonClicked::from_function<MainMenu, &MainMenu::MoveToGame>(this);
 	_play->setPosition(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y/2));
 	_play->setText("Play");
 
 	_settings = makeEntity<Button>(buttonSize);
+	_settings->onButtonClicked = FButtonClicked::from_function<MainMenu, &MainMenu::MoveToSettings>(this);
 	_settings->setPosition(Vector2f(Engine::getWindowSize().x / 2, (Engine::getWindowSize().y / 2) + 100));
 	_settings->setText("Settings");
 	
@@ -57,16 +69,6 @@ void MainMenu::Update(const double& dt)
 	if (Keyboard::isKeyPressed(Keyboard::Num1))
 	{
 		Engine::ChangeScene(&testing, true);
-	}
-
-	if (_play &&_play->MouseClick())
-	{
-		Engine::ChangeScene(&testing, true);
-	}
-	
-	if (_settings && _settings->MouseClick()) 
-	{
-		Engine::ChangeScene((Scene*)&settings);
 	}
 
 	Scene::Update(dt);
