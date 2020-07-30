@@ -60,7 +60,7 @@ void TestingScene::Load()
 void TestingScene::Update(const double& dt)
 {
 	if (Keyboard::isKeyPressed(Keyboard::BackSpace)) {
-		Engine::ChangeScene((Scene*)&menu);
+		Engine::ChangeScene(&menu, true);
 	}
 
 	if (_currentLevel != nullptr && _waveRunning)
@@ -73,8 +73,8 @@ void TestingScene::Update(const double& dt)
 
 		for (auto& s : currentWave.spawners)
 		{
-			s.currentDelay += dt;
-			if (s.currentDelay >= s.delayBetweenSpawns)
+			s.currentDelay -= dt;
+			if (s.currentDelay <= 0.0f)
 			{
 				{
 					// Spawn enemies
@@ -112,7 +112,7 @@ void TestingScene::Update(const double& dt)
 					}
 				}
 
-				s.currentDelay -= s.delayBetweenSpawns;
+				s.currentDelay += s.delayBetweenSpawns;
 			}
 		}
 	}
@@ -125,8 +125,10 @@ void TestingScene::UnLoad()
 	cout << "Eng: Game Scene Unload" << endl;
 	if (_camera != nullptr) {
 		_camera->setForDelete();
-	}	
-	
+	}
+
+	ents.list.clear();
+
 	Scene::UnLoad();
 }
 
@@ -136,19 +138,24 @@ void TestingScene::StartNextWave()
 	{
 		if (_currentLevel->waves.size() > _waveId++)
 		{
+			// Get current wave data
 			currentWave = _currentLevel->waves[_waveId - 1];
 
+			// Setup spawners
 			for (auto& s : currentWave.spawners)
 			{
 				float angle = std::rand() % 360;
 				s.position = sf::Vector2f(cos(deg2rad(angle)), sin(deg2rad(angle))) * _currentLevel->planetRadius*1.5f;
+				s.currentDelay = s.initialDelay;
 			}
 
+			// Setup time for next wave
 			if (_currentLevel->waves.size() > _waveId)
 			{
 				_timeToNextWave = _currentLevel->waves[_waveId].delay;
 			}
 
+			// Wave is currently running
 			_waveRunning = true;
 		}
 		else

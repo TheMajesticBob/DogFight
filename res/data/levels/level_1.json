@@ -9,13 +9,14 @@
       "Delay": 5.0,
       "Spawners": [
         {
-          "DelayBetweenSpawns": 5.0,
+          "InitialDelay": 0.2,
+          "DelayBetweenSpawns": 10.0,
           "MaxShipsPerSpawn": 1,
           "Ships": [
             {
               "ShipType": "basic",
               "AIType": "basic",
-              "Amount": 6
+              "Amount": 4
             },
             {
               "ShipType": "bomber",
@@ -25,34 +26,36 @@
           ]
         },
         {
-          "DelayBetweenSpawns": 4.0,
+          "InitialDelay": 2.2,
+          "DelayBetweenSpawns": 8.0,
           "MaxShipsPerSpawn": 1,
           "Ships": [
             {
               "ShipType": "basic",
               "AIType": "basic",
-              "Amount": 6
+              "Amount": 3
             },
             {
               "ShipType": "bomber",
               "AIType": "basic",
-              "Amount": 2
+              "Amount": 1
             }
           ]
         },
         {
-          "DelayBetweenSpawns": 7.0,
+          "InitialDelay": 5.0,
+          "DelayBetweenSpawns": 15.0,
           "MaxShipsPerSpawn": 2,
           "Ships": [
             {
               "ShipType": "basic",
               "AIType": "basic",
-              "Amount": 6
+              "Amount": 4
             },
             {
               "ShipType": "bomber",
               "AIType": "basic",
-              "Amount": 2
+              "Amount": 4
             }
           ]
         }

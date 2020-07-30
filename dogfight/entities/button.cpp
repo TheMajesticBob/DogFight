@@ -6,17 +6,15 @@ using namespace sf;
 
 Button::Button(Scene* const s, Vector2f size) : Entity(s)
 {
+	textComponent = addComponent<TextComponent>();
+	textComponent->setDrawOnUI(true);
+	textComponent->setLayer(1);
 	shapeComponent = addComponent<ShapeComponent>();
 	shapeComponent->setShape<RectangleShape>(Vector2f(size.x, size.y));
 	shapeComponent->getShape().setOutlineColor(Color::Magenta);
 	shapeComponent->getShape().setOutlineThickness(2);
-	shapeComponent->getShape().setOrigin(0,0);
-
-	//event = Mouse::Left;
-
-	
-
-	//make outline bigger and fill colour black
+	shapeComponent->getShape().setOrigin(size.x/2,size.y/2);
+	shapeComponent->setDrawOnUI(true);	
 }
 
 void Button::update(double dt)
@@ -32,6 +30,10 @@ void Button::update(double dt)
 	else {
 		shapeComponent->getShape().setFillColor(Color::Black);
 	}
+	if (MouseClick()) {
+		std::cout << "Success" << std::endl;
+	}
+
 	Entity::update(dt);
 }
 
@@ -40,25 +42,48 @@ void Button::render()
 	Entity::render();
 }
 
+
 bool Button::isMouseOver()
-{	
-	auto bounds = shapeComponent->getShape().getGlobalBounds();//.contains(mp);
-	if (bounds.contains(mp)) {
-		return true;
+{
+	if (!shapeComponent->is_fordeletion())
+	{
+		auto bounds = shapeComponent->getShape().getGlobalBounds();
+		if (bounds.contains(mp))
+		{
+			return true;
+		}
 	}
 	return false;
-		//return bounds.contains(mp);
 }
 
 bool Button::MouseClick()
 {
-	
-	//if (isMouseOver() && Event::MouseButtonReleased /*&& event == Mouse::Left*/) {
-	//	return true;
+	Event _event;
+	sf::RenderWindow& window = Engine::GetWindow();
+
+	//while (window.pollEvent(_event)) {		
+		if (isMouseOver()) {
+			if (Mouse::isButtonPressed(Mouse::Button::Left)/*_event.type == Event::MouseButtonReleased && _event.mouseButton.button == Mouse::Left*/) {
+				pressedState = true;				
+			}
+			else if (pressedState == true){
+				pressedState = false;
+				return true;
+			}				
+		}
+		else {
+			if (!Mouse::isButtonPressed(Mouse::Button::Left)/*_event.type == Event::MouseButtonReleased && _event.mouseButton.button == Mouse::Left*/) {
+				pressedState = false;
+			}
+		}
+
+		return false;
 	//}
-	//else {
-	//	return false;
-	//}
-	return false;
-	
+		
+}
+
+void Button::setText(std::string text)
+{	
+	textComponent->SetText(text);
+	textComponent->getText()->setOrigin(textComponent->getText()->getLocalBounds().getSize()/2.0f);
 }

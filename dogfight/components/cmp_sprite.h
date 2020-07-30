@@ -16,7 +16,7 @@ public:
 	explicit DrawableComponent(Entity* p) : Component(p) {}
     void render() override;
 	void setLayer(int layer) { _drawable->layer = layer; }
-    void setDrawOnUI(bool drawOnUI) { _drawOnUI = drawOnUI; }
+    void setDrawOnUI(bool drawOnUI ) { _drawOnUI = drawOnUI; }
 };
 
 class SpriteComponent : public DrawableComponent {

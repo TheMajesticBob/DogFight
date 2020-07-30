@@ -131,10 +131,10 @@ b2Fixture* const PhysicsComponent::getFixture() const { return _fixture; }
 
 PhysicsComponent::~PhysicsComponent() {
   auto a = Physics::GetWorld();
-  if (a && _body)
+  if (a && !a->IsLocked() && _body)
   {
 	  _body->SetActive(false);
-	  Physics::GetWorld()->DestroyBody(_body);
+	  a->DestroyBody(_body);
 	  _body = nullptr;
   }
 }

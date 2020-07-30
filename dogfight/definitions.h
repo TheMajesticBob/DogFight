@@ -105,6 +105,7 @@ namespace defs
 		sf::Vector2f position;
 		std::vector<EnemyGroup> enemyGroups;
 		float delayBetweenSpawns;
+		float initialDelay;
 		float currentDelay = 0;
 		int maxShipsPerSpawn;
 	};
@@ -297,6 +298,10 @@ namespace defs
 	inline void from_json(const json &j, Spawner &s)
 	{
 		j.at("DelayBetweenSpawns").get_to(s.delayBetweenSpawns);
+		if (j.find("InitialDelay") != j.end())
+		{
+			j.at("InitialDelay").get_to(s.initialDelay);
+		}
 		j.at("MaxShipsPerSpawn").get_to(s.maxShipsPerSpawn);
 		j.at("Ships").get_to(s.enemyGroups);
 	}
