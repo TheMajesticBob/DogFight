@@ -54,7 +54,7 @@ public:
   Engine() = delete;
   static void Start(unsigned int width, unsigned int height,
                     const std::string& gameName, Scene* scn);
-  static void ChangeScene(Scene*);
+  static void ChangeScene(Scene*, bool forceSync = false);
   static Scene* const GetScene() { return _activeScene; }
   static sf::RenderWindow& GetWindow();
   static sf::Vector2u getWindowSize();
@@ -63,7 +63,7 @@ public:
 private:
   static Scene* _activeScene;
   static std::string _gameName;
-  static void Update();
+  static void Update(double dt);
   static void Render(sf::RenderWindow& window);
 };
 

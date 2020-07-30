@@ -3,6 +3,7 @@
 #include "system_physics.h"
 #include "system_renderer.h"
 #include "system_resources.h"
+#include "system_ui.h"
 #include <SFML/Graphics.hpp>
 #include <future>
 #include <iostream>
@@ -45,25 +46,26 @@ void Loading_render() {
 float frametimes[256] = {};
 uint8_t ftc = 0;
 
-void Engine::Update() {
-  static sf::Clock clock;
-  float dt = clock.restart().asSeconds();
-  {
-    frametimes[++ftc] = dt;
-    static string avg = _gameName + " FPS:";
-    if (ftc % 60 == 0) {
-      double davg = 0;
-      for (const auto t : frametimes) {
-        davg += t;
-      }
-      davg = 1.0 / (davg / 255.0);
-      _window->setTitle(avg + toStrDecPt(2, davg));
-    }
-  }
+void Engine::Update(double dt) {
+//   static sf::Clock clock;
+//   float dt = clock.restart().asSeconds();
+//   {
+//     frametimes[++ftc] = dt;
+//     static string avg = _gameName + " FPS:";
+//     if (ftc % 60 == 0) {
+//       double davg = 0;
+//       for (const auto t : frametimes) {
+//         davg += t;
+//       }
+//       davg = 1.0 / (davg / 255.0);
+//       _window->setTitle(avg + toStrDecPt(2, davg));
+//     }
+//   }
 
   if (loading) {
     Loading_update(dt, _activeScene);
-  } else if (_activeScene != nullptr) {
+  } else if (_activeScene != nullptr) 
+  {
     Physics::update(dt);
     _activeScene->Update(dt);
   }
@@ -86,35 +88,67 @@ void Engine::Render(RenderWindow& window) {
 
 void Engine::Start(unsigned int width, unsigned int height,
                    const std::string& gameName, Scene* scn) {
-  RenderWindow window(VideoMode(width, height), gameName);
-  _gameName = gameName;
-  _window = &window;
-  Renderer::initialise(window);
-  Physics::initialise();
-  ChangeScene(scn);
-  while (window.isOpen()) {
-    Event event;
-    while (window.pollEvent(event)) {
-      if (event.type == Event::Closed) {
-        window.close();
-      }
-    }
-    if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-      window.close();
-    }
+	RenderWindow window(VideoMode(width, height), gameName);
+	_gameName = gameName;
+	_window = &window;
+	// _window->setFramerateLimit(120);
+	Renderer::initialise(window);
+	Physics::initialise();
+	ChangeScene(scn);
 
-    window.clear();
-    Update();
-    Render(window);
-    window.display();
-  }
-  if (_activeScene != nullptr) {
-    _activeScene->UnLoad();
-    _activeScene = nullptr;
-  }
-  window.close();
-  Physics::shutdown();
-  // Render::shutdown();
+	static sf::Clock clock;
+	float firstFrame = clock.restart().asSeconds();
+	double dt = 1 / 200.0;
+
+	double currentTime = clock.getElapsedTime().asSeconds();
+	double acc = 0;
+
+	while (window.isOpen()) 
+	{
+		double newTime = clock.getElapsedTime().asSeconds();
+		double frameTime = newTime - currentTime;
+		currentTime = newTime;
+
+	    Event event;
+	    while (window.pollEvent(event)) 
+		{
+			if (event.type == Event::Closed) 
+			{
+				window.close();
+			}
+
+			if (event.type == Event::KeyReleased && event.key.code == Keyboard::Tilde)
+			{
+				Physics::setDebugDraw(!Physics::getDebugDraw());
+			}
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) 
+		{
+			window.close();
+		}
+
+		window.clear();
+
+		acc += frameTime;
+		while (acc >= dt)
+		{
+			Update(dt);
+
+			acc -= dt;
+		}
+
+		Render(window);
+		window.display();
+	}
+	if (_activeScene != nullptr) 
+	{
+		_activeScene->UnLoad();
+		_activeScene = nullptr;
+	}
+	window.close();
+	Physics::shutdown();
+    Renderer::shutdown();
+	UI::shutdown();
 }
 
 std::shared_ptr<Entity> Scene::makeEntity() {
@@ -125,13 +159,19 @@ std::shared_ptr<Entity> Scene::makeEntity() {
 
 void Engine::setVsync(bool b) { _window->setVerticalSyncEnabled(b); }
 
-void Engine::ChangeScene(Scene* s) {
+void Engine::ChangeScene(Scene* s, bool forceSync) {
   cout << "Eng: changing scene: " << s << endl;
   auto old = _activeScene;
   _activeScene = s;
 
   if (old != nullptr) {
     old->UnLoad(); // todo: Unload Async
+  }
+
+  if (forceSync)
+  {
+	  _activeScene->Load();
+	  return;
   }
 
   if (!s->isLoaded()) {
