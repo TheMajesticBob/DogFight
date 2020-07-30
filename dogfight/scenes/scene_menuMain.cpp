@@ -52,11 +52,8 @@ void MainMenu::Update(const double& dt)
 	auto mpx = Mouse::getPosition(Engine::GetWindow()).x;
 	auto mpy = Mouse::getPosition(Engine::GetWindow()).y;
 
-	
-	
-
 	if (Keyboard::isKeyPressed(Keyboard::Num1)) {
-		Engine::ChangeScene((Scene*)&testing);
+		Engine::ChangeScene((Scene*)&testing, true);
 	}
 	if (Keyboard::isKeyPressed(Keyboard::Num2)) {
 		Engine::ChangeScene((Scene*)&settings);
