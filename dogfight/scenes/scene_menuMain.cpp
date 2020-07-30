@@ -28,6 +28,10 @@ void MainMenu::Load()
 	_play = makeEntity<Button>(buttonSize);
 	_play->setPosition(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y/2));
 	_play->setText("Play");
+
+	_settings = makeEntity<Button>(buttonSize);
+	_settings->setPosition(Vector2f(Engine::getWindowSize().x / 2, (Engine::getWindowSize().y / 2) + 100));
+	_settings->setText("Settings");
 	
 	// Create menu text
 	auto text_mainTitle = makeEntity();	
@@ -53,7 +57,7 @@ void MainMenu::Update(const double& dt)
 	if (_play->MouseClick()) {
 		Engine::ChangeScene((Scene*)&testing);
 	}
-	if (Keyboard::isKeyPressed(Keyboard::Num2)) {
+	if (_settings->MouseClick()) {
 		Engine::ChangeScene((Scene*)&settings);
 	}
 
