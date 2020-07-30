@@ -13,7 +13,7 @@ protected:
 
 public:
 	DrawableComponent() = delete;
-	explicit DrawableComponent(Entity* p) : Component(p) {}
+	explicit DrawableComponent(Entity* p) : Component(p) { _isVisible = true; }
     void render() override;
 	void setLayer(int layer) { _drawable->layer = layer; }
     void setDrawOnUI(bool drawOnUI ) { _drawOnUI = drawOnUI; }

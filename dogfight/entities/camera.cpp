@@ -64,7 +64,8 @@ void FollowCamera::update(double dt)
 	if (maxDistance > distToZoom)
 	{
 		float s = maxDistance / distToZoom;
-		_view.setSize(s * _viewSize);
+		float currentScale = _view.getSize().x / _viewSize.x;
+		_view.setSize(lerp<float>(currentScale, s, 0.01f) * _viewSize);
 	}	
 	Camera::update(dt);
 }

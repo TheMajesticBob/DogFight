@@ -45,8 +45,10 @@ public:
 		: BTDecorator(bt, name) {}
 
 	virtual bool evaluate(Entity*) override;
+	void setDrawDebug(bool shouldDraw) { _drawDebugLines = shouldDraw; }
 
 protected:
+	bool _drawDebugLines = false;
 	class Entity* _targetEntity;
 	class Ship* _myPawn;
 };

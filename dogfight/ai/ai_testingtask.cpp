@@ -112,28 +112,36 @@ bool BTD_IsTargetInFront::evaluate(Entity* e)
 
 				Physics::GetWorld()->RayCast(callback, Physics::sv2_to_bv2(Physics::invert_height(myPosition)), Physics::sv2_to_bv2(Physics::invert_height(targetPosition)));
 
-				glLineWidth(.1f);
-				glColor4f(0, 255, 0, 255);
-				glBegin(GL_LINES);
-				glVertex2f(myPosition.x, myPosition.y);
-				glVertex2f(targetPosition.x, targetPosition.y);
+				if (_drawDebugLines)
+				{
+					glLineWidth(.1f);
+					glColor4f(0, 255, 0, 255);
+					glBegin(GL_LINES);
+					glVertex2f(myPosition.x, myPosition.y);
+					glVertex2f(targetPosition.x, targetPosition.y);
+				}
 
 				// If we found a body, check whether it's our target
 				if (callback->foundBody)
 				{
-					glColor4f(255, 0, 0, 255);
-					glVertex2f(myPosition.x, myPosition.y);
-					glVertex2f(Physics::invert_height(Physics::bv2_to_sv2(callback->foundBody->GetPosition())).x, Physics::invert_height(Physics::bv2_to_sv2(callback->foundBody->GetPosition())).y);
+					if (_drawDebugLines)
+					{
+						glColor4f(255, 0, 0, 255);
+						glVertex2f(myPosition.x, myPosition.y);
+						glVertex2f(Physics::invert_height(Physics::bv2_to_sv2(callback->foundBody->GetPosition())).x, Physics::invert_height(Physics::bv2_to_sv2(callback->foundBody->GetPosition())).y);
+					}
 
 					Entity* target = static_cast<Entity*>(callback->foundBody->GetUserData());
 					if (target == _targetEntity)
 					{
-						glEnd();
+						if (_drawDebugLines)
+							glEnd();
 						return true;
 					}
 				}
 
-				glEnd();
+				if (_drawDebugLines)
+					glEnd();
 			}
 		}
 	}
