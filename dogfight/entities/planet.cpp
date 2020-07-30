@@ -15,6 +15,7 @@ Planet::Planet(Scene* const s, float radius, float mass) : Entity(s), _radius(ra
 	physicsComponent = addComponent<PhysicsComponent>(false, shape, fixture);
 
 	shapeComponent = addComponent<ShapeComponent>();
+	shapeComponent->setVisibility(true);
 	shapeComponent->setShape<sf::CircleShape>(_radius, 100);
 	shapeComponent->getShape().setFillColor(sf::Color(0, 0, 0, 0));
 	shapeComponent->getShape().setOutlineColor(sf::Color(255, 0, 255, 255));
@@ -39,7 +40,7 @@ void Planet::update(double dt)
 
 		b2Vec2 forceDirection = Physics::sv2_to_bv2(sf::normalize(Physics::bv2_to_sv2(m_body->GetPosition() - b->GetPosition())));
 
-		float force = _radius * _mass / magnitude * b->GetGravityScale();
+		float force = _radius * _mass / magnitude * b->GetMass() * b->GetGravityScale();
 		b->ApplyForceToCenter(force * forceDirection, true);
 	}
 }

@@ -9,6 +9,9 @@ public:
 
 	std::shared_ptr<class PhysicsComponent> GetPhysicsComponent() { return physicsComponent; }
 
+	float getRadius() { return _radius; }
+	float getMass() { return _mass; }
+
 	void update(double dt) override;
 
 protected:
