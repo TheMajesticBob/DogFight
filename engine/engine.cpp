@@ -106,6 +106,11 @@ void Engine::Start(unsigned int width, unsigned int height,
 
 	while (window.isOpen()) 
 	{
+		if (acc < 0)
+		{
+			acc = 0;
+		}
+
 		double newTime = clock.getElapsedTime().asSeconds();
 		double frameTime = newTime - currentTime;
 		currentTime = newTime;
