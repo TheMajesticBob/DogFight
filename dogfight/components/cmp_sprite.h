@@ -9,7 +9,7 @@ class DrawableComponent : public Component
 {
 protected:
 	std::shared_ptr<FDrawable> _drawable;
-    bool _drawOnUI;
+    bool _drawOnUI = false;
 
 public:
 	DrawableComponent() = delete;
