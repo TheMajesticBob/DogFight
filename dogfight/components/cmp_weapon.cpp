@@ -30,7 +30,7 @@ WeaponComponent::WeaponComponent(Entity* p, defs::WeaponSlot& weaponSlotDefiniti
 	setLayer(1);
 }
 
-void WeaponComponent::fire(sf::Vector2f directionVector)
+void WeaponComponent::fire()
 {
 	if (_fireCooldown <= 0.0f)
 	{
@@ -39,12 +39,15 @@ void WeaponComponent::fire(sf::Vector2f directionVector)
 			// Get available projectile from the pool
 			auto projectile = Pool<Projectile>::Get();
 
+			// Generate a random angle
+			float randomAngle = sf::rand_range<float>(-_fireConeAngle, _fireConeAngle) / 2.0f;
+
 			// Make sure we got one
 			if (projectile)
 			{
 				// Setup damage and fire using component's projectile definition
 				projectile->setDamage(_weaponDefinition->damage);
-				projectile->fire(_weaponDefinition->projectile, _parent, _shape->getPosition(), directionVector);
+				projectile->fire(_weaponDefinition->projectile, _parent, _shape->getPosition(), _rotation + randomAngle);
 			}
  		}
 		

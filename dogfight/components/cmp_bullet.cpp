@@ -8,12 +8,14 @@ using namespace std;
 using namespace sf;
 using namespace Physics;
 
-void BulletComponent::fire(const Vector2f& position, Vector2f& direction)
+void BulletComponent::fire(const Vector2f& position, const float& rotation)
 {
-	direction = normalize(direction);
+	// direction = normalize(direction);
 
-	_body->SetTransform(sv2_to_bv2(invert_height(position)), vector_to_angle(normalize(direction)));
-	_body->SetLinearVelocity(_initialSpeed*sv2_to_bv2(direction));
+	float32 angleRadians = deg2rad(rotation);
+
+	_body->SetTransform(sv2_to_bv2(invert_height(position)), angleRadians);
+	_body->SetLinearVelocity(_initialSpeed*sv2_to_bv2(-sf::Vector2f(cos(angleRadians),sin(angleRadians))));
 	_body->SetAngularVelocity(_projectileDefinition->initialRotation);
 	setActive(true);
 }

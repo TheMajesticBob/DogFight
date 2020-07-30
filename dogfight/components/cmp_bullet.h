@@ -17,7 +17,7 @@ protected:
 	std::shared_ptr<defs::Projectile> _projectileDefinition;
 
 public:
-	void fire(const sf::Vector2f& position, sf::Vector2f& direction);
+	void fire(const sf::Vector2f& position, const float& rotation);
 	void redefine(std::shared_ptr<defs::Projectile> definition, b2FixtureDef& fixtureDef = b2FixtureDef());
 
 	void update(double dt) override;

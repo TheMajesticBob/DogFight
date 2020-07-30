@@ -38,6 +38,7 @@ void TestingScene::Load()
 
 	_player = makeEntity<Player>("player");
 	_player->GetMovementComponent()->teleport(Vector2f(planetRadius, planetRadius + 100.0f));
+	_player->SetGodMode(true);
 	_camera->AddFollow(_player, 10);
 
 	auto controller = makeEntity<ShipPlayerController>("Player1controls",_player.get());	
@@ -107,7 +108,7 @@ void TestingScene::Update(const double& dt)
 							auto enemy = makeEntity<Enemy>(shipName);
 							enemy->GetMovementComponent()->teleport(s.position + randomOffset);
 							enemy->SetTeam(Ship::Team::T_ENEMY);
-							_camera->AddFollow(enemy, 0.05f);
+							//_camera->AddFollow(enemy, 0.05f);
 						}
 					}
 				}

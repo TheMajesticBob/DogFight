@@ -22,7 +22,10 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 
 	// Setup ship movement, health and weapon components based on ship definition
 	movementComponent = addComponent<PlanePhysicsComponent>(_shipDefinition, FixtureDef);
-	healthComponent = addComponent<HealthComponent>(_shipDefinition->health);
+	healthComponent = addComponent<HealthComponent>(*_shipDefinition.get());
+	healthComponent->onShieldHit = FFloatDelegate::from_function<Ship, &Ship::OnShieldHit>(this);
+	healthComponent->onHullHit = FFloatDelegate::from_function<Ship, &Ship::OnHullHit>(this);
+
 	for (auto& w : _shipDefinition->weapons)
 	{
 		auto newWeapon = addComponent<WeaponComponent>(w);
@@ -66,13 +69,6 @@ void Ship::OnHit(float damage)
 {
 	// Pass the damage to health component
 	healthComponent->onHit(damage);
-
-	// Destroy ship when at 0hp
-	if (healthComponent->getCurrentHealth() <= 0.0f)
-	{
-		OnDestroyed();
-		setForDelete();
-	}
 }
 
 void Ship::OnDestroyed()
@@ -96,7 +92,32 @@ void Ship::Fire()
 	{
 		if (weapon)
 		{
-			weapon->fire(movementComponent->getForwardVector());
+			// Set weapon rotation to entities. Might wanna move that elsewhere for AI aiming
+			weapon->setRotation(getRotation());
+			weapon->fire();
 		}
 	}
+}
+
+void Ship::OnShieldHit(float damage)
+{
+	std::cout << "Shield hit! Damage: " << damage << "   " << GetHealth() << std::endl;
+}
+
+void Ship::OnHullHit(float damage)
+{
+	std::cout << "Hull hit! Damage: " << damage << "   " << GetHealth() << std::endl;
+
+	// Destroy ship when at 0hp
+	if (healthComponent->getCurrentHealth() <= 0.0f && !_godMode)
+	{
+		OnDestroyed();
+		setForDelete();
+	}
+}
+
+std::string Ship::GetHealth()
+{
+	return "Hull: " + std::to_string(healthComponent->getCurrentHealth()) + "/" + std::to_string(healthComponent->getMaxHealth()) + "Shield: " +
+		std::to_string(healthComponent->getCurrentShield()) + "/" + std::to_string(healthComponent->getMaxShield());
 }

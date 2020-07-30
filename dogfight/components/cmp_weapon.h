@@ -14,12 +14,15 @@ public:
 	explicit WeaponComponent(Entity* p, defs::WeaponSlot& weaponSlotDefinition);
 	WeaponComponent() = delete;
 
-	void fire(sf::Vector2f directionVector);
+	void fire();
 	void setRelativePosition(sf::Vector2f relativePosition) { _relativePosition = relativePosition; }
+	void setRotation(float rotation) { _rotation = rotation; }
 
 protected:
 	std::shared_ptr<defs::Weapon> _weaponDefinition;
 	sf::Vector2f _relativePosition;
-	
+
+	float _fireConeAngle = 10;
+	float _rotation;
 	float _fireCooldown;
 };

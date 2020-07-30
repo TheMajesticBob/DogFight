@@ -41,7 +41,7 @@ void Projectile::render()
 	Entity::render();
 }
 
-void Projectile::fire(std::string definition, Entity* const owner, sf::Vector2f position, sf::Vector2f direction)
+void Projectile::fire(std::string definition, Entity* const owner, sf::Vector2f position, const float& rotation)
 {
 	// Get correct projectile and shape definitions, setup owner
 	_projectileDefiniton = Resources::get<defs::Projectile>(definition);
@@ -70,10 +70,10 @@ void Projectile::fire(std::string definition, Entity* const owner, sf::Vector2f 
 	shapeComponent->setLayer(-1);
 
 	// Set rotation
-	setRotation(_owner->getRotation());
+	// setRotation(-rotation);
 
 	// Fire
-	bulletComponent->fire(position, direction);
+	bulletComponent->fire(position, rotation);
 	setAlive(true);
 	setVisible(true);
 }

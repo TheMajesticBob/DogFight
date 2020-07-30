@@ -11,6 +11,12 @@ namespace sf {
 
 typedef Vector2<size_t> Vector2ul;
 
+template<typename T>
+T rand_range(T low, T high)
+{
+	return low + static_cast<T>(rand()) / (static_cast<T>(RAND_MAX / (high - low)));
+}
+
 // Returns the length of the vector
 template <typename T> double length(const Vector2<T>& v) {
   return sqrt(v.x * v.x + v.y * v.y);

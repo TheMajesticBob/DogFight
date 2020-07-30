@@ -51,11 +51,18 @@ class Ship : public Pawn
 
 		b2Fixture* const GetFixture() { return movementComponent->getFixture(); }
 
+		void SetGodMode(bool godActive) { _godMode = godActive; }
+
 		void Accelerate(float Value);
 		void Turn(float Value);
 		void Fire();
 
 	protected:
+		void OnShieldHit(float damage);
+		void OnHullHit(float damage);
+
+		std::string GetHealth();
+
 		std::shared_ptr<defs::Ship> _shipDefinition;
 
 		std::shared_ptr<class ThrusterParticleSystem> thrusterPS;
@@ -66,6 +73,8 @@ class Ship : public Pawn
 		std::shared_ptr<ShapeComponent> thrusterComponent;
 
 		Team team;
+
+		bool _godMode = false;
 
 		float fireRate = 3.0f;
 		float fireCooldown = 0.0f;

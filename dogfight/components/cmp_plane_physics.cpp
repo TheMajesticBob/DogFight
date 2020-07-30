@@ -68,7 +68,10 @@ void PlanePhysicsComponent::turn(float value)
 	// Clamp value between -1 and 1
 	value = -max(-1.0f, min(value, 1.0f));
 
-	auto accelerationMultiplier = _isAccelerating ? _planeDefinition->accelerationRotationMultiplier : 1.0f;
+	auto velocity = _body->GetLinearVelocity();
+	auto speed = velocity.Length();
+
+	auto accelerationMultiplier = 1.0f - (_isAccelerating ? (speed / (_planeDefinition->maxSpeed * 1.2f)) : 0.0f); //  _planeDefinition->accelerationRotationMultiplier : 1.0f;
 	float torqueValue = 1.0f * deg2rad(value * accelerationMultiplier * _planeDefinition->rotationSpeed);
 	_body->ApplyAngularImpulse(torqueValue, true); // SetAngularVelocity(_body->GetAngularVelocity() + deg2rad(value * accelerationMultiplier * _planeDefinition->rotationSpeed));
 }

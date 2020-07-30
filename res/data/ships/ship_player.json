@@ -15,9 +15,9 @@
     }
   ],
   "PlaneControl": {
-    "MaxSpeed": 10.0,
+    "MaxSpeed": 20.0,
     "RotationSpeed": 3.0,
-    "Acceleration": 30.0,
+    "Acceleration": 45.0,
     "AccelerationRotationMultiplier": 0.45
   },
   "Physics": {

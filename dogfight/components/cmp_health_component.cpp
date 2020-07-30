@@ -39,9 +39,17 @@ void HealthComponent::onHit(float damage)
 		onShieldHit.invokeSafe(damage);
 	}
 
-	if (damage > 0.0f && _currentHealth > 0.0f)
+	if (damage > 0.0f)
 	{
-		_currentHealth -= damage;
+		if (_currentHealth > 0.0f)
+		{
+			_currentHealth -= damage;
+		}
+		else 
+		{
+			_currentHealth = 0.0f;
+		}
+
 		onHullHit.invokeSafe(damage);
 	}
 }
