@@ -74,6 +74,11 @@ file(COPY res DESTINATION ${CMAKE_BINARY_DIR}/)
 file(COPY res DESTINATION ${OUTPUT_DIRECTORY}/)
 file(COPY res DESTINATION ${OUTPUT_DIRECTORY}/Debug)
 file(COPY res DESTINATION ${OUTPUT_DIRECTORY}/Release)
+# Copy required dll
+file(COPY lib/sfml/extlibs/bin/x86/ DESTINATION ${CMAKE_BINARY_DIR}/)
+file(COPY lib/sfml/extlibs/bin/x86/ DESTINATION ${OUTPUT_DIRECTORY}/)
+file(COPY lib/sfml/extlibs/bin/x86/ DESTINATION ${OUTPUT_DIRECTORY}/Debug)
+file(COPY lib/sfml/extlibs/bin/x86/ DESTINATION ${OUTPUT_DIRECTORY}/Release)
 # Output all DLLs from all libs into main build folder
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY})
 

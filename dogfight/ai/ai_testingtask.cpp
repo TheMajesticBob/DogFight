@@ -173,6 +173,7 @@ void BTT_FireAtEntity::update(const double& dt, Entity* e)
 	// Finish unsuccessfully when one of the entities does not exist
 	if (!_myPawn || !_targetEntity)
 	{
+		_myPawn->StopFiring();
 		onFinished(false);
 		return;
 	}
@@ -180,6 +181,7 @@ void BTT_FireAtEntity::update(const double& dt, Entity* e)
 	// Finish successfully when the timer has finished
 	if (_currentTime <= 0.0f)
 	{
+		_myPawn->StopFiring();
 		onFinished(true);
 		return;
 	}
@@ -193,10 +195,11 @@ void BTT_FireAtEntity::update(const double& dt, Entity* e)
 	if (abs(angle) > 1.0f)
 	{
 		_myPawn->Turn(angle);
+		_myPawn->StopFiring();
 	} 
 	else
 	{
-		_myPawn->Fire();
+		_myPawn->StartFiring();
 	}
 
 	_currentTime -= dt;

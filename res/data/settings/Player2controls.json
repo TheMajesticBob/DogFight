@@ -1,0 +1,10 @@
+{
+  "Movement": {
+    "Accelerate": 83,
+    "Left": 79,
+    "Right": 81
+  },
+  "Weapons": {
+    "BasicAttack": 58
+  }
+}

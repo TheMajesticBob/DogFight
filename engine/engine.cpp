@@ -3,6 +3,7 @@
 #include "system_physics.h"
 #include "system_renderer.h"
 #include "system_resources.h"
+#include "input_handler.h"
 #include "system_ui.h"
 #include <SFML/Graphics.hpp>
 #include <future>
@@ -106,6 +107,11 @@ void Engine::Start(unsigned int width, unsigned int height,
 
 	while (window.isOpen()) 
 	{
+		if (acc < 0)
+		{
+			acc = 0;
+		}
+
 		double newTime = clock.getElapsedTime().asSeconds();
 		double frameTime = newTime - currentTime;
 		currentTime = newTime;
@@ -122,6 +128,15 @@ void Engine::Start(unsigned int width, unsigned int height,
 			{
 				Physics::setDebugDraw(!Physics::getDebugDraw());
 			}
+
+			if (event.type == Event::KeyPressed)
+			{
+				InputHandler::KeyboardHandler(event.key.code, 0, Event::KeyPressed, 0);
+			}
+			if (event.type == Event::KeyReleased)
+			{
+				InputHandler::KeyboardHandler(event.key.code, 0, Event::KeyReleased, 0);
+			}
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Escape)) 
 		{
@@ -129,10 +144,11 @@ void Engine::Start(unsigned int width, unsigned int height,
 		}
 
 		window.clear();
-
+		
 		acc += frameTime;
 		while (acc >= _framerateCap)
 		{
+			InputHandler::Update(_framerateCap);
 			Update(_framerateCap);
 
 			acc -= _framerateCap;
@@ -165,9 +181,22 @@ void Engine::ChangeScene(Scene* s, bool forceSync) {
   auto old = _activeScene;
   _activeScene = s;
 
+
+  std::queue<std::shared_ptr<Entity>> persistentEntities;
+
   if (old != nullptr) {
+
+	  for (auto it = old->ents.list.begin(); it != old->ents.list.end(); ++it)
+	  {
+		  if ((*it)->is_persistent())
+		  {
+			  persistentEntities.push(*it);
+		  }
+	  }
     old->UnLoad(); // todo: Unload Async
   }
+
+  _activeScene->addPersistentEntities(persistentEntities);
 
   if (forceSync)
   {

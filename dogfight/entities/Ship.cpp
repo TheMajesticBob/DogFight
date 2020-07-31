@@ -6,6 +6,7 @@
 #include "../components/cmp_health_component.h"
 #include "../components/cmp_weapon.h"
 #include "../engine/game_resources.h"
+#include <math.h>
 
 using namespace sf;
 
@@ -14,6 +15,7 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 	// Get the ship definition
 	_shipDefinition = Resources::get<defs::Ship>(shipDefinition);
 	std::shared_ptr<defs::GameShape> _shipShape = Resources::get<defs::GameShape>(_shipDefinition->shape);
+	std::shared_ptr<defs::GameShape> _shieldShape = Resources::get<defs::GameShape>("shield");
 
 	// Setup collision filters for the entity
 	b2FixtureDef FixtureDef;
@@ -45,6 +47,20 @@ Ship::Ship(Scene* const s, std::string shipDefinition) : Pawn(s)
 	shape->setFillColor(sf::Color::Black);
 	shape->setOutlineColor(sf::Color::White);
 	shape->setOutlineThickness(2.0f);
+
+	float shieldScale = std::max(shape->getLocalBounds().width, shape->getLocalBounds().height);
+
+	// Setup shield shape
+	_shieldShape->scale = shieldScale;
+
+	shieldComponent = addComponent<ShapeComponent>();
+	shieldComponent->setShape<sf::Shape>(_shieldShape->getShape());
+	shieldComponent->setLayer(2);
+	shape = (sf::ConvexShape*)&shieldComponent->getShape();
+	shape->setFillColor(sf::Color::Transparent);
+	shape->setOutlineColor(sf::Color::Cyan);
+	shape->setOutlineThickness(2.0f);
+	//shape->setScale(shieldScale, shieldScale);
 }
 
 void Ship::update(double dt)
@@ -55,6 +71,20 @@ void Ship::update(double dt)
 	if (movementComponent->isAccelerating())
 	{
 		thrusterPS->fire();
+	}
+
+	if (_shieldVisibility > 0.0f)
+	{
+		_shieldVisibility -= dt;
+	}
+
+	sf::Color shieldColor = shieldComponent->getShape().getOutlineColor();
+	shieldColor.a = (_shieldVisibility > 0 ? _shieldVisibility : 0) * 255;
+	shieldComponent->getShape().setOutlineColor(shieldColor);
+
+	if (_isFiring)
+	{
+		Fire();
 	}
 
 	Pawn::update(dt);
@@ -78,12 +108,18 @@ void Ship::OnDestroyed()
 
 void Ship::Accelerate(float Value)
 {
-	movementComponent->accelerate(Value);
+	if (movementComponent)
+	{
+		movementComponent->accelerate(Value);
+	}
 }
 
 void Ship::Turn(float Value)
 {
-	movementComponent->turn(Value);
+	if (movementComponent)
+	{
+		movementComponent->turn(Value);
+	}
 }
 
 void Ship::Fire()
@@ -102,6 +138,9 @@ void Ship::Fire()
 void Ship::OnShieldHit(float damage)
 {
 	std::cout << "Shield hit! Damage: " << damage << "   " << GetHealth() << std::endl;
+
+	_shieldVisibility = 1.0f;
+	// Draw shiedl effect for a frame
 }
 
 void Ship::OnHullHit(float damage)

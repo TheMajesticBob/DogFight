@@ -42,7 +42,13 @@ void TestingScene::Load()
 	_player->SetGodMode(true);
 	_camera->AddFollow(_player, 10);
 
-	auto controller = makeEntity<ShipPlayerController>("Player1controls",_player.get());	
+	_player2 = makeEntity<Player>("player");
+	_player2->GetMovementComponent()->teleport(Vector2f(planetRadius, planetRadius + 130.0f));
+	_player2->SetGodMode(true);
+	_camera->AddFollow(_player2, 10);
+
+	auto controller = makeEntity<ShipPlayerController>("Player1controls", _player.get());
+	auto controller2 = makeEntity<ShipPlayerController>("Player2controls", _player2.get());
 
 // 	auto enemy = makeEntity<Enemy>("basic");
 // 	enemy->GetMovementComponent()->teleport(_player->getPosition() + Vector2f(50.0f,0.0f));

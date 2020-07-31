@@ -1,7 +1,8 @@
 {
   "Projectile": "bomb_basic",
-  "Shape":  "weapons/bomb_basic",
-  "Damage": 10.0,
+  "Sound": "fail.wav",
+  "Shape": "weapons/bomb_basic",
+  "Damage": 15.0,
   "RateOfFire": 1.5,
   "ProjectilesPerRound": 1
 }

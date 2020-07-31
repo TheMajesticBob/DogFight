@@ -19,10 +19,11 @@ public:
 	void setRotation(float rotation) { _rotation = rotation; }
 
 protected:
+	std::shared_ptr<class AudioComponent> _audioComponent;
 	std::shared_ptr<defs::Weapon> _weaponDefinition;
 	sf::Vector2f _relativePosition;
 
-	float _fireConeAngle = 10;
+	float _fireConeAngle = 2;
 	float _rotation;
 	float _fireCooldown;
 };
