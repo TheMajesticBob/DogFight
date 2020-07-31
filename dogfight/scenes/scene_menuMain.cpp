@@ -51,11 +51,11 @@ void MainMenu::Load()
 
 	if (ents.find("AmbientManager").size() <= 0)
 	{
-		auto ambient = makeEntity<AmbientManager>();
-		ambient->addTag("AmbientManager");
-		ambient->loadLayer("menu_ambient", "menu_ambient.wav");
-		ambient->play("menu_ambient");
-		ambient->setPersistent(true);
+		_ambientManager = makeEntity<AmbientManager>();
+		_ambientManager->addTag("AmbientManager");
+		_ambientManager->loadLayer("menu_ambient", "menu_ambient.wav");
+		_ambientManager->play("menu_ambient");
+		_ambientManager->setPersistent(true);
 	}
 
 	// Settings Button

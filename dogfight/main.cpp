@@ -10,6 +10,8 @@ MainMenu menu;
 TestingScene testing;
 Settings settings;
 
+std::shared_ptr<class AmbientManager> _ambientManager;
+
 int main(int argc, char** argv)
 {
 	Engine::Start(1920, 1080, "DogFight", &menu);
