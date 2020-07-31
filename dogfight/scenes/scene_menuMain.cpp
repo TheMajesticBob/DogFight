@@ -6,7 +6,6 @@
 #include <SFML/Graphics.hpp>
 #include "../entities/camera.h"
 #include "../entities/button.h"
-#include "../entities/ambient_manager.h"
 
 using namespace sf;
 using namespace std;
@@ -49,15 +48,6 @@ void MainMenu::Load()
 	_play->setPosition(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y/2));
 	_play->setText("Play");
 
-	if (ents.find("AmbientManager").size() <= 0)
-	{
-		auto ambient = makeEntity<AmbientManager>();
-		ambient->addTag("AmbientManager");
-		ambient->loadLayer("menu_ambient", "menu_ambient.wav");
-		ambient->play("menu_ambient");
-		ambient->setPersistent(true);
-	}
-
 	// Settings Button
 	_settings = makeEntity<Button>(buttonSize);
 	_settings->onButtonClicked = FButtonClicked::from_function<MainMenu, &MainMenu::MoveToSettings>(this);
@@ -77,10 +67,5 @@ void MainMenu::UnLoad()
 
 void MainMenu::Update(const double& dt)
 {	
-	if (Keyboard::isKeyPressed(Keyboard::Num1))
-	{
-		Engine::ChangeScene(&testing, true);
-	}
-
 	Scene::Update(dt);
 }

@@ -1,5 +1,4 @@
 #include "cmp_weapon.h"
-#include "cmp_audio.h"
 #include "engine.h"
 #include "../entities/projectile.h"
 #include "../engine/game_resources.h"
@@ -24,9 +23,6 @@ WeaponComponent::WeaponComponent(Entity* p, defs::WeaponSlot& weaponSlotDefiniti
 {
 	_weaponDefinition = Resources::get<defs::Weapon>(weaponSlotDefinition.weaponName);
 	_relativePosition = weaponSlotDefinition.relativePosition;
-
-	_audioComponent = p->addComponent<AudioComponent>();
-	_audioComponent->loadSound(_weaponDefinition->sound);
 
 	std::shared_ptr<defs::GameShape> _weaponShape = Resources::get<defs::GameShape>(_weaponDefinition->shape);
 	setShape<sf::Shape>(_weaponShape->getShape());
@@ -55,8 +51,6 @@ void WeaponComponent::fire()
 			}
  		}
 		
-		_audioComponent->playSound();
-
 		_fireCooldown = 1.0f / _weaponDefinition->rateOfFire;
 	}
 }

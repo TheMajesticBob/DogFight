@@ -1,7 +1,7 @@
 {
   "Health": {
-    "Hull": 60.0,
-    "Shield": 10.0
+    "Hull": 100.0,
+    "Shield": 0.0
   },
   "Shape": "ships/bomber_enemy",
   "Weapons": [

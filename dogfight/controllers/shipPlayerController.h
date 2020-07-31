@@ -12,7 +12,6 @@ protected:
 public:
 	ShipPlayerController() = delete;
 	ShipPlayerController(Scene* const s, std::string controlscheme, Ship* ship);
-	~ShipPlayerController();
-
+	
 	virtual void update(double dt);
 };

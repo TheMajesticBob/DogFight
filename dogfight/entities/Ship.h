@@ -55,16 +55,11 @@ class Ship : public Pawn
 
 		void Accelerate(float Value);
 		void Turn(float Value);
-
-		void StartFiring() { _isFiring = true; }
-		void StopFiring() { _isFiring = false; }
+		void Fire();
 
 	protected:
 		void OnShieldHit(float damage);
 		void OnHullHit(float damage);
-		void Fire();
-
-		void OnWeaponFired();
 
 		std::string GetHealth();
 
@@ -75,20 +70,15 @@ class Ship : public Pawn
 		std::shared_ptr<class HealthComponent> healthComponent;
 		std::vector<std::shared_ptr<class WeaponComponent>> weaponComponents;
 		std::shared_ptr<ShapeComponent> shapeComponent;
-		std::shared_ptr<ShapeComponent> shieldComponent;
+		std::shared_ptr<ShapeComponent> thrusterComponent;
 
 		Team team;
 
 		bool _godMode = false;
-
-		bool _isFiring = false;
 
 		float fireRate = 3.0f;
 		float fireCooldown = 0.0f;
 
 		GLfloat drawVerts[8];
 		sf::Color _color;
-
-
-		float _shieldVisibility = 0.0f;
 };
