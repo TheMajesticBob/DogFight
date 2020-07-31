@@ -6,7 +6,6 @@
 #include "../entities/planet.h"
 #include "../controllers/shipPlayerController.h"
 #include "../ai/ai_basicbehaviourtree.h"
-#include "scene_menuMain.h"
 #include "../engine/game_resources.h"
 
 #include "pool.h"
@@ -46,6 +45,12 @@ void TestingScene::Load()
 	_player2->SetGodMode(true);
 	_camera->AddFollow(_player2, 10);
 
+	auto text = makeEntity();
+	text->setPosition({ 50.0f, 50.0f });
+	_waveText = text->addComponent<TextComponent>();
+	_waveText->setDrawOnUI(true);
+	_waveText->SetText("Wave 0");
+
 	auto controller = makeEntity<ShipPlayerController>("Player1controls", _player.get());
 	auto controller2 = makeEntity<ShipPlayerController>("Player2controls", _player2.get());
 
@@ -76,6 +81,12 @@ void TestingScene::Update(const double& dt)
 		if(_timeToNextWave <= 0.0f)
 		{
 			StartNextWave();
+		}
+
+		if (_waveText)
+		{
+			std::string newText = "Wave " + std::to_string(_waveId) + "\nNext wave in: " + std::to_string((int)_timeToNextWave);
+			_waveText->SetText(newText);
 		}
 
 		for (auto& s : currentWave.spawners)
@@ -133,6 +144,8 @@ void TestingScene::UnLoad()
 	if (_camera != nullptr) {
 		_camera->setForDelete();
 	}
+
+	_waveText.reset();
 
 	ents.list.clear();
 
