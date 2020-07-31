@@ -54,8 +54,10 @@ namespace defs
 
 		std::string projectile;
 		std::string shape;
+
 		std::string sound;
-		
+		float soundVolume;
+
 		float damage;
 		float rateOfFire;
 		float projectilesPerRound;
@@ -260,7 +262,8 @@ namespace defs
 	inline void from_json(const json &j, Weapon &w)
 	{
 		j.at("Projectile").get_to(w.projectile);
-		j.at("Sound").get_to(w.sound);
+		j.at("Sound").at("Filename").get_to(w.sound);
+		j.at("Sound").at("Volume").get_to(w.soundVolume);
 		j.at("Shape").get_to(w.shape);
 		j.at("Damage").get_to(w.damage);
 		j.at("RateOfFire").get_to(w.rateOfFire);

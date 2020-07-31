@@ -17,9 +17,6 @@ InputHandler::InputHandler()
 	GetMousePos(&previous_x, &previous_y);
 }
 
-
-
-
 InputHandler::~InputHandler()
 {
 }
@@ -40,13 +37,22 @@ void InputHandler::Update(float deltaTime)
 		// Find iterators
 		boundFunctions = keyMap.equal_range(event.key);
 
+		multimap<int, pair<int, FKeyDelegate>>::const_iterator lastIt;
 		// Go through bound functions and run them
 		for (multimap<int, pair<int, FKeyDelegate>>::iterator it = boundFunctions.first; it != boundFunctions.second; ++it)
 		{
+			lastIt = it;
 			pair<int, FKeyDelegate> func = it->second;
 			if (func.first == event.action)
 			{
 				func.second.invokeSafe();
+			}
+			
+			// Get new range and make sure we can increment the iterator in case we just unbound
+			auto newFunctions = keyMap.equal_range(event.key);
+			if (newFunctions.first == boundFunctions.second)
+			{
+				break;
 			}
 		}
 

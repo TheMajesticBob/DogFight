@@ -1,7 +1,10 @@
 {
   "Projectile": "laser_basic",
-  "Sound": "warning.wav",
-  "Shape":  "weapons/laser_basic",
+  "Sound": {
+    "Filename": "warning.wav",
+    "Volume": 50.0
+  },
+  "Shape": "weapons/laser_basic",
   "Damage": 8.0,
   "RateOfFire": 6.0,
   "ProjectilesPerRound": 1

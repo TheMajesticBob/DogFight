@@ -27,6 +27,7 @@ WeaponComponent::WeaponComponent(Entity* p, defs::WeaponSlot& weaponSlotDefiniti
 
 	_audioComponent = p->addComponent<AudioComponent>();
 	_audioComponent->loadSound(_weaponDefinition->sound);
+	_audioComponent->setVolume(_weaponDefinition->soundVolume);
 
 	std::shared_ptr<defs::GameShape> _weaponShape = Resources::get<defs::GameShape>(_weaponDefinition->shape);
 	setShape<sf::Shape>(_weaponShape->getShape());

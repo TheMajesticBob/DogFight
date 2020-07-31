@@ -140,17 +140,21 @@ void Engine::Start(unsigned int width, unsigned int height,
 				InputHandler::KeyboardHandler(event.key.code, 0, Event::KeyReleased, 0);
 			}
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Escape)) 
-		{
-			window.close();
-		}
+// 		if (Keyboard::isKeyPressed(Keyboard::Escape)) 
+// 		{
+// 			window.close();
+// 		}
 
 		window.clear();
 		
 		acc += frameTime;
 		while (acc >= _framerateCap)
 		{
-			InputHandler::Update(_framerateCap);
+			if (_activeScene->isLoaded())
+			{
+				InputHandler::Update(_framerateCap);
+			}
+
 			Update(_framerateCap);
 
 			acc -= _framerateCap;
@@ -240,9 +244,10 @@ void Scene::setLoaded(bool b) {
   }
 }
 
-void Scene::UnLoad() {
-  ents.list.clear();
-  setLoaded(false);
+void Scene::UnLoad() 
+{
+	setLoaded(false);
+	ents.list.clear();
 }
 
 void Scene::LoadAsync() { _loaded_future = std::async(&Scene::Load, this); }

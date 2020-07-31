@@ -1,6 +1,25 @@
 //"cmp_basic_movement.cpp"
 #include "cmp_audio.h"
 #include <system_resources.h>
+#include "../planet_protector/game.h"
+
+void AudioComponent::setVolumeInternal()
+{
+	float volumeMultiplier = 1.0f;
+	switch (_type)
+	{
+		case Type::Effect:
+		default:
+			volumeMultiplier = Audio::EffectsVolume;
+			break;
+
+		case Type::Music:
+			volumeMultiplier = Audio::MusicVolume;
+			break;
+	}
+
+	_sound->setVolume(_volume * volumeMultiplier * Audio::MasterVolume);
+}
 
 void AudioComponent::loadSound(std::string name)
 {
@@ -14,11 +33,6 @@ void AudioComponent::playSound()
 	{
 		_sound->play();
 	}
-}
-
-void AudioComponent::setVolume(float value)
-{
-	_sound->setVolume(value);
 }
 
 void AudioComponent::update(double)

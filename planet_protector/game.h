@@ -12,5 +12,9 @@ extern Settings settings;
 
 extern std::shared_ptr<class AmbientManager> _ambientManager;
 
-static float MasterVolume = 100.0f;
-static float SoundVolume = 100.0f;
+namespace Audio
+{
+	static float MasterVolume = 1.0f;
+	static float EffectsVolume = 1.0f;
+	static float MusicVolume = 1.0f;
+}

@@ -6,14 +6,35 @@
 
 // A component to allow basic movement behaviour
 class AudioComponent : public Component {
+public:
+	enum Type
+	{
+		Effect,
+		Music
+	};
+
 protected:
 	std::shared_ptr<sf::SoundBuffer> _soundBuffer;
 	std::shared_ptr<sf::Sound> _sound;
+	float _volume;
+	Type _type;
+
+	void setVolumeInternal();
 
 public:
+
 	void loadSound(std::string name);
 	void playSound();
-	void setVolume(float value);
+	void setVolume(float value)
+	{
+		_volume = value;
+		setVolumeInternal();
+	}
+
+	void setSoundType(Type type)
+	{
+		_type = type;
+	}
 
 	std::shared_ptr<sf::Sound> getSound() { return _sound; }
 

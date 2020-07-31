@@ -37,12 +37,12 @@ void TestingScene::Load()
 
 	_player = makeEntity<Player>("player");
 	_player->GetMovementComponent()->teleport(Vector2f(planetRadius, planetRadius + 100.0f));
-	_player->SetGodMode(true);
+	// _player->SetGodMode(true);
 	_camera->AddFollow(_player, 10);
 
 	_player2 = makeEntity<Player>("player");
 	_player2->GetMovementComponent()->teleport(Vector2f(planetRadius, planetRadius + 130.0f));
-	_player2->SetGodMode(true);
+	//_player2->SetGodMode(true);
 	_camera->AddFollow(_player2, 10);
 
 	auto text = makeEntity();
@@ -52,17 +52,7 @@ void TestingScene::Load()
 	_waveText->SetText("Wave 0");
 
 	auto controller = makeEntity<ShipPlayerController>("Player1controls", _player.get());
-	auto controller2 = makeEntity<ShipPlayerController>("Player2controls", _player2.get());
-
-// 	auto enemy = makeEntity<Enemy>("basic");
-// 	enemy->GetMovementComponent()->teleport(_player->getPosition() + Vector2f(50.0f,0.0f));
-// 	enemy->SetTeam(Ship::Team::T_ENEMY);
-// 	_camera->AddFollow(enemy, 1);
-// 
-// 	enemy = makeEntity<Enemy>("bomber");
-// 	enemy->GetMovementComponent()->teleport(_player->getPosition() + Vector2f(150.0f, 0.0f));
-// 	enemy->SetTeam(Ship::Team::T_ENEMY);
-// 	_camera->AddFollow(enemy, 1);
+//	auto controller2 = makeEntity<ShipPlayerController>("Player2controls", _player2.get());
 
 	StartNextWave();
 

@@ -7,6 +7,7 @@
 class ShipPlayerController : public PlayerController {
 protected:
 	std::shared_ptr<defs::Controls> _controls;
+	std::shared_ptr<class TextComponent> _textComponent;
 	Ship* _ship;
 	
 public:
@@ -15,4 +16,6 @@ public:
 	~ShipPlayerController();
 
 	virtual void update(double dt);
+	void tryRestart();
+	void goToMainMenu();
 };

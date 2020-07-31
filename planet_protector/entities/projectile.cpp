@@ -87,7 +87,7 @@ void Projectile::OnBeginOverlap(Entity* const e)
 		Ship* ship = dynamic_cast<Ship*>(e);
 		if (ship)
 		{
-			if (ship->GetTeam() != _owner->GetTeam())
+			if (ship->GetTeam() != GetTeam())
 			{
 				ship->OnHit(_damage);
 				Destroy();

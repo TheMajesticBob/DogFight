@@ -1,6 +1,9 @@
 {
   "Projectile": "bomb_basic",
-  "Sound": "fail.wav",
+  "Sound": {
+    "Filename": "fail.wav",
+    "Volume": 30.0
+  },
   "Shape": "weapons/bomb_basic",
   "Damage": 15.0,
   "RateOfFire": 1.5,

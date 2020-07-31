@@ -64,5 +64,5 @@ void BehaviourTree::render()
 {
 	Entity::render();
 
-	Renderer::queue(&_debugText);
+	// Renderer::queue(&_debugText);
 }
