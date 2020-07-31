@@ -25,6 +25,14 @@ ShipPlayerController::ShipPlayerController(Scene* const s, std::string controlsc
 	InputHandler::BindAxis(_controls->turnRight, 1.0f, FAxisDelegate::from_function<Ship, &Ship::Turn>(_ship));
 }
 
+ShipPlayerController::~ShipPlayerController()
+{
+	InputHandler::UnbindKey(_controls->shoot, Event::KeyReleased, FKeyDelegate::from_function<Ship, &Ship::StopFiring>(_ship));
+	InputHandler::UnbindAxis(_controls->accelerate, FAxisDelegate::from_function<Ship, &Ship::Accelerate>(_ship));
+	InputHandler::UnbindAxis(_controls->turnLeft, FAxisDelegate::from_function<Ship, &Ship::Turn>(_ship));
+	InputHandler::UnbindAxis(_controls->turnRight, FAxisDelegate::from_function<Ship, &Ship::Turn>(_ship));
+}
+
 void ShipPlayerController::update(double dt)
 {
 

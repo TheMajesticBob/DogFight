@@ -1,16 +1,22 @@
 #pragma once
 
-#define DEFINE_DELEGATE(dname, ...) class dname : public DelegateBase<__VA_ARGS__> {		\
-typedef void(*DelType)(void *callee, __VA_ARGS__);											\
-public: dname() : DelegateBase(nullptr, nullptr) {}																			\
-dname(void* callee, DelType function) : DelegateBase(callee, function) {}					\
-template <class T, void (T::*TMethod)(__VA_ARGS__)>											\
-static dname from_function(T* callee)														\
-{																							\
-	dname d(callee, &methodCaller<T, TMethod>);												\
-	return d;																				\
-}																							\
+#define DEFINE_DELEGATE(dname, ...) class dname : public DelegateBase<__VA_ARGS__> {							\
+typedef void(*DelType)(void *callee, __VA_ARGS__);																\
+public: dname() : DelegateBase(nullptr, nullptr) {}																\
+dname(void* callee, DelType function) : DelegateBase(callee, function) {}										\
+template <class T, void (T::*TMethod)(__VA_ARGS__)>																\
+static dname from_function(T* callee)																			\
+{																												\
+	dname d(callee, &methodCaller<T, TMethod>);																	\
+	return d;																									\
+}																												\
+bool operator == (const dname& rhs)																				\
+{																												\
+	return (fpCallbackFunction == rhs.fpCallbackFunction && fpCallee == rhs.fpCallee);							\
+}																												\
 }
+
+
 
 template<typename ...TArgs>
 class DelegateBase
@@ -41,6 +47,11 @@ public:
 	void operator()(TArgs ...params) const
 	{
 		return (*fpCallbackFunction)(fpCallee, params...);
+	}
+
+	bool operator == (const DelegateBase& rhs)
+	{
+		return (fpCallbackFunction == rhs.fpCallbackFunction && fpCallee == rhs.fpCallee);
 	}
 protected:
 	void* fpCallee;

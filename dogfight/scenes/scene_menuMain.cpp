@@ -49,10 +49,14 @@ void MainMenu::Load()
 	_play->setPosition(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y/2));
 	_play->setText("Play");
 
-	auto ambient = makeEntity<AmbientManager>();
-	ambient->setLayerNumber(1);
-	ambient->loadLayer(0, "menu_ambient.wav");
-	ambient->play();
+	if (ents.find("AmbientManager").size() <= 0)
+	{
+		auto ambient = makeEntity<AmbientManager>();
+		ambient->addTag("AmbientManager");
+		ambient->loadLayer("menu_ambient", "menu_ambient.wav");
+		ambient->play("menu_ambient");
+		ambient->setPersistent(true);
+	}
 
 	// Settings Button
 	_settings = makeEntity<Button>(buttonSize);

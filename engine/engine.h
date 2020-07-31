@@ -5,6 +5,7 @@
 #include <maths.h>
 #include <mutex>
 #include <string>
+#include <queue>
 
 class Scene {
 public:
@@ -17,6 +18,15 @@ public:
   virtual void Update(const double& dt);
   virtual void Render();
   bool isLoaded() const;
+
+  void addPersistentEntities(std::queue<std::shared_ptr<Entity>> entities)
+  {
+	  while (entities.size() > 0)
+	  {
+		  ents.list.push_back(entities.front());
+		  entities.pop();
+	  }
+  }
 
   std::shared_ptr<Entity> makeEntity();
 

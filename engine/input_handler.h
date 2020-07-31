@@ -47,9 +47,39 @@ class InputHandler
 			keyMap.emplace(key, pair<int, FKeyDelegate>(action, d));
 		}
 
+		static void UnbindKey(int key, int action, FKeyDelegate d)
+		{
+			for (auto binding = keyMap.begin(); binding != keyMap.end();)
+			{
+				if ((*binding).first == key && (*binding).second.first == action && (*binding).second.second == d)
+				{
+					binding = keyMap.erase(binding);
+				}
+				else 
+				{
+					++binding;
+				}
+			}
+		}
+
 		static void BindAxis(int key, float value, FAxisDelegate d)
 		{
 			axisMap.emplace(key, pair<float, FAxisDelegate>(value, d));
+		}
+
+		static void UnbindAxis(int key, FAxisDelegate d)
+		{
+			for (auto binding = axisMap.begin(); binding != axisMap.end();)
+			{
+				if ((*binding).first == key && (*binding).second.second == d)
+				{
+					binding = axisMap.erase(binding);
+				}
+				else
+				{
+					++binding;
+				}
+			}
 		}
 	
 	private:

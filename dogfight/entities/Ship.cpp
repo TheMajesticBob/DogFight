@@ -108,12 +108,18 @@ void Ship::OnDestroyed()
 
 void Ship::Accelerate(float Value)
 {
-	movementComponent->accelerate(Value);
+	if (movementComponent)
+	{
+		movementComponent->accelerate(Value);
+	}
 }
 
 void Ship::Turn(float Value)
 {
-	movementComponent->turn(Value);
+	if (movementComponent)
+	{
+		movementComponent->turn(Value);
+	}
 }
 
 void Ship::Fire()

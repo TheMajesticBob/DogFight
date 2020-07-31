@@ -46,7 +46,7 @@ void InputHandler::Update(float deltaTime)
 			pair<int, FKeyDelegate> func = it->second;
 			if (func.first == event.action)
 			{
-				func.second();
+				func.second.invokeSafe();
 			}
 		}
 
@@ -73,7 +73,7 @@ void InputHandler::Update(float deltaTime)
 		for (multimap<int, pair<float, FAxisDelegate>>::iterator it = boundAxis.first; it != boundAxis.second; ++it)
 		{
 			pair<float, FAxisDelegate> func = it->second;
-			func.second(func.first);
+			func.second.invokeSafe(func.first);
 		}
 	}
 }

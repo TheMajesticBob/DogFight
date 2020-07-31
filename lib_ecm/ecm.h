@@ -73,6 +73,7 @@ protected:
   bool _alive;       // should be updated
   bool _visible;     // should be rendered
   bool _fordeletion; // should be deleted
+  bool _persistent = false;  // should persist between scenes
   std::set<std::string> _tags;
 
 public:
@@ -106,6 +107,9 @@ public:
   bool isAlive() const;
 
   void setAlive(bool _alive);
+
+  bool is_persistent() { return _persistent; }
+  void setPersistent(bool persistent) { _persistent = persistent; }
 
   void setForDelete();
 

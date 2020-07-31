@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Audio.hpp>
+#define SOUND
 #ifdef SOUND
 #include <SFML/Audio/Sound.hpp>
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <ecm.h>
+#include <map>
 #include <SFML/Audio.hpp>
 
 class AmbientManager : public Entity 
@@ -8,41 +9,34 @@ public:
 	AmbientManager() = delete;
 	AmbientManager(class Scene* const s);
 
-	void play()
+	~AmbientManager()
 	{
-		for (auto layer : _musicLayers)
-		{
-			layer->play();
-		}
 	}
 
-	void stop()
+	void play(std::string layerId)
 	{
-		for (auto layer : _musicLayers)
-		{
-			layer->stop();
-		}
+		_musicLayers[layerId]->play();
 	}
 
-	void setGlobalVolume(float volume) 
+	void stop(std::string layerId)
+	{
+		_musicLayers[layerId]->stop();
+	}
+
+	void setGlobalVolume(float volume)
 	{ 
 		_volumeMultiplier = volume; 
 
 	}
 
-	void setVolume(int layerId, float volume)
+	void setVolume(std::string layerId, float volume)
 	{
 		_musicLayers[layerId]->setVolume(volume);
 	}
 
-	void loadLayer(int layerId, std::string soundName);
-
-	void setLayerNumber(int layerNum)
-	{
-		_musicLayers.resize(layerNum);
-	}
+	void loadLayer(std::string layerId, std::string soundName);
 
 protected:
-	std::vector<std::shared_ptr<sf::Music>> _musicLayers;
+	std::map<std::string, std::shared_ptr<sf::Music>> _musicLayers;
 	float _volumeMultiplier;
 };

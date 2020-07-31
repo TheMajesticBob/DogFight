@@ -6,7 +6,7 @@ AmbientManager::AmbientManager(class Scene* const s)
 {
 }
 
-void AmbientManager::loadLayer(int layerId, std::string soundName)
+void AmbientManager::loadLayer(std::string layerId, std::string soundName)
 {
 	_musicLayers[layerId] = Resources::get<sf::Music>(soundName);
 }

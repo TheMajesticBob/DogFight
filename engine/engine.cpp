@@ -181,9 +181,22 @@ void Engine::ChangeScene(Scene* s, bool forceSync) {
   auto old = _activeScene;
   _activeScene = s;
 
+
+  std::queue<std::shared_ptr<Entity>> persistentEntities;
+
   if (old != nullptr) {
+
+	  for (auto it = old->ents.list.begin(); it != old->ents.list.end(); ++it)
+	  {
+		  if ((*it)->is_persistent())
+		  {
+			  persistentEntities.push(*it);
+		  }
+	  }
     old->UnLoad(); // todo: Unload Async
   }
+
+  _activeScene->addPersistentEntities(persistentEntities);
 
   if (forceSync)
   {
