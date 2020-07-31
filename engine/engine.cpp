@@ -90,7 +90,9 @@ void Engine::Render(RenderWindow& window) {
 
 void Engine::Start(unsigned int width, unsigned int height,
                    const std::string& gameName, Scene* scn) {
-	RenderWindow window(VideoMode(width, height), gameName);
+	sf::VideoMode videoMode(width, height);
+	
+	RenderWindow window(videoMode, gameName, sf::Style::Titlebar | sf::Style::Close);
 	_gameName = gameName;
 	_window = &window;
 	// _window->setFramerateLimit(120);

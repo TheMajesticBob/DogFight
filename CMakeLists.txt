@@ -60,9 +60,7 @@ function(assign_source_group)
 endfunction(assign_source_group)
 
 # Project initialisation
-project(DogFight)
-
-
+project(PlanetProtector)
 
 #### Setup Directories ####
 # Main output directory
@@ -164,23 +162,23 @@ target_include_directories(lib_ecm INTERFACE "${CMAKE_SOURCE_DIR}/lib_ecm" )
 target_link_libraries(lib_ecm PRIVATE lib_maths)
 
 ### Actual game code
-file(GLOB_RECURSE SOURCES dogfight/*.cpp dogfight/*.h)
+file(GLOB_RECURSE SOURCES planet_protector/*.cpp planet_protector/*.h)
 
 # Source files
-file(GLOB_RECURSE CMPNTS dogfight/components/*.cpp dogfight/components/*.h)
-file(GLOB_RECURSE SCENES dogfight/scenes/*.cpp dogfight/scenes/*.h)
-file(GLOB_RECURSE ENTITIES dogfight/entities/*.cpp dogfight/entities/*.h)
+file(GLOB_RECURSE CMPNTS planet_protector/components/*.cpp planet_protector/components/*.h)
+file(GLOB_RECURSE SCENES planet_protector/scenes/*.cpp planet_protector/scenes/*.h)
+file(GLOB_RECURSE ENTITIES planet_protector/entities/*.cpp planet_protector/entities/*.h)
 
 # Add all to project
-add_executable(DOGFIGHT ${SOURCES} ${CMPNTS} ${SCENES} ${ENTITIES} ${RESOURCE_FILES})
+add_executable(PLANET ${SOURCES} ${CMPNTS} ${SCENES} ${ENTITIES} ${RESOURCE_FILES})
 
 # Filter header/source files
 assign_source_group(${SOURCES} ${CMPNTS} ${SCENES} ${ENTITIES} ${RESOURCE_FILES})
 
 # Include and link libs
-target_include_directories(DOGFIGHT SYSTEM PRIVATE ${SFML_INCS} ${B2D_INCS} ${JSON_INCS})
-target_link_libraries(DOGFIGHT lib_engine)
-set(EXECUTABLES ${EXECUTABLES} DOGFIGHT)
+target_include_directories(PLANET SYSTEM PRIVATE ${SFML_INCS} ${B2D_INCS} ${JSON_INCS})
+target_link_libraries(PLANET lib_engine)
+set(EXECUTABLES ${EXECUTABLES} PLANET)
 
 
 
