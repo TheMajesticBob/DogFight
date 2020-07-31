@@ -64,8 +64,15 @@ struct EntityManager {
 };
 
 class Entity {
-  friend struct EntityManager;
-
+	friend struct EntityManager;
+public:
+	enum Team
+	{
+		T_PLAYER,
+		T_ENEMY,
+		T_TEAM3,
+		T_TEAM4
+	};
 protected:
   std::vector<std::shared_ptr<Component>> _components;
   sf::Vector2f _position;
@@ -76,7 +83,12 @@ protected:
   bool _persistent = false;  // should persist between scenes
   std::set<std::string> _tags;
 
+  Team _team;
+
 public:
+	void SetTeam(Team newTeam) { _team = newTeam; }
+	const Team& GetTeam() { return _team; }
+
   void addTag(const std::string& t);
   const std::set<std::string>& getTags() const;
   Scene* const scene;

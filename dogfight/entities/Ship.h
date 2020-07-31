@@ -10,13 +10,6 @@
 class Ship : public Pawn
 {
 	public:
-		enum Team
-		{
-			T_PLAYER,
-			T_ENEMY,
-			T_TEAM3,
-			T_TEAM4
-		};
 
 		Ship() = delete;
 		Ship(Scene* const s, std::string shipDefinition);
@@ -26,9 +19,6 @@ class Ship : public Pawn
 
 		void OnHit(float damage) override;
 		virtual void OnDestroyed();
-
-		void SetTeam(Team newTeam) { team = newTeam; }
-		const Team& GetTeam() { return team; }
 
 		sf::Color GetColor() { return _color; }
 
@@ -76,8 +66,6 @@ class Ship : public Pawn
 		std::vector<std::shared_ptr<class WeaponComponent>> weaponComponents;
 		std::shared_ptr<ShapeComponent> shapeComponent;
 		std::shared_ptr<ShapeComponent> shieldComponent;
-
-		Team team;
 
 		bool _godMode = false;
 

@@ -76,6 +76,7 @@ namespace defs
 
 		float mass;
 
+		bool collideWithProjectiles;
 		bool gravityAffects;
 	};
 
@@ -271,6 +272,7 @@ namespace defs
 		j.at("Projectile").at("Size").at("X").get_to(p.size.x);
 		j.at("Projectile").at("Size").at("Y").get_to(p.size.y);
 		j.at("Projectile").at("InitialSpeed").get_to(p.initialSpeed);
+		j.at("Projectile").at("CollideWithProjectiles").get_to(p.collideWithProjectiles);
 		if (j.at("Projectile").find("InitialRotation") != j.at("Projectile").end())
 		{
 			j.at("Projectile").at("InitialRotation").get_to(p.initialRotation);

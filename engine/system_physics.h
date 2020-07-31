@@ -53,7 +53,7 @@ namespace Physics
 	const uint16 COLLISION_DYNAMIC	= 0x0004;
 
 	// Setup collision masks
-	const uint16 MASK_PROJECTILE = COLLISION_DYNAMIC | COLLISION_STATIC;
+	const uint16 MASK_PROJECTILE = COLLISION_DYNAMIC | COLLISION_STATIC | COLLISION_BULLET;
 	const uint16 MASK_DYNAMIC = COLLISION_DYNAMIC | COLLISION_STATIC;
 
 	const int32 velocityIterations = 6;

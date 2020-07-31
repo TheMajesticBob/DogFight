@@ -36,7 +36,8 @@ public:
 	{
 		_newObjectFunction = newObjectFunction;
 		_expandable = expandable;
-		_pool.reserve(capacity);
+		_pool.clear();
+		_pool.resize(capacity);
 		for (int i = 0; i < capacity; ++i)
 		{
 			_pool.push_back(newObjectFunction());

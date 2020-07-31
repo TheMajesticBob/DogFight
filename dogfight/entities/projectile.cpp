@@ -54,6 +54,8 @@ void Projectile::fire(std::string definition, Entity* const owner, sf::Vector2f 
 	fixtureDef.filter.maskBits = Physics::MASK_PROJECTILE;
 	fixtureDef.isSensor = true;
 	fixtureDef.shape = _projectileShape->getPhysicsShape();
+
+	SetTeam(owner->GetTeam());
 	
 	// Redefine bullet component with new data
 	bulletComponent->redefine(_projectileDefiniton, fixtureDef);
@@ -82,7 +84,7 @@ void Projectile::OnBeginOverlap(Entity* const e)
 {
 	if (_alive && e != _owner)
 	{
-		Ship* ship = static_cast<Ship*>(e);
+		Ship* ship = dynamic_cast<Ship*>(e);
 		if (ship)
 		{
 			if (ship->GetTeam() != _owner->GetTeam())
@@ -93,7 +95,18 @@ void Projectile::OnBeginOverlap(Entity* const e)
 		}
 		else 
 		{
-			Destroy();
+			Projectile* projectile = dynamic_cast<Projectile*>(e);
+			if (projectile)
+			{
+				if (projectile->isAlive() && _projectileDefiniton->collideWithProjectiles && projectile->GetTeam() != GetTeam())
+				{
+					Destroy();
+				}
+			}
+			else 
+			{
+				Destroy();
+			}
 		}
 	}
 }
