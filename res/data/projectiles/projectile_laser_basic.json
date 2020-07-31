@@ -6,7 +6,8 @@
     "Size": {
       "X": 15.0,
       "Y": 5.0
-    }
+    },
+    "CollideWithProjectiles": false
   },
   "Physics": {
     "Mass":  0.1,
