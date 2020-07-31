@@ -64,6 +64,8 @@ class Ship : public Pawn
 		void OnHullHit(float damage);
 		void Fire();
 
+		void OnWeaponFired();
+
 		std::string GetHealth();
 
 		std::shared_ptr<defs::Ship> _shipDefinition;
