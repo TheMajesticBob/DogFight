@@ -1,5 +1,6 @@
 {
   "Projectile": "laser_basic",
+  "Sound": "warning.wav",
   "Shape":  "weapons/laser_basic",
   "Damage": 8.0,
   "RateOfFire": 6.0,

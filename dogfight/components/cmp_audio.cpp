@@ -10,7 +10,10 @@ void AudioComponent::loadSound(std::string name)
 
 void AudioComponent::playSound()
 {
-	_sound->play();
+	if (_soundBuffer)
+	{
+		_sound->play();
+	}
 }
 
 void AudioComponent::setVolume(float value)
