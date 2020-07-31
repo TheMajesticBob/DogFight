@@ -1,8 +1,8 @@
 {
   "Movement": {
-    "Accelerate": 83,
-    "Left": 79,
-    "Right": 81
+    "Accelerate": 73,
+    "Left": 71,
+    "Right": 72
   },
   "Weapons": {
     "BasicAttack": 58
