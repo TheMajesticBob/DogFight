@@ -10,6 +10,11 @@
 using namespace sf;
 using namespace std;
 
+void Settings::MoveToMenu()
+{
+	Engine::ChangeScene((Scene*)&menu);
+}
+
 void Settings::Load()
 {
 	//create camera view
@@ -22,16 +27,22 @@ void Settings::Load()
 	float planetMass = 1000000.0f;
 	auto planet = makeEntity<Planet>(planetRadius, planetMass);
 
-	//create button
+	// Create buttons
 	Vector2f buttonSize(400.0f, 75.0f);
 
-	_menu = makeEntity<Button>(buttonSize);
-	_menu->setPosition(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y / 2));
-	_menu->setText("Back");
-	
+	// Header
+	_head = makeEntity<Button>(Vector2f(500.0f, 60.0f));
+	_head->setText("Settings");
+	_head->setPosition(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y / 2 - 400));
+	_head->setActive(false);
 
-	auto text_mainTitle = makeEntity();
-	auto t = text_mainTitle->addComponent<TextComponent>("Settings");
+	// Back Button
+	_menu = makeEntity<Button>(buttonSize);
+	_menu->onButtonClicked = FButtonClicked::from_function<Settings, &Settings::MoveToMenu>(this);
+	_menu->setPosition(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y / 2 +300));
+	_menu->setText("Back");
+
+	setLoaded(true);
 }
 
 void Settings::UnLoad()
@@ -41,7 +52,5 @@ void Settings::UnLoad()
 
 void Settings::Update(const double& dt)
 {
-	if (_menu->MouseClick()) {
-		Engine::ChangeScene((Scene*)&menu);
-	}
+	Scene::Update(dt);
 }

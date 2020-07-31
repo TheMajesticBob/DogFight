@@ -21,6 +21,9 @@ public:
 	bool isMouseOver();
 	bool MouseClick();
 
+	bool isActive() const;
+	void setActive(bool _active);
+
 	void setText(std::string text);
 
 	FButtonClicked onButtonClicked;
@@ -31,6 +34,8 @@ protected:
 	std::shared_ptr<TextComponent> textComponent;
 	sf::Vector2f mp;
 	bool pressedState = false;
+	bool _active = true;
+	
 
 	sf::Color color;
 };

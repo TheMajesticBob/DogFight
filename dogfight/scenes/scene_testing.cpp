@@ -36,6 +36,7 @@ void TestingScene::Load()
 	_planet = makeEntity<Planet>(_currentLevel->planetRadius, _currentLevel->planetMass);
 	_camera->AddFollow(_planet, 0.2f);
 
+
 	_player = makeEntity<Player>("player");
 	_player->GetMovementComponent()->teleport(Vector2f(planetRadius, planetRadius + 100.0f));
 	_player->SetGodMode(true);
