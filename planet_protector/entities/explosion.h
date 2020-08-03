@@ -63,6 +63,8 @@ protected:
     
 	std::shared_ptr<sf::Texture> _shockwaveTexture;
 
+	Renderer::FPostProcessEffect _ppEffect;
+
     static unsigned char explosionPointer;
     static Explosion explosions[256];
 };

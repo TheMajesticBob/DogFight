@@ -40,7 +40,7 @@ void TestingScene::Load()
 	_player->GetMovementComponent()->teleport(Vector2f(planetRadius, planetRadius + 100.0f));
 	_player->onShipDestroyed = FShipDestroyed::from_function<TestingScene, &TestingScene::DetachShipFromCamera>(this);
 	//_player->onShipDestroyed += FShipDestroyed::from_function<TestingScene, &TestingScene::OnShipDestroyed>(this);
-	// _player->SetGodMode(true);
+	_player->SetGodMode(true);
 	_camera->AddFollow(_player, 10);
 
 	_player2 = makeEntity<Player>("player");

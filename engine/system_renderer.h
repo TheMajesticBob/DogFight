@@ -16,6 +16,28 @@ struct FDrawable
 
 namespace Renderer {
 
+	struct FPostProcessEffect
+	{
+	public:
+		FPostProcessEffect()
+		{
+			set_for_delete = false;
+		}
+
+		FPostProcessEffect(sf::Shader* effect) : effect(effect)
+		{
+			set_for_delete = false;
+		}
+
+		const bool operator==(const FPostProcessEffect& rhs) const 
+		{
+			return effect == rhs.effect;
+		}
+
+		sf::Shader* effect;
+		bool set_for_delete;
+	};
+
 void initialise(sf::RenderWindow&);
 
 void shutdown();
@@ -26,9 +48,9 @@ void queue(const sf::Drawable* s, int layer = 0);
 
 void queue(const FDrawable* s);
 
-void add_postprocess_effect(sf::Shader* effect);
+void add_postprocess_effect(FPostProcessEffect& effect);
 
-void remove_postprocess_effect(sf::Shader* effect);
+void remove_postprocess_effect(FPostProcessEffect& effect);
 
 void render();
 }; // namespace Renderer

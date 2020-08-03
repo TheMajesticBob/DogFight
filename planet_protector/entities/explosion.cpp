@@ -19,7 +19,7 @@ void ExplosionManager::update(double dt)
 
 void ExplosionManager::render()
 {
-	_shockwaveRT.clear(sf::Color(120, 0, 0, 120));
+	_shockwaveRT.clear(sf::Color(128,128,128,0));
 	_shockwaveRT.setView(Engine::GetWindow().getView());
     
     for (int i = 0; i < 256; ++i)
@@ -36,10 +36,6 @@ void ExplosionManager::render()
     }
     
     _shockwaveRT.display();
-
-	sf::Texture texture = _shockwaveRT.getTexture();
-
-	UI::queue(&_textureSprite);
 }
 
 void ExplosionManager::Fire(const sf::Vector2f &pos, const sf::Vector2f &size, const float &lifetime)
@@ -73,11 +69,13 @@ ExplosionManager::ExplosionManager(class Scene* const s)
 	
 	_shockwaveShader.setUniform("displacementMap", _shockwaveRT.getTexture());
 	_textureSprite = sf::Sprite(_shockwaveRT.getTexture());
-	//_textureSprite.setOrigin(sf::Vector2f(Engine::getWindowSize())/2.0f);
-	//Renderer::add_postprocess_effect(&_shockwaveShader);
+
+
+	_ppEffect = Renderer::FPostProcessEffect(&_shockwaveShader);
+	Renderer::add_postprocess_effect(_ppEffect);
 }
 
 ExplosionManager::~ExplosionManager()
 {
-	//Renderer::remove_postprocess_effect(&_shockwaveShader);
+	Renderer::remove_postprocess_effect(_ppEffect);
 }
