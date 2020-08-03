@@ -54,14 +54,6 @@ public:
 	virtual ~Component();
 };
 
-struct EntityManager {
-  std::vector<std::shared_ptr<Entity>> list;
-  void update(double dt);
-  void render();
-  std::vector<std::shared_ptr<Entity>> find(const std::string& tag) const;
-  std::vector<std::shared_ptr<Entity>>
-  find(const std::vector<std::string>& tags) const;
-};
 
 class Entity {
 	friend struct EntityManager;
@@ -73,6 +65,9 @@ public:
 		T_TEAM3,
 		T_TEAM4
 	};
+private:
+	std::shared_ptr<Entity> _shared_to_me;
+
 protected:
   std::vector<std::shared_ptr<Component>> _components;
   sf::Vector2f _position;
@@ -88,6 +83,9 @@ protected:
 public:
 	void SetTeam(Team newTeam) { _team = newTeam; }
 	const Team& GetTeam() { return _team; }
+
+	std::shared_ptr<Entity> getShared() { return _shared_to_me; }
+	void setSharedPtr(std::shared_ptr<Entity> ptr) { _shared_to_me = ptr; }
 
   void addTag(const std::string& t);
   const std::set<std::string>& getTags() const;
@@ -162,6 +160,22 @@ public:
     }
     return ret;
   }
+};
+
+struct EntityManager {
+	std::vector<std::shared_ptr<Entity>> list;
+	void update(double dt);
+	void render();
+	std::vector<std::shared_ptr<Entity>> find(const std::string& tag) const;
+	std::vector<std::shared_ptr<Entity>>
+		find(const std::vector<std::string>& tags) const;
+	void clear() {
+		for (std::shared_ptr<Entity> e : list)
+		{
+			e->setForDelete();
+		}
+		list.clear();
+	}
 };
 
 class Pawn : public Entity

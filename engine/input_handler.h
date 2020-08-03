@@ -2,6 +2,9 @@
 #include <map>
 #include <queue>
 #include <chrono>
+
+#include <SFML/Window/Keyboard.hpp>
+
 #include "delegates.h"
 
 using namespace std;
@@ -21,6 +24,32 @@ struct key_event {
 		modifiers = m;
 		time_of_event = t;
 	}
+};
+
+struct FAxisDelStorage
+{
+	FAxisDelStorage() {}
+
+	FAxisDelStorage(FAxisDelegate delegate, float value = 0.0f)
+		: del(delegate), value(value)
+	{
+
+	}
+
+	FAxisDelStorage& operator=(const FAxisDelStorage &rhs)
+	{
+		del = rhs.del;
+		value = rhs.value;
+		return *this;
+	}
+
+	const bool operator == (const FAxisDelStorage& rhs) const
+	{
+		return (del == rhs.del);
+	}
+
+	FAxisDelegate del;
+	float value;
 };
 
 class InputHandler
@@ -44,52 +73,31 @@ class InputHandler
 		// Method binding a key action to a delegate
 		static void BindKey(int key, int action, FKeyDelegate d)
 		{
-			keyMap.emplace(key, pair<int, FKeyDelegate>(action, d));
+			_keyMap[key][action] += d.getDelegateInternal();
 		}
 
 		static void UnbindKey(int key, int action, FKeyDelegate d)
 		{
-			for (auto binding = keyMap.begin(); binding != keyMap.end();)
-			{
-				if ((*binding).first == key && (*binding).second.first == action && (*binding).second.second == d)
-				{
-					binding = keyMap.erase(binding);
-				}
-				else 
-				{
-					++binding;
-				}
-			}
+			_keyMap[key][action] -= d.getDelegateInternal();
 		}
 
 		static void BindAxis(int key, float value, FAxisDelegate d)
 		{
-			axisMap.emplace(key, pair<float, FAxisDelegate>(value, d));
+			_axisMap[key].push_back(FAxisDelStorage(d, value));
 		}
 
 		static void UnbindAxis(int key, FAxisDelegate d)
 		{
-			for (auto binding = axisMap.begin(); binding != axisMap.end();)
-			{
-				if ((*binding).first == key && (*binding).second.second == d)
-				{
-					binding = axisMap.erase(binding);
-				}
-				else
-				{
-					++binding;
-				}
-			}
+			_axisMap[key].erase(std::remove(_axisMap[key].begin(), _axisMap[key].end(), FAxisDelStorage(d)), _axisMap[key].end());
 		}
 	
-	private:
-		// Map holding pairs of key actions and their respective methods called when key state changes
-		static multimap<int, pair<int, FKeyDelegate>> keyMap;
-		static multimap<int, pair<float, FAxisDelegate>> axisMap;
+	private:		
+		static FKeyDelegate _keyMap[sf::Keyboard::KeyCount][2];
+		static std::vector<FAxisDelStorage> _axisMap[sf::Keyboard::KeyCount];
 
 		static double mouse_x, mouse_y, previous_x, previous_y;
 		static float timeSinceMouseMovement;
 
-		static map<int, bool> keys;
+		static bool keys[sf::Keyboard::KeyCount];
 		static queue<key_event> unhandled_keys;
 };

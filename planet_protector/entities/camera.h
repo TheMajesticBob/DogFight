@@ -27,6 +27,7 @@ protected:
 public:
 	Camera() = delete;
 	Camera(Scene* const s);
+	~Camera();
 
 	void update(double) override;
 

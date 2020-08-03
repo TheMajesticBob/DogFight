@@ -104,6 +104,8 @@ void Ship::OnHit(float damage)
 void Ship::OnDestroyed()
 {
 	// TODO: Make Boom!
+
+	onShipDestroyed.invokeSafe(getShared());
 }
 
 void Ship::Accelerate(float Value)

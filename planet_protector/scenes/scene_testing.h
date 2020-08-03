@@ -17,6 +17,11 @@ private:
 	void StartNextWave();
 	void LevelCompleted();
 
+	void DetachShipFromCamera(std::shared_ptr<class Entity> ship);
+	void OnShipDestroyed(std::shared_ptr<class Entity> ship);
+
+	std::shared_ptr<class ExplosionManager> _explosionManager;
+
 	std::shared_ptr<defs::Level> _currentLevel;
 	std::vector<defs::Wave> _waveData;
 	defs::Wave currentWave;

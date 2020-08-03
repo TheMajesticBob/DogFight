@@ -31,4 +31,6 @@ void Enemy::update(double dt)
 void Enemy::OnDestroyed()
 {
 	_behaviourTree->setForDelete();
+
+	Ship::OnDestroyed();
 }

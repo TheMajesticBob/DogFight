@@ -68,8 +68,9 @@ void Engine::Update(double dt) {
     Loading_update(dt, _activeScene);
   } else if (_activeScene != nullptr) 
   {
-    Physics::update(dt);
-    _activeScene->Update(dt);
+	  InputHandler::Update(_framerateCap);
+	  Physics::update(dt);
+	  _activeScene->Update(dt);
   }
 }
 
@@ -152,7 +153,6 @@ void Engine::Start(unsigned int width, unsigned int height,
 		{
 			if (_activeScene->isLoaded())
 			{
-				InputHandler::Update(_framerateCap);
 			}
 
 			Update(_framerateCap);
@@ -247,7 +247,7 @@ void Scene::setLoaded(bool b) {
 void Scene::UnLoad() 
 {
 	setLoaded(false);
-	ents.list.clear();
+	ents.clear();
 }
 
 void Scene::LoadAsync() { _loaded_future = std::async(&Scene::Load, this); }

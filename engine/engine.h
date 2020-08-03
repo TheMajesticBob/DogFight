@@ -36,6 +36,8 @@ public:
 	  static_assert(std::is_base_of<Entity, T>::value, "T != entity");
 
 	  auto e = std::make_shared<T>(this, params...);
+	  Entity* en = e.get();
+	  en->setSharedPtr(e);
 	  ents.list.push_back(e);
 	  return std::move(e);
   }
@@ -45,7 +47,9 @@ public:
   {
     static_assert(std::is_base_of<Entity, T>::value, "T != entity");
 
-    auto e = std::make_shared<T>(this);
+	auto e = std::make_shared<T>(this);
+	Entity* en = e.get();
+	en->setSharedPtr(e);
     ents.list.push_back(e);
     return std::move(e);
   }

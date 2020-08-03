@@ -13,8 +13,8 @@ struct FDrawable
 
 	}
 };
-namespace Renderer {
 
+namespace Renderer {
 
 void initialise(sf::RenderWindow&);
 
@@ -22,9 +22,13 @@ void shutdown();
 
 void update(const double&);
 
-void queue(const sf::Drawable* s);
+void queue(const sf::Drawable* s, int layer = 0);
 
 void queue(const FDrawable* s);
+
+void add_postprocess_effect(sf::Shader* effect);
+
+void remove_postprocess_effect(sf::Shader* effect);
 
 void render();
 }; // namespace Renderer

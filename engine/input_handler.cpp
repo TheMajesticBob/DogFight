@@ -4,10 +4,10 @@
 #include <glm/glm.hpp>
 #include "glm/gtc/constants.inl"
 
-map<int, bool> InputHandler::keys;
+bool InputHandler::keys[sf::Keyboard::KeyCount];
 queue<key_event> InputHandler::unhandled_keys;
-multimap<int, pair<int, FKeyDelegate>> InputHandler::keyMap;
-multimap<int, pair<float, FAxisDelegate>> InputHandler::axisMap;
+FKeyDelegate InputHandler::_keyMap[sf::Keyboard::KeyCount][2];
+std::vector<FAxisDelStorage> InputHandler::_axisMap[sf::Keyboard::KeyCount];
 double InputHandler::mouse_x, InputHandler::mouse_y, InputHandler::previous_x, InputHandler::previous_y;
 float InputHandler::timeSinceMouseMovement = 0.0f;
 float InputHandler::DeltaTime = 0.0f;
@@ -31,55 +31,24 @@ void InputHandler::Update(float deltaTime)
 		key_event event = unhandled_keys.front();
 		unhandled_keys.pop();
 
-		// Handle key press/release
-		pair<multimap<int, pair<int, FKeyDelegate>>::iterator, multimap<int, pair<int, FKeyDelegate>>::iterator> boundFunctions;
-
-		// Find iterators
-		boundFunctions = keyMap.equal_range(event.key);
-
-		multimap<int, pair<int, FKeyDelegate>>::const_iterator lastIt;
-		// Go through bound functions and run them
-		for (multimap<int, pair<int, FKeyDelegate>>::iterator it = boundFunctions.first; it != boundFunctions.second; ++it)
-		{
-			lastIt = it;
-			pair<int, FKeyDelegate> func = it->second;
-			if (func.first == event.action)
-			{
-				func.second.invokeSafe();
-			}
-			
-			// Get new range and make sure we can increment the iterator in case we just unbound
-			auto newFunctions = keyMap.equal_range(event.key);
-			if (newFunctions.first == boundFunctions.second)
-			{
-				break;
-			}
-		}
+		_keyMap[event.key][event.action].invokeSafe();
 
 		// Set a flag for held buttons to run axis functions on them
 		keys[event.key] = event.action == sf::Event::KeyPressed;
 	}
 
 	// Handle axis
-	for (auto keyevent : keys)
+	for (int i = 0; i < sf::Keyboard::KeyCount; ++i)
 	{
 		// If key is not held skip it
-		if (!keyevent.second)
+		if (!keys[i])
 		{
 			continue;
 		}
 
-		// Create a pair of iterators to look for any functions bound to selected key
-		pair<multimap<int, pair<float, FAxisDelegate>>::iterator, multimap<int, pair<float, FAxisDelegate>>::iterator> boundAxis;
-
-		// Find iterators
-		boundAxis = axisMap.equal_range(keyevent.first);
-
-		// Go through bound functions and run them
-		for (multimap<int, pair<float, FAxisDelegate>>::iterator it = boundAxis.first; it != boundAxis.second; ++it)
+		for (FAxisDelStorage& del : _axisMap[i])
 		{
-			pair<float, FAxisDelegate> func = it->second;
-			func.second.invokeSafe(func.first);
+			del.del.invokeSafe(del.value);
 		}
 	}
 }

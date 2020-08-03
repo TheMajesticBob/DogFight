@@ -9,6 +9,11 @@ Camera::Camera(Scene* const s)
 	_viewSize = _view.getSize();
 }
 
+Camera::~Camera()
+{
+
+}
+
 void Camera::update(double)
 {
 	Engine::GetWindow().setView(_view);

@@ -6,6 +6,10 @@
 #include "GL/glew.h"
 #include <SFML/Graphics.hpp>
 #include "SFML/OpenGL.hpp"
+#include <delegates.h>
+
+DEFINE_DELEGATE(FShipDestroyed, std::shared_ptr<class Entity>);
+DEFINE_DELEGATE(FOnDestroyed);
 
 class Ship : public Pawn
 {
@@ -48,6 +52,8 @@ class Ship : public Pawn
 
 		void StartFiring() { _isFiring = true; }
 		void StopFiring() { _isFiring = false; }
+
+		FShipDestroyed onShipDestroyed;
 
 	protected:
 		void OnShieldHit(float damage);

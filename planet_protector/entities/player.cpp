@@ -7,6 +7,11 @@ Player::Player(Scene* const s, std::string shipDefinition) : Ship(s, shipDefinit
 	SetColor(sf::Color(0, 255, 0));
 }
 
+Player::~Player()
+{
+
+}
+
 void Player::update(double dt)
 {
 	Ship::update(dt);

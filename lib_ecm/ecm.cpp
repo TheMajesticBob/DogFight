@@ -54,6 +54,8 @@ void Entity::setForDelete() {
   _fordeletion = true;
   _alive = false;
   _visible = false;
+
+  _shared_to_me = nullptr;
 }
 
 bool Entity::isVisible() const { return _visible; }

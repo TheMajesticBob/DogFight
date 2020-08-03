@@ -25,7 +25,8 @@ void MainMenu::Load()
 {
 	//create camera view
 	auto camera = makeEntity<Camera>();
-	camera->setPosition(Vector2f(1000.0f, 500.0f));
+	//camera->setPosition(Vector2f(1000.0f, 500.0f));
+	camera->setPosition(Vector2f(0.0f, 0.0f));
 	camera->setScale(1.0f);
 	
 	// Create planet
@@ -60,7 +61,7 @@ void MainMenu::Load()
 
 	// Settings Button
 	_settings = makeEntity<Button>(buttonSize);
-	_settings->onButtonClicked = FButtonClicked::from_function<MainMenu, &MainMenu::MoveToSettings>(this);
+	//_settings->onButtonClicked = FButtonClicked::from_function<MainMenu, &MainMenu::MoveToSettings>(this);
 	_settings->setPosition(Vector2f(Engine::getWindowSize().x / 2, (Engine::getWindowSize().y / 2) + 100));
 	_settings->setText("Settings");		
 
