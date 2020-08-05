@@ -13,6 +13,7 @@
 using namespace sf;
 using namespace std;
 Scene* Engine::_activeScene = nullptr;
+bool Engine::_isPaused = false;
 std::string Engine::_gameName;
 double Engine::_framerateCap = 1 / 200.0;
 
@@ -36,11 +37,11 @@ void Loading_render() {
   static CircleShape octagon(80, 8);
   octagon.setOrigin(80, 80);
   octagon.setRotation(loadingspinner);
-  octagon.setPosition(Vcast<float>(Engine::GetWindowSize()) * .5f);
+  //octagon.setPosition(Vcast<float>(Engine::GetWindowSize()) * .5f);
   octagon.setFillColor(Color(255,255,255,min(255.f,40.f*loadingTime)));
   static Text t("Loading", *Resources::get<sf::Font>("RobotoMono-Regular.ttf"));
   t.setFillColor(Color(255,255,255,min(255.f,40.f*loadingTime)));
-  t.setPosition(Vcast<float>(Engine::GetWindowSize()) * Vector2f(0.4f,0.3f));
+  t.setPosition(Vector2f(0.4f,0.3f));
   Renderer::queue(&t);
   Renderer::queue(&octagon);
 }
@@ -65,14 +66,15 @@ void Engine::Update(double dt)
 		}
 	}
 
+	InputHandler::Update(dt);
+
 	if (loading) 
 	{
 	    Loading_update(dt, _activeScene);
 	} 
 	else if (_activeScene != nullptr) 
 	{
-		InputHandler::Update(_framerateCap);
-		if (true) // Is not paused?
+		if (!_isPaused) // Is not paused?
 		{
 			Physics::update(dt);
 			_activeScene->Update(dt);
@@ -81,9 +83,12 @@ void Engine::Update(double dt)
 }
 
 void Engine::Render(RenderWindow& window) {
-  if (loading) {
+  if (loading) 
+  {
     Loading_render();
-  } else if (_activeScene != nullptr) {
+  }
+  else if (_activeScene != nullptr) 
+  {
     _activeScene->Render();
   }
 
@@ -102,6 +107,7 @@ void Engine::Start(unsigned int width, unsigned int height,
 	RenderWindow window(videoMode, gameName, sf::Style::Titlebar | sf::Style::Close);
 	_gameName = gameName;
 	_window = &window;
+	_isPaused = false;
 
 	Renderer::initialise(window);
 	Physics::initialise();
@@ -116,14 +122,15 @@ void Engine::Start(unsigned int width, unsigned int height,
 
 	while (window.isOpen()) 
 	{
+		double newTime = clock.getElapsedTime().asSeconds();
+		double frameTime = newTime - currentTime;
+		currentTime = newTime;
+
 		if (acc < 0)
 		{
 			acc = 0;
 		}
-
-		double newTime = clock.getElapsedTime().asSeconds();
-		double frameTime = newTime - currentTime;
-		currentTime = newTime;
+		acc += frameTime;
 
 	    Event event;
 	    while (window.pollEvent(event)) 
@@ -138,23 +145,14 @@ void Engine::Start(unsigned int width, unsigned int height,
 				Physics::setDebugDraw(!Physics::getDebugDraw());
 			}
 
-			if (event.type == Event::KeyPressed)
+			if (event.type == Event::KeyPressed || event.type == Event::KeyReleased)
 			{
-				InputHandler::KeyboardHandler(event.key.code, 0, Event::KeyPressed, 0);
-			}
-			if (event.type == Event::KeyReleased)
-			{
-				InputHandler::KeyboardHandler(event.key.code, 0, Event::KeyReleased, 0);
+				InputHandler::KeyboardHandler(event.key.code, 0, event.type, 0);
 			}
 		}
-// 		if (Keyboard::isKeyPressed(Keyboard::Escape)) 
-// 		{
-// 			window.close();
-// 		}
 
 		window.clear();
 		
-		acc += frameTime;
 		while (acc >= _framerateCap)
 		{
 			if (_activeScene->IsLoaded())
@@ -162,7 +160,6 @@ void Engine::Start(unsigned int width, unsigned int height,
 			}
 
 			Update(_framerateCap);
-
 			acc -= _framerateCap;
 		}
 

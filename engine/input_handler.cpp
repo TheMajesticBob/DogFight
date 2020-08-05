@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include "glm/gtc/constants.inl"
 
+bool InputHandler::_mouseState[sf::Mouse::ButtonCount];
+bool InputHandler::_lastMouseState[sf::Mouse::ButtonCount];
 bool InputHandler::keys[sf::Keyboard::KeyCount];
 queue<key_event> InputHandler::unhandled_keys;
 FKeyDelegate InputHandler::_keyMap[sf::Keyboard::KeyCount][2];
@@ -15,6 +17,12 @@ float InputHandler::DeltaTime = 0.0f;
 InputHandler::InputHandler()
 {
 	GetMousePos(&previous_x, &previous_y);
+
+	for (int i = 0; i < sf::Mouse::ButtonCount; ++i)
+	{
+		_mouseState[i] = false;
+		_lastMouseState[i] = false;
+	}
 }
 
 InputHandler::~InputHandler()
@@ -25,8 +33,15 @@ void InputHandler::Update(float deltaTime)
 {
 	DeltaTime = deltaTime;
 	timeSinceMouseMovement += deltaTime;
+	
+	std::copy(std::begin(_mouseState), std::end(_mouseState), std::begin(_lastMouseState));
+	for (int i = 0; i < sf::Mouse::ButtonCount; ++i)
+	{
+		_mouseState[i] = sf::Mouse::isButtonPressed((sf::Mouse::Button)i);
+	}
 
-	while (!unhandled_keys.empty()) {
+	while (!unhandled_keys.empty()) 
+	{
 		// Get keys from the queue
 		key_event event = unhandled_keys.front();
 		unhandled_keys.pop();
@@ -105,10 +120,4 @@ void InputHandler::MousePosHandler(double xpos, double ypos)
 	mouse_x = xpos;
 	mouse_y = ypos;
 	timeSinceMouseMovement = 0.0f;
-}
-
-// Handles mouse buttons (or does it?)
-void InputHandler::MouseButtonHandler(int button, int action, int mods)
-{
-
 }

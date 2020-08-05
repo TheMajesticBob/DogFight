@@ -12,7 +12,10 @@ class Scene
 	public:
 		Scene() = default;
 		virtual ~Scene();
-		virtual void Load() = 0;
+		virtual void Load()
+		{
+			SetLoaded(true);
+		}
 		
 		virtual void LoadAsync();
 		virtual void UnLoad();

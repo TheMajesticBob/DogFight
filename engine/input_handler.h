@@ -4,6 +4,7 @@
 #include <chrono>
 
 #include <SFML/Window/Keyboard.hpp>
+#include <SFML/Window/Mouse.hpp>
 
 #include "delegates.h"
 
@@ -62,10 +63,11 @@ class InputHandler
 		static void GetMouseDelta(double* xdelta, double* ydelta);
 		static void GetMousePos(double* xpos, double* ypos);
 
+		static bool GetMouseState(int button) { return _mouseState[button]; }
+		static bool GetLastMouseState(int button) { return _lastMouseState[button]; }
 		// Input callbacks
 		static void KeyboardHandler(int key, int scancode, int action, int mods);
 		static void MousePosHandler(double xpos, double ypos);
-		static void MouseButtonHandler(int button, int action, int mods);
 
 		static void Update(float deltaTime);
 		static float DeltaTime;
@@ -91,7 +93,10 @@ class InputHandler
 			_axisMap[key].erase(std::remove(_axisMap[key].begin(), _axisMap[key].end(), FAxisDelStorage(d)), _axisMap[key].end());
 		}
 	
-	private:		
+private:
+		static bool _lastMouseState[sf::Mouse::ButtonCount];
+		static bool _mouseState[sf::Mouse::ButtonCount];
+
 		static FKeyDelegate _keyMap[sf::Keyboard::KeyCount][2];
 		static std::vector<FAxisDelStorage> _axisMap[sf::Keyboard::KeyCount];
 
