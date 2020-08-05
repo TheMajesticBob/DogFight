@@ -39,37 +39,37 @@ void TestingScene::Load()
 	_player = makeEntity<Player>("player");
 	_player->GetMovementComponent()->teleport(Vector2f(planetRadius, planetRadius + 100.0f));
 	_player->onShipDestroyed = FShipDestroyed::from_function<TestingScene, &TestingScene::DetachShipFromCamera>(this);
-	//_player->onShipDestroyed += FShipDestroyed::from_function<TestingScene, &TestingScene::OnShipDestroyed>(this);
+	_player->onShipDestroyed += FShipDestroyed::from_function<TestingScene, &TestingScene::OnShipDestroyed>(this);
 	_player->SetGodMode(true);
 	_camera->AddFollow(_player, 10);
 
 	_player2 = makeEntity<Player>("player");
 	_player2->GetMovementComponent()->teleport(Vector2f(planetRadius, planetRadius + 130.0f));
 	_player2->onShipDestroyed = FShipDestroyed::from_function<TestingScene, &TestingScene::DetachShipFromCamera>(this);
-	//_player2->onShipDestroyed += FShipDestroyed::from_function<TestingScene, &TestingScene::OnShipDestroyed>(this);
+	_player2->onShipDestroyed += FShipDestroyed::from_function<TestingScene, &TestingScene::OnShipDestroyed>(this);
 	//_player2->SetGodMode(true);
-	//_camera->AddFollow(_player2, 10);
+	_camera->AddFollow(_player2, 10);
 
-	auto text = makeEntity();
+	auto text = MakeEntity();
 	text->setPosition({ 50.0f, 50.0f });
 	_waveText = text->addComponent<TextComponent>();
 	_waveText->setDrawOnUI(true);
 	_waveText->SetText("Wave 0");
 
 	auto controller = makeEntity<ShipPlayerController>("Player1controls", _player.get());
-//	auto controller2 = makeEntity<ShipPlayerController>("Player2controls", _player2.get());
+	auto controller2 = makeEntity<ShipPlayerController>("Player2controls", _player2.get());
 
 	_explosionManager = makeEntity<ExplosionManager>();
 
 	StartNextWave();
 
-	setLoaded(true);
+	SetLoaded(true);
 }
 
 void TestingScene::Update(const double& dt)
 {
 	if (Keyboard::isKeyPressed(Keyboard::BackSpace)) {
-		Engine::ChangeScene(&menu, true);
+		Engine::ChangeScene(&menu);
 	}
 
 	if (_currentLevel != nullptr && _waveRunning)
@@ -191,10 +191,16 @@ void TestingScene::LevelCompleted()
 
 void TestingScene::DetachShipFromCamera(std::shared_ptr<class Entity> ship)
 {
-	_camera->RemoveFollow(ship);
+	if (ship != nullptr)
+	{
+		_camera->RemoveFollow(ship);
+	}
 }
 
 void TestingScene::OnShipDestroyed(std::shared_ptr<class Entity> ship)
 {
-	_explosionManager->Fire(ship->getPosition(), sf::Vector2f(300.0f, 300.0f), 4.0f);
+	if (ship != nullptr)
+	{
+		_explosionManager->Fire(ship->getPosition(), sf::Vector2f(300.0f, 300.0f), 4.0f);
+	}
 }

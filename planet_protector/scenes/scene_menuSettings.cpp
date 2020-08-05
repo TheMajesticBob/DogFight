@@ -23,7 +23,7 @@ void Settings::Load()
 	camera->setScale(1.0f);
 
 	// Create planet
-	float planetRadius = Engine::getWindowSize().x / 2;
+	float planetRadius = Engine::GetWindowSize().x / 2;
 	float planetMass = 1000000.0f;
 	auto planet = makeEntity<Planet>(planetRadius, planetMass);
 
@@ -33,16 +33,16 @@ void Settings::Load()
 	// Header
 	_head = makeEntity<Button>(Vector2f(500.0f, 60.0f));
 	_head->setText("Settings");
-	_head->setPosition(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y / 2 - 400));
+	_head->setPosition(Vector2f(Engine::GetWindowSize().x / 2, Engine::GetWindowSize().y / 2 - 400));
 	_head->setActive(false);
 
 	// Back Button
 	_menu = makeEntity<Button>(buttonSize);
 	_menu->onButtonClicked = FButtonClicked::from_function<Settings, &Settings::MoveToMenu>(this);
-	_menu->setPosition(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y / 2 +300));
+	_menu->setPosition(Vector2f(Engine::GetWindowSize().x / 2, Engine::GetWindowSize().y / 2 +300));
 	_menu->setText("Back");
 
-	setLoaded(true);
+	SetLoaded(true);
 }
 
 void Settings::UnLoad()

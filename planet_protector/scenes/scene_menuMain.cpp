@@ -7,13 +7,14 @@
 #include "../entities/camera.h"
 #include "../entities/button.h"
 #include "../entities/ambient_manager.h"
+#include <input_handler.h>
 
 using namespace sf;
 using namespace std;
 
 void MainMenu::MoveToGame()
 {
-	Engine::ChangeScene(&testing, true);
+	Engine::ChangeScene(&testing);
 }
 
 void MainMenu::MoveToSettings()
@@ -30,7 +31,7 @@ void MainMenu::Load()
 	camera->setScale(1.0f);
 	
 	// Create planet
-	float planetRadius = Engine::getWindowSize().x / 2;
+	float planetRadius = Engine::GetWindowSize().x / 2;
 	float planetMass = 1000000.0f;
 	auto planet = makeEntity<Planet>(planetRadius, planetMass);	
 
@@ -40,14 +41,14 @@ void MainMenu::Load()
 	// Menu Header
 	_head = makeEntity<Button>(Vector2f(500.0f, 60.0f));
 	_head->setText("~Planet Protector~");
-	_head->setPosition(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y / 2 - 100));
+	_head->setPosition(Vector2f(Engine::GetWindowSize().x / 2, Engine::GetWindowSize().y / 2 - 100));
 	// Stops header from being highlighted
 	_head->setActive(false); 
 	   
 	// Play Button
 	_play = makeEntity<Button>(buttonSize);
 	_play->onButtonClicked = FButtonClicked::from_function<MainMenu, &MainMenu::MoveToGame>(this);
-	_play->setPosition(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y/2));
+	_play->setPosition(Vector2f(Engine::GetWindowSize().x / 2, Engine::GetWindowSize().y/2));
 	_play->setText("Play");
 
 	if (ents.find("AmbientManager").size() <= 0)
@@ -62,25 +63,34 @@ void MainMenu::Load()
 	// Settings Button
 	_settings = makeEntity<Button>(buttonSize);
 	//_settings->onButtonClicked = FButtonClicked::from_function<MainMenu, &MainMenu::MoveToSettings>(this);
-	_settings->setPosition(Vector2f(Engine::getWindowSize().x / 2, (Engine::getWindowSize().y / 2) + 100));
+	_settings->setPosition(Vector2f(Engine::GetWindowSize().x / 2, (Engine::GetWindowSize().y / 2) + 100));
 	_settings->setText("Settings");		
 
-	setLoaded(true);
+	InputHandler::BindKey(sf::Keyboard::Escape, sf::Event::KeyPressed, FKeyDelegate::from_function<MainMenu, &MainMenu::Quit>(this));
+
+	SetLoaded(true);
 }
 
 void MainMenu::UnLoad()
 {
-	Scene::UnLoad();
+	InputHandler::UnbindKey(sf::Keyboard::Escape, sf::Event::KeyPressed, FKeyDelegate::from_function<MainMenu, &MainMenu::Quit>(this));
 
 	_play.reset();
 	_settings.reset();
+
+	Scene::UnLoad();
+}
+
+void MainMenu::Quit()
+{
+	Engine::GetWindow().close();
 }
 
 void MainMenu::Update(const double& dt)
 {	
 	if (Keyboard::isKeyPressed(Keyboard::Num1))
 	{
-		Engine::ChangeScene(&testing, true);
+		Engine::ChangeScene(&testing);
 	}
 
 	Scene::Update(dt);

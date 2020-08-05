@@ -57,7 +57,7 @@ ExplosionManager::ExplosionManager(class Scene* const s)
 {
 	_shockwaveTexture = Resources::get<sf::Texture>("shockwave.png");
 
-	if (!_shockwaveRT.create(Engine::getWindowSize().x, Engine::getWindowSize().y))
+	if (!_shockwaveRT.create(Engine::GetWindowSize().x, Engine::GetWindowSize().y))
 	{
 		cerr << "Failed to initialize shockwave rendertarget!" << endl;
 	}

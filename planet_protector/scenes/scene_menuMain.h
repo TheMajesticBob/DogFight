@@ -19,5 +19,7 @@ public:
 
     void UnLoad() override;
 
+	void Quit();
+
     void Update(const double& dt) override;
 };

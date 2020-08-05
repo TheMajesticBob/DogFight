@@ -5,7 +5,7 @@
 Camera::Camera(Scene* const s)
 	: Entity(s)
 {
-	_view = sf::View(sf::FloatRect(0.0f, 0.0f, Engine::getWindowSize().x, Engine::getWindowSize().y));
+	_view = sf::View(sf::FloatRect(0.0f, 0.0f, Engine::GetWindowSize().x, Engine::GetWindowSize().y));
 	_viewSize = _view.getSize();
 }
 

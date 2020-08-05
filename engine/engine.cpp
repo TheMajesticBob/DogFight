@@ -23,7 +23,7 @@ static RenderWindow* _window;
 
 void Loading_update(float dt, const Scene* const scn) {
   //  cout << "Eng: Loading Screen\n";
-  if (scn->isLoaded()) {
+  if (scn->IsLoaded()) {
     cout << "Eng: Exiting Loading Screen\n";
     loading = false;
   } else {
@@ -36,11 +36,11 @@ void Loading_render() {
   static CircleShape octagon(80, 8);
   octagon.setOrigin(80, 80);
   octagon.setRotation(loadingspinner);
-  octagon.setPosition(Vcast<float>(Engine::getWindowSize()) * .5f);
+  octagon.setPosition(Vcast<float>(Engine::GetWindowSize()) * .5f);
   octagon.setFillColor(Color(255,255,255,min(255.f,40.f*loadingTime)));
   static Text t("Loading", *Resources::get<sf::Font>("RobotoMono-Regular.ttf"));
   t.setFillColor(Color(255,255,255,min(255.f,40.f*loadingTime)));
-  t.setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.4f,0.3f));
+  t.setPosition(Vcast<float>(Engine::GetWindowSize()) * Vector2f(0.4f,0.3f));
   Renderer::queue(&t);
   Renderer::queue(&octagon);
 }
@@ -48,30 +48,36 @@ void Loading_render() {
 float frametimes[256] = {};
 uint8_t ftc = 0;
 
-void Engine::Update(double dt) {
-//   static sf::Clock clock;
-//   float dt = clock.restart().asSeconds();
-  {
-    frametimes[++ftc] = dt;
-    static string avg = _gameName + " FPS:";
-    if (ftc % 60 == 0) {
-      double davg = 0;
-      for (const auto t : frametimes) {
-        davg += t;
-      }
-      davg = 1.0 / (davg / 255.0);
-      _window->setTitle(avg + toStrDecPt(2, davg));
-    }
-  }
+void Engine::Update(double dt) 
+{
+	{
+		frametimes[++ftc] = dt;
+		static string avg = _gameName + " FPS:";
+		if (ftc % 60 == 0) 
+		{
+			double davg = 0;
+			for (const auto t : frametimes) 
+			{
+				davg += t;
+			}
+			davg = 1.0 / (davg / 255.0);
+			_window->setTitle(avg + toStrDecPt(2, davg));
+		}
+	}
 
-  if (loading) {
-    Loading_update(dt, _activeScene);
-  } else if (_activeScene != nullptr) 
-  {
-	  InputHandler::Update(_framerateCap);
-	  Physics::update(dt);
-	  _activeScene->Update(dt);
-  }
+	if (loading) 
+	{
+	    Loading_update(dt, _activeScene);
+	} 
+	else if (_activeScene != nullptr) 
+	{
+		InputHandler::Update(_framerateCap);
+		if (true) // Is not paused?
+		{
+			Physics::update(dt);
+			_activeScene->Update(dt);
+		}
+	}
 }
 
 void Engine::Render(RenderWindow& window) {
@@ -92,11 +98,11 @@ void Engine::Render(RenderWindow& window) {
 void Engine::Start(unsigned int width, unsigned int height,
                    const std::string& gameName, Scene* scn) {
 	sf::VideoMode videoMode(width, height);
-	
+
 	RenderWindow window(videoMode, gameName, sf::Style::Titlebar | sf::Style::Close);
 	_gameName = gameName;
 	_window = &window;
-	// _window->setFramerateLimit(120);
+
 	Renderer::initialise(window);
 	Physics::initialise();
 	ChangeScene(scn);
@@ -151,7 +157,7 @@ void Engine::Start(unsigned int width, unsigned int height,
 		acc += frameTime;
 		while (acc >= _framerateCap)
 		{
-			if (_activeScene->isLoaded())
+			if (_activeScene->IsLoaded())
 			{
 			}
 
@@ -174,13 +180,13 @@ void Engine::Start(unsigned int width, unsigned int height,
 	UI::shutdown();
 }
 
-std::shared_ptr<Entity> Scene::makeEntity() {
+std::shared_ptr<Entity> Scene::MakeEntity() {
   auto e = make_shared<Entity>(this);
   ents.list.push_back(e);
   return std::move(e);
 }
 
-void Engine::setVsync(bool b) { _window->setVerticalSyncEnabled(b); }
+void Engine::SetVsync(bool b) { _window->setVerticalSyncEnabled(b); }
 
 void Engine::ChangeScene(Scene* s, bool forceSync) {
   cout << "Eng: changing scene: " << s << endl;
@@ -202,7 +208,7 @@ void Engine::ChangeScene(Scene* s, bool forceSync) {
     old->UnLoad(); // todo: Unload Async
   }
 
-  _activeScene->addPersistentEntities(persistentEntities);
+  _activeScene->AddPersistentEntities(persistentEntities);
 
   if (forceSync)
   {
@@ -210,7 +216,7 @@ void Engine::ChangeScene(Scene* s, bool forceSync) {
 	  return;
   }
 
-  if (!s->isLoaded()) {
+  if (!s->IsLoaded()) {
     cout << "Eng: Entering Loading Screen\n";
     loadingTime =0;
     _activeScene->LoadAsync();
@@ -222,7 +228,7 @@ void Scene::Update(const double& dt) { ents.update(dt); }
 
 void Scene::Render() { ents.render(); }
 
-bool Scene::isLoaded() const {
+bool Scene::IsLoaded() const {
   {
     std::lock_guard<std::mutex> lck(_loaded_mtx);
     // Are we already loading asynchronously?
@@ -237,7 +243,7 @@ bool Scene::isLoaded() const {
     return _loaded;
   }
 }
-void Scene::setLoaded(bool b) {
+void Scene::SetLoaded(bool b) {
   {
     std::lock_guard<std::mutex> lck(_loaded_mtx);
     _loaded = b;
@@ -246,13 +252,13 @@ void Scene::setLoaded(bool b) {
 
 void Scene::UnLoad() 
 {
-	setLoaded(false);
+	SetLoaded(false);
 	ents.clear();
 }
 
 void Scene::LoadAsync() { _loaded_future = std::async(&Scene::Load, this); }
 
-sf::Vector2u Engine::getWindowSize() { return _window->getSize(); }
+sf::Vector2u Engine::GetWindowSize() { return _window->getSize(); }
 
 sf::RenderWindow& Engine::GetWindow() { return *_window; }
 

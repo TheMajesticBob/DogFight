@@ -170,7 +170,7 @@ file(GLOB_RECURSE SCENES planet_protector/scenes/*.cpp planet_protector/scenes/*
 file(GLOB_RECURSE ENTITIES planet_protector/entities/*.cpp planet_protector/entities/*.h)
 
 # Add all to project
-add_executable(PLANET ${SOURCES} ${CMPNTS} ${SCENES} ${ENTITIES} ${RESOURCE_FILES})
+add_executable(PLANET WIN32 ${SOURCES} ${CMPNTS} ${SCENES} ${ENTITIES} ${RESOURCE_FILES})
 
 # Filter header/source files
 assign_source_group(${SOURCES} ${CMPNTS} ${SCENES} ${ENTITIES} ${RESOURCE_FILES})

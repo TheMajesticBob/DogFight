@@ -15,12 +15,18 @@ public:
 
 	void play(std::string layerId)
 	{
-		_musicLayers[layerId]->play();
+		if (_musicLayers[layerId])
+		{
+			_musicLayers[layerId]->play();
+		}
 	}
 
 	void stop(std::string layerId)
 	{
-		_musicLayers[layerId]->stop();
+		if (_musicLayers[layerId])
+		{
+			_musicLayers[layerId]->stop();
+		}
 	}
 
 	void setGlobalVolume(float volume)
@@ -31,7 +37,10 @@ public:
 
 	void setVolume(std::string layerId, float volume)
 	{
-		_musicLayers[layerId]->setVolume(volume);
+		if (_musicLayers[layerId])
+		{
+			_musicLayers[layerId]->setVolume(volume);
+		}
 	}
 
 	void loadLayer(std::string layerId, std::string soundName);

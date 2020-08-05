@@ -56,11 +56,11 @@ void InputHandler::Update(float deltaTime)
 // Gets mouse delta taking screen aspect into account
 void InputHandler::GetRealMouseDelta(double* xdelta, double* ydelta)
 {
-	static double ratio_width = glm::quarter_pi<float>() / static_cast<float>(Engine::getWindowSize().x);
+	static double ratio_width = glm::quarter_pi<float>() / static_cast<float>(Engine::GetWindowSize().x);
 	static double ratio_height =
 		(glm::quarter_pi<float>() *
-		(static_cast<float>(Engine::getWindowSize().y) / static_cast<float>(Engine::getWindowSize().x))) /
-		static_cast<float>(Engine::getWindowSize().y);
+		(static_cast<float>(Engine::GetWindowSize().y) / static_cast<float>(Engine::GetWindowSize().x))) /
+		static_cast<float>(Engine::GetWindowSize().y);
 
 	double dx, dy;
 	InputHandler::GetMouseDelta(&dx, &dy);
