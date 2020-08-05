@@ -16,7 +16,9 @@ void EditorScene::Load()
 	_camera = MakeEntity<Camera>();
 	_camera->setPosition({ 0.0f, 0.0f });
 	_camera->SetLerpPosition(true);
-	_camera->SetLerpFactor(0.1f);
+	_camera->SetLerpScale(true);
+	_camera->SetPositionLerpFactor(0.1f);
+	_camera->SetScaleLerpFactor(0.1f);
 
 	InputHandler::BindKey(sf::Keyboard::Escape, sf::Event::KeyPressed, FKeyDelegate::from_function<EditorScene, &EditorScene::Exit>(this));
 	
@@ -48,10 +50,17 @@ void EditorScene::Update(const double& dt)
 		MoveReleased();
 	}
 
+	float mouseWheelDelta = InputHandler::GetMouseWheelDelta(sf::Mouse::VerticalWheel);
+	if (mouseWheelDelta != 0.0f)
+	{
+		float scale = -0.05f;
+		_camera->SetDesiredScale(_camera->GetDesiredScale() + mouseWheelDelta * scale);
+	}
+
 	if (_isMovePressed)
 	{
 		sf::Vector2f mousePos = sf::Vector2f(sf::Mouse::getPosition(Engine::GetWindow()));
-		sf::Vector2f moveDelta = _moveStartPos - mousePos;
+		sf::Vector2f moveDelta = (_moveStartPos - mousePos) * _camera->GetDesiredScale();
 		sf::Vector2f desiredPos = _cameraStartPos + moveDelta;
 		_camera->SetDesiredPosition(desiredPos);
 	}

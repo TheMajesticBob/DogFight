@@ -21,6 +21,8 @@ public:
 
 	bool isMouseOver();
 
+	void setDrawOnUi(bool drawOnUi);
+
 	bool isActive() const;
 	void setActive(bool _active);
 

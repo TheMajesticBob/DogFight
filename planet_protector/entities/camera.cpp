@@ -9,7 +9,8 @@ void Camera::setPositionInternal(sf::Vector2f position)
 }
 
 Camera::Camera(Scene* const s)
-	: Entity(s), _shouldLerpPosition(true), _lerpFactor(0.01f)
+	: Entity(s), _shouldLerpPosition(true), _positionLerpFactor(0.01f),
+	_shouldLerpScale(false), _scaleLerpFactor(0.1f), _desiredScale(1.0f)
 {
 	_view = sf::View(sf::FloatRect(0.0f, 0.0f, Engine::GetWindowSize().x, Engine::GetWindowSize().y));
 	_viewSize = _view.getSize();
@@ -26,7 +27,13 @@ void Camera::update(double)
 
 	if (_shouldLerpPosition)
 	{
-		setPositionInternal(lerp<sf::Vector2f>(getPosition(), _desiredPosition, _lerpFactor));
+		setPositionInternal(lerp<sf::Vector2f>(getPosition(), _desiredPosition, _positionLerpFactor));
+	}
+
+	if (_shouldLerpScale)
+	{
+		float currentScale = _view.getSize().x / _viewSize.x;
+		_view.setSize(lerp<float>(currentScale, _desiredScale, _scaleLerpFactor) * _viewSize);
 	}
 }
 
@@ -43,7 +50,8 @@ void Camera::setScale(float scale)
 
 FollowCamera::FollowCamera(Scene* const s) : Camera(s)
 {
-
+	_shouldLerpPosition = true;
+	_shouldLerpScale = true;
 }
 
 void FollowCamera::update(double dt)
@@ -80,8 +88,7 @@ void FollowCamera::update(double dt)
 	if (maxDistance > distToZoom)
 	{
 		float s = maxDistance / distToZoom;
-		float currentScale = _view.getSize().x / _viewSize.x;
-		_view.setSize(lerp<float>(currentScale, s, 0.01f) * _viewSize);
+		SetDesiredScale(s);
 	}	
 	Camera::update(dt);
 }

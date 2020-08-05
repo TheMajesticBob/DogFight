@@ -149,6 +149,11 @@ void Engine::Start(unsigned int width, unsigned int height,
 			{
 				InputHandler::KeyboardHandler(event.key.code, 0, event.type, 0);
 			}
+
+			if (event.type == Event::MouseWheelScrolled)
+			{
+				InputHandler::MouseWheelHandler(event.mouseWheelScroll.wheel, event.mouseWheelScroll.delta);
+			}
 		}
 
 		window.clear();
@@ -162,6 +167,8 @@ void Engine::Start(unsigned int width, unsigned int height,
 			Update(_framerateCap);
 			acc -= _framerateCap;
 		}
+
+		InputHandler::LateUpdate(0.0f);
 
 		Render(window);
 		window.display();

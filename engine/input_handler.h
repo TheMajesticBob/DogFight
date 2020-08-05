@@ -63,12 +63,15 @@ class InputHandler
 		static void GetMouseDelta(double* xdelta, double* ydelta);
 		static void GetMousePos(double* xpos, double* ypos);
 
+		static float GetMouseWheelDelta(int wheel) { return _mouseWheelState[wheel]; }
 		static bool GetMouseState(int button) { return _mouseState[button]; }
 		static bool GetLastMouseState(int button) { return _lastMouseState[button]; }
 		// Input callbacks
 		static void KeyboardHandler(int key, int scancode, int action, int mods);
 		static void MousePosHandler(double xpos, double ypos);
+		static void MouseWheelHandler(int wheel, float delta);
 
+		static void LateUpdate(float deltaTime);
 		static void Update(float deltaTime);
 		static float DeltaTime;
 
@@ -96,6 +99,7 @@ class InputHandler
 private:
 		static bool _lastMouseState[sf::Mouse::ButtonCount];
 		static bool _mouseState[sf::Mouse::ButtonCount];
+		static float _mouseWheelState[2];
 
 		static FKeyDelegate _keyMap[sf::Keyboard::KeyCount][2];
 		static std::vector<FAxisDelStorage> _axisMap[sf::Keyboard::KeyCount];

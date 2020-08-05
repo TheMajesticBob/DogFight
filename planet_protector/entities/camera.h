@@ -25,8 +25,11 @@ protected:
 	sf::Vector2f _viewSize;
 
 	sf::Vector2f _desiredPosition;
-	float _lerpFactor;
+	float _desiredScale;
+	float _positionLerpFactor;
+	float _scaleLerpFactor;
 	bool _shouldLerpPosition;
+	bool _shouldLerpScale;
 
 	void setPositionInternal(sf::Vector2f position);
 
@@ -38,8 +41,13 @@ public:
 	void update(double) override;
 	void setPosition(sf::Vector2f position);
 	void setScale(float scale);
+	float GetDesiredScale() { return _desiredScale; }
 
-	void SetLerpFactor(float factor) { _lerpFactor = factor; }
+	void SetScaleLerpFactor(float factor) { _scaleLerpFactor = factor; }
+	void SetLerpScale(bool shouldLerp) { _shouldLerpScale = shouldLerp; }
+	void SetDesiredScale(float desiredScale) { _desiredScale = desiredScale; }
+
+	void SetPositionLerpFactor(float factor) { _positionLerpFactor = factor; }
 	void SetLerpPosition(bool shouldLerp) { _shouldLerpPosition = shouldLerp; }
 	void SetDesiredPosition(sf::Vector2f desiredPosition) { _desiredPosition = desiredPosition; }
 };

@@ -76,9 +76,6 @@ void ShapeEditor::RegenerateVertexButtons()
 			button->onButtonPressed += FButtonPtrDelegate::from_function<ShapeEditor, &ShapeEditor::OnButtonPressed>(this);
 			button->onButtonReleased += FButtonPtrDelegate::from_function<ShapeEditor, &ShapeEditor::OnButtonReleased>(this);
 		}
-
-// 		sf::Vector2f screenPosition = Utils::WorldToScreen(_shape->getPosition() - _shape->getOrigin() + _shape->getPoint(i));
-// 		button->setPosition(screenPosition);
 	}
 }
 

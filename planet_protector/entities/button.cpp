@@ -52,7 +52,6 @@ void Button::render()
 	Entity::render();
 }
 
-
 bool Button::isMouseOver()
 {
 	if (!shapeComponent->is_fordeletion())
@@ -64,6 +63,12 @@ bool Button::isMouseOver()
 		}
 	}
 	return false;
+}
+
+void Button::setDrawOnUi(bool drawOnUi)
+{
+	shapeComponent->setDrawOnUI(drawOnUi);
+	textComponent->setDrawOnUI(drawOnUi);
 }
 
 void Button::HandleMouseClick()

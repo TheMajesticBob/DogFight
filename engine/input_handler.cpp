@@ -6,6 +6,7 @@
 
 bool InputHandler::_mouseState[sf::Mouse::ButtonCount];
 bool InputHandler::_lastMouseState[sf::Mouse::ButtonCount];
+float InputHandler::_mouseWheelState[2];
 bool InputHandler::keys[sf::Keyboard::KeyCount];
 queue<key_event> InputHandler::unhandled_keys;
 FKeyDelegate InputHandler::_keyMap[sf::Keyboard::KeyCount][2];
@@ -33,7 +34,7 @@ void InputHandler::Update(float deltaTime)
 {
 	DeltaTime = deltaTime;
 	timeSinceMouseMovement += deltaTime;
-	
+
 	std::copy(std::begin(_mouseState), std::end(_mouseState), std::begin(_lastMouseState));
 	for (int i = 0; i < sf::Mouse::ButtonCount; ++i)
 	{
@@ -120,4 +121,17 @@ void InputHandler::MousePosHandler(double xpos, double ypos)
 	mouse_x = xpos;
 	mouse_y = ypos;
 	timeSinceMouseMovement = 0.0f;
+}
+
+void InputHandler::MouseWheelHandler(int wheel, float delta)
+{
+	_mouseWheelState[wheel] = delta;
+}
+
+void InputHandler::LateUpdate(float deltaTime)
+{
+	for (int i = 0; i < 2; ++i)
+	{
+		_mouseWheelState[i] = 0.0f;
+	}
 }
