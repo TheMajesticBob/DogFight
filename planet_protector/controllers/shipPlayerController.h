@@ -31,4 +31,5 @@ protected:
 	virtual void update(double dt);
 	void tryRestart();
 	void goToMainMenu();
+	void OnPausePressed();
 };

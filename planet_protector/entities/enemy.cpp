@@ -17,7 +17,7 @@ Enemy::Enemy(Scene* const s, std::string shipDefinition)
 	}
 
 	// Create and run the behaviour tree
-	_behaviourTree = s->makeEntity<BasicBehaviourTree>(_blackboard);
+	_behaviourTree = s->MakeEntity<BasicBehaviourTree>(_blackboard);
 	_behaviourTree->startBehaviourTree(this);
 
 	SetColor(sf::Color(255, 0, 0));

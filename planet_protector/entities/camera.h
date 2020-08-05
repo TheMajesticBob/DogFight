@@ -24,16 +24,24 @@ protected:
 	sf::View _view;
 	sf::Vector2f _viewSize;
 
+	sf::Vector2f _desiredPosition;
+	float _lerpFactor;
+	bool _shouldLerpPosition;
+
+	void setPositionInternal(sf::Vector2f position);
+
 public:
 	Camera() = delete;
 	Camera(Scene* const s);
 	~Camera();
 
 	void update(double) override;
-
 	void setPosition(sf::Vector2f position);
 	void setScale(float scale);
 
+	void SetLerpFactor(float factor) { _lerpFactor = factor; }
+	void SetLerpPosition(bool shouldLerp) { _shouldLerpPosition = shouldLerp; }
+	void SetDesiredPosition(sf::Vector2f desiredPosition) { _desiredPosition = desiredPosition; }
 };
 
 class FollowCamera : public Camera

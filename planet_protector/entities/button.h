@@ -7,7 +7,8 @@
 #include "SFML/OpenGL.hpp"
 #include "delegates.h"
 
-DEFINE_DELEGATE(FButtonClicked);
+DEFINE_DELEGATE(FButtonPtrDelegate, std::shared_ptr<class Button>);
+DEFINE_DELEGATE(FButtonDelegate);
 
 class Button : public Entity
 {
@@ -19,16 +20,19 @@ public:
 	void render() override;
 
 	bool isMouseOver();
-	bool MouseClick();
 
 	bool isActive() const;
 	void setActive(bool _active);
 
 	void setText(std::string text);
+	void setSize(sf::Vector2f size);
 
-	FButtonClicked onButtonClicked;
+	FButtonDelegate onButtonClicked;
+	FButtonPtrDelegate onButtonPressed;
+	FButtonPtrDelegate onButtonReleased;
 
-protected:	
+protected:
+	void HandleMouseClick();
 
 	std::shared_ptr<ShapeComponent> shapeComponent;
 	std::shared_ptr<TextComponent> textComponent;

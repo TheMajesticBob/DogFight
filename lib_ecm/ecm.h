@@ -78,6 +78,7 @@ protected:
   bool _persistent = false;  // should persist between scenes
   std::set<std::string> _tags;
 
+  Scene* const _scene;
   Team _team;
 
 public:
@@ -89,7 +90,6 @@ public:
 
   void addTag(const std::string& t);
   const std::set<std::string>& getTags() const;
-  Scene* const scene;
   Entity(Scene* const s);
 
   virtual ~Entity();
@@ -105,6 +105,7 @@ public:
 
   //
   const sf::Vector2f& getPosition() const;
+  Scene* const GetScene() { return _scene; }
 
   void setPosition(const sf::Vector2f& _position);
 

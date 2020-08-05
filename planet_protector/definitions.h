@@ -91,6 +91,8 @@ namespace defs
 		int turnRight;
 
 		int shoot;
+
+		int pause;
 	};
 
 	struct EnemyGroup
@@ -293,6 +295,7 @@ namespace defs
 		j.at("Movement").at("Left").get_to(c.turnLeft);
 		j.at("Movement").at("Right").get_to(c.turnRight);
 		j.at("Weapons").at("BasicAttack").get_to(c.shoot);
+		j.at("Other").at("Pause").get_to(c.pause);
 	}
 
 	inline void from_json(const json &j, EnemyGroup &eg)

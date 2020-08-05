@@ -2,8 +2,14 @@
 #include "engine.h"
 #include <system_renderer.h>
 
+void Camera::setPositionInternal(sf::Vector2f position)
+{
+	Entity::setPosition(position);
+	_view.setCenter(position);
+}
+
 Camera::Camera(Scene* const s)
-	: Entity(s)
+	: Entity(s), _shouldLerpPosition(true), _lerpFactor(0.01f)
 {
 	_view = sf::View(sf::FloatRect(0.0f, 0.0f, Engine::GetWindowSize().x, Engine::GetWindowSize().y));
 	_viewSize = _view.getSize();
@@ -17,12 +23,17 @@ Camera::~Camera()
 void Camera::update(double)
 {
 	Engine::GetWindow().setView(_view);
+
+	if (_shouldLerpPosition)
+	{
+		setPositionInternal(lerp<sf::Vector2f>(getPosition(), _desiredPosition, _lerpFactor));
+	}
 }
 
 void Camera::setPosition(sf::Vector2f position)
 {
-	Entity::setPosition(position);
-	_view.setCenter(position);
+	_desiredPosition = position;
+	setPositionInternal(position);
 }
 
 void Camera::setScale(float scale)
@@ -62,9 +73,9 @@ void FollowCamera::update(double dt)
 	}
 
 	newPosition = newPosition / (float)w;
+	_desiredPosition = newPosition;
 
 	// Interpolate between old and new
-	setPosition(lerp<sf::Vector2f>(position, newPosition, 0.01f));
 	_view.setCenter(getPosition());
 	if (maxDistance > distToZoom)
 	{

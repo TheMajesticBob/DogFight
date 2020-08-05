@@ -5,6 +5,9 @@
     "Right":3
   },
   "Weapons": {
-    "BasicAttack":57
+    "BasicAttack": 57
+  },
+  "Other": {
+    "Pause": 15
   }
 }

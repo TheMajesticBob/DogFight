@@ -19,7 +19,7 @@ using namespace sf;
 
 void TestingScene::Load()
 {
-	Pool<Projectile>::Initialize(0, true, [&] { return makeEntity<Projectile>(); });
+	Pool<Projectile>::Initialize(0, true, [&] { return MakeEntity<Projectile>(); });
 
 	_currentLevel = Resources::get<defs::Level>("1");
 	_waveData = _currentLevel->waves;
@@ -30,20 +30,20 @@ void TestingScene::Load()
 	float planetMass = 5000.0f;
 
 	// Create a camera
-	_camera = makeEntity<FollowCamera>();
+	_camera = MakeEntity<FollowCamera>();
 
 	// Create the planet
-	_planet = makeEntity<Planet>(_currentLevel->planetRadius, _currentLevel->planetMass);
+	_planet = MakeEntity<Planet>(_currentLevel->planetRadius, _currentLevel->planetMass);
 	_camera->AddFollow(_planet, 0.2f);
 
-	_player = makeEntity<Player>("player");
+	_player = MakeEntity<Player>("player");
 	_player->GetMovementComponent()->teleport(Vector2f(planetRadius, planetRadius + 100.0f));
 	_player->onShipDestroyed = FShipDestroyed::from_function<TestingScene, &TestingScene::DetachShipFromCamera>(this);
 	_player->onShipDestroyed += FShipDestroyed::from_function<TestingScene, &TestingScene::OnShipDestroyed>(this);
 	_player->SetGodMode(true);
 	_camera->AddFollow(_player, 10);
 
-	_player2 = makeEntity<Player>("player");
+	_player2 = MakeEntity<Player>("player");
 	_player2->GetMovementComponent()->teleport(Vector2f(planetRadius, planetRadius + 130.0f));
 	_player2->onShipDestroyed = FShipDestroyed::from_function<TestingScene, &TestingScene::DetachShipFromCamera>(this);
 	_player2->onShipDestroyed += FShipDestroyed::from_function<TestingScene, &TestingScene::OnShipDestroyed>(this);
@@ -56,10 +56,10 @@ void TestingScene::Load()
 	_waveText->setDrawOnUI(true);
 	_waveText->SetText("Wave 0");
 
-	auto controller = makeEntity<ShipPlayerController>("Player1controls", _player.get());
-	auto controller2 = makeEntity<ShipPlayerController>("Player2controls", _player2.get());
+	auto controller = MakeEntity<ShipPlayerController>("Player1controls", _player.get());
+	auto controller2 = MakeEntity<ShipPlayerController>("Player2controls", _player2.get());
 
-	_explosionManager = makeEntity<ExplosionManager>();
+	_explosionManager = MakeEntity<ExplosionManager>();
 
 	StartNextWave();
 
@@ -119,7 +119,7 @@ void TestingScene::Update(const double& dt)
 
 							sf::Vector2f randomOffset((rand() % 2000 - 1000) / 10.0f, (rand() % 2000 - 1000) / 10.0f);
 
-							auto enemy = makeEntity<Enemy>(shipName);
+							auto enemy = MakeEntity<Enemy>(shipName);
 							enemy->GetMovementComponent()->teleport(s.position + randomOffset);
 							enemy->onShipDestroyed = FShipDestroyed::from_function<TestingScene, &TestingScene::OnShipDestroyed>(this);
 							enemy->SetTeam(Ship::Team::T_ENEMY);

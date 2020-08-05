@@ -1,6 +1,7 @@
 #include "button.h"
 #include <engine.h>
 #include "../engine/game_resources.h"
+#include <input_handler.h>
 
 using namespace sf;
 
@@ -10,12 +11,8 @@ Button::Button(Scene* const s, Vector2f size) : Entity(s)
 	textComponent->setDrawOnUI(true);
 	textComponent->setLayer(1);
 	shapeComponent = addComponent<ShapeComponent>();
-	shapeComponent->setShape<RectangleShape>(Vector2f(size.x, size.y));
-	shapeComponent->getShape().setFillColor(Color::Black);
-	shapeComponent->getShape().setOutlineColor(Color::Magenta);
-	shapeComponent->getShape().setOutlineThickness(2);
-	shapeComponent->getShape().setOrigin(size.x/2,size.y/2); 
-	shapeComponent->setDrawOnUI(true);	
+	shapeComponent->setDrawOnUI(true);
+	setSize(size);
 }
 
 void Button::update(double dt)
@@ -25,19 +22,27 @@ void Button::update(double dt)
 	mp.y = Mouse::getPosition(Engine::GetWindow()).y;
 		
 	//mouse over change colour of buton to a dark grey
-	if (isActive()) {
-		if (isMouseOver()) {
-			shapeComponent->getShape().setFillColor(Color::Color(100,30,140,255));
+	if (isActive()) 
+	{
+		if (pressedState)
+		{
+			shapeComponent->getShape().setFillColor(Color::Color(50, 15, 70, 255));
 		}
-		else {
-			shapeComponent->getShape().setFillColor(Color::Black);
-		}
-		if (MouseClick()) {
-			onButtonClicked.invokeSafe();
-			return;
-			std::cout << "Success" << std::endl;
+		else 
+		{
+			if (isMouseOver())
+			{
+				shapeComponent->getShape().setFillColor(Color::Color(100, 30, 140, 255));
+			}
+			else
+			{
+				shapeComponent->getShape().setFillColor(Color::Black);
+			}
 		}
 	}	
+
+
+	HandleMouseClick();
 
 	Entity::update(dt);
 }
@@ -61,27 +66,32 @@ bool Button::isMouseOver()
 	return false;
 }
 
-bool Button::MouseClick()
+void Button::HandleMouseClick()
 {
 	Event _event;
 	sf::RenderWindow& window = Engine::GetWindow();
-		
-	if (isMouseOver()) {
-		if (Mouse::isButtonPressed(Mouse::Button::Left)) {
-			pressedState = true;
-		}
-		else if (pressedState == true) {
-			pressedState = false;
-			return true;
-		}
-	}
-	else {
-		if (!Mouse::isButtonPressed(Mouse::Button::Left)) {
-			pressedState = false;
+	
+	if (!pressedState)
+	{
+		if (InputHandler::GetMouseState(Mouse::Button::Left) && isMouseOver())
+		{
+			if (!InputHandler::GetLastMouseState(Mouse::Button::Left))
+			{
+				pressedState = true;
+				onButtonPressed.invokeSafe(std::static_pointer_cast<Button>(getShared()));
+			}
 		}
 	}
+	if (pressedState && !InputHandler::GetMouseState(Mouse::Button::Left))
+	{
+		pressedState = false;
+		onButtonReleased.invokeSafe(std::static_pointer_cast<Button>(getShared()));
 
-		return false;		
+		if (isMouseOver())
+		{
+			onButtonClicked.invokeSafe();
+		}
+	}	
 }
 
 bool Button::isActive() const { return _active; }
@@ -92,4 +102,13 @@ void Button::setText(std::string text)
 {	
 	textComponent->SetText(text);
 	textComponent->getText()->setOrigin(textComponent->getText()->getLocalBounds().getSize()/2.0f);
+}
+
+void Button::setSize(sf::Vector2f size)
+{
+	shapeComponent->setShape<RectangleShape>(Vector2f(size.x, size.y));
+	shapeComponent->getShape().setFillColor(Color::Black);
+	shapeComponent->getShape().setOutlineColor(Color::Magenta);
+	shapeComponent->getShape().setOutlineThickness(2);
+	shapeComponent->getShape().setOrigin(size.x / 2, size.y / 2);
 }

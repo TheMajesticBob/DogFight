@@ -28,6 +28,7 @@ ShipPlayerController::ShipPlayerController(Scene* const s, std::string controlsc
 
 	InputHandler::BindKey(sf::Keyboard::Space, Event::KeyPressed, FKeyDelegate::from_function<ShipPlayerController, &ShipPlayerController::tryRestart>(this));
 	InputHandler::BindKey(sf::Keyboard::Escape, Event::KeyPressed, FKeyDelegate::from_function<ShipPlayerController, &ShipPlayerController::goToMainMenu>(this));
+	InputHandler::BindKey(_controls->pause, Event::KeyPressed, FKeyDelegate::from_function<ShipPlayerController, &ShipPlayerController::OnPausePressed>(this));
 
 // 	_textComponent = addComponent<TextComponent>();
 // 	_textComponent->setDrawOnUI(true);
@@ -41,6 +42,7 @@ ShipPlayerController::~ShipPlayerController()
 {
 	InputHandler::UnbindKey(sf::Keyboard::Space, Event::KeyPressed, FKeyDelegate::from_function<ShipPlayerController, &ShipPlayerController::tryRestart>(this));
 	InputHandler::UnbindKey(sf::Keyboard::Escape, Event::KeyPressed, FKeyDelegate::from_function<ShipPlayerController, &ShipPlayerController::goToMainMenu>(this));
+	InputHandler::UnbindKey(_controls->pause, Event::KeyPressed, FKeyDelegate::from_function<ShipPlayerController, &ShipPlayerController::OnPausePressed>(this));
 
 	// Unbind keyboard events
 	InputHandler::UnbindKey(_controls->shoot, Event::KeyPressed,FKeyDelegate::from_function<ShipPlayerController, &ShipPlayerController::StartFiring>(this));
@@ -63,7 +65,7 @@ void ShipPlayerController::OnShipDestroyed(std::shared_ptr<Ship> ship)
 
 void ShipPlayerController::Accelerate(float value)
 {
-	if (_ship != nullptr)
+	if (_ship != nullptr && !Engine::GetPaused())
 	{
 		_ship->Accelerate(value);
 	}
@@ -71,7 +73,7 @@ void ShipPlayerController::Accelerate(float value)
 
 void ShipPlayerController::Turn(float value)
 {
-	if (_ship != nullptr)
+	if (_ship != nullptr && !Engine::GetPaused())
 	{
 		_ship->Turn(value);
 	}
@@ -133,4 +135,9 @@ void ShipPlayerController::tryRestart()
 void ShipPlayerController::goToMainMenu()
 {
 	Engine::ChangeScene(&menu, true);
+}
+
+void ShipPlayerController::OnPausePressed()
+{
+	Engine::SetPause(!Engine::GetPaused());
 }

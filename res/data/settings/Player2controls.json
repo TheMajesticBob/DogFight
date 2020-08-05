@@ -6,5 +6,8 @@
   },
   "Weapons": {
     "BasicAttack": 58
+  },
+  "Other": {
+    "Pause": 19
   }
 }

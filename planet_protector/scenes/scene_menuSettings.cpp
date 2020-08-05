@@ -18,31 +18,31 @@ void Settings::MoveToMenu()
 void Settings::Load()
 {
 	//create camera view
-	auto camera = makeEntity<Camera>();
+	auto camera = MakeEntity<Camera>();
 	camera->setPosition(Vector2f(1000.0f, 500.0f));
 	camera->setScale(1.0f);
 
 	// Create planet
 	float planetRadius = Engine::GetWindowSize().x / 2;
 	float planetMass = 1000000.0f;
-	auto planet = makeEntity<Planet>(planetRadius, planetMass);
+	auto planet = MakeEntity<Planet>(planetRadius, planetMass);
 
 	// Create buttons
 	Vector2f buttonSize(400.0f, 75.0f);
 
 	// Header
-	_head = makeEntity<Button>(Vector2f(500.0f, 60.0f));
+	_head = MakeEntity<Button>(Vector2f(500.0f, 60.0f));
 	_head->setText("Settings");
 	_head->setPosition(Vector2f(Engine::GetWindowSize().x / 2, Engine::GetWindowSize().y / 2 - 400));
 	_head->setActive(false);
 
 	// Back Button
-	_menu = makeEntity<Button>(buttonSize);
-	_menu->onButtonClicked = FButtonClicked::from_function<Settings, &Settings::MoveToMenu>(this);
+	_menu = MakeEntity<Button>(buttonSize);
+	_menu->onButtonClicked = FButtonDelegate::from_function<Settings, &Settings::MoveToMenu>(this);
 	_menu->setPosition(Vector2f(Engine::GetWindowSize().x / 2, Engine::GetWindowSize().y / 2 +300));
 	_menu->setText("Back");
 
-	SetLoaded(true);
+	Scene::Load();
 }
 
 void Settings::UnLoad()
