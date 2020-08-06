@@ -14,10 +14,12 @@ public:
   ~TextComponent() override = default;
 
   void SetText(const std::string& str);
+  void SetPosition(const sf::Vector2f& position);
 
   std::shared_ptr<sf::Text> getText() { return _text; }
 
 protected:
+	bool _overridePosition = false;
   std::shared_ptr<sf::Font> _font;
   std::string _string;
   std::shared_ptr<sf::Text> _text;

@@ -32,10 +32,20 @@ void Button::update(double dt)
 		{
 			if (isMouseOver())
 			{
+				if (!_hovered)
+				{
+					onButtonHovered.invokeSafe(getShared<Button>());
+					_hovered = true;
+				}
 				shapeComponent->getShape().setFillColor(Color::Color(100, 30, 140, 255));
 			}
 			else
 			{
+				if (_hovered)
+				{
+					onButtonUnhovered.invokeSafe(getShared<Button>());
+					_hovered = false;
+				}
 				shapeComponent->getShape().setFillColor(Color::Black);
 			}
 		}
@@ -83,14 +93,14 @@ void Button::HandleMouseClick()
 			if (!InputHandler::GetLastMouseState(Mouse::Button::Left))
 			{
 				pressedState = true;
-				onButtonPressed.invokeSafe(std::static_pointer_cast<Button>(getShared()));
+				onButtonPressed.invokeSafe(std::static_pointer_cast<Button>(getShared<Button>()));
 			}
 		}
 	}
 	if (pressedState && !InputHandler::GetMouseState(Mouse::Button::Left))
 	{
 		pressedState = false;
-		onButtonReleased.invokeSafe(std::static_pointer_cast<Button>(getShared()));
+		onButtonReleased.invokeSafe(std::static_pointer_cast<Button>(getShared<Button>()));
 
 		if (isMouseOver())
 		{

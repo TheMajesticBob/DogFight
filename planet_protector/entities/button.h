@@ -32,6 +32,8 @@ public:
 	FButtonDelegate onButtonClicked;
 	FButtonPtrDelegate onButtonPressed;
 	FButtonPtrDelegate onButtonReleased;
+	FButtonPtrDelegate onButtonHovered;
+	FButtonPtrDelegate onButtonUnhovered;
 
 protected:
 	void HandleMouseClick();
@@ -41,6 +43,7 @@ protected:
 	sf::Vector2f mp;
 	bool pressedState = false;
 	bool _active = true;
+	bool _hovered = false;
 	
 
 	sf::Color color;

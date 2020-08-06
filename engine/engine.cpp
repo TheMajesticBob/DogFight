@@ -38,9 +38,9 @@ void Loading_render() {
   octagon.setOrigin(80, 80);
   octagon.setRotation(loadingspinner);
   //octagon.setPosition(Vcast<float>(Engine::GetWindowSize()) * .5f);
-  octagon.setFillColor(Color(255,255,255,min(255.f,40.f*loadingTime)));
+  octagon.setFillColor(Color(255,255,255,std::min(255.f,40.f*loadingTime)));
   static Text t("Loading", *Resources::get<sf::Font>("RobotoMono-Regular.ttf"));
-  t.setFillColor(Color(255,255,255,min(255.f,40.f*loadingTime)));
+  t.setFillColor(Color(255,255,255, std::min(255.f,40.f*loadingTime)));
   t.setPosition(Vector2f(0.4f,0.3f));
   Renderer::queue(&t);
   Renderer::queue(&octagon);

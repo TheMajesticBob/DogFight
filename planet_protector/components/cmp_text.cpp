@@ -3,8 +3,11 @@
 #include <system_resources.h>
 
 void TextComponent::update(double dt) {
-    _text->setPosition(_parent->getPosition());
-    _text->setRotation(_parent->getRotation());
+	if (!_overridePosition)
+	{
+		_text->setPosition(_parent->getPosition());
+		_text->setRotation(_parent->getRotation());
+	}
 }
 
 //void TextComponent::render() { Renderer::queue(&_text); }
@@ -20,4 +23,10 @@ TextComponent::TextComponent(Entity* const p, const std::string& str)
 void TextComponent::SetText(const std::string& str) {
   _string = str;
   _text->setString(_string);
+}
+
+void TextComponent::SetPosition(const sf::Vector2f& position)
+{
+	_text->setPosition(position);
+	_overridePosition = true;
 }

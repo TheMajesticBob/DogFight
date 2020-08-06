@@ -6,8 +6,10 @@
 #include <iostream> // std::cout, std::fixed
 #include <sstream>
 #include <vector>
+#include <glm/common.hpp>
 
-namespace sf {
+namespace sf 
+{
 
 typedef Vector2<size_t> Vector2ul;
 
@@ -20,6 +22,40 @@ T rand_range(T low, T high)
 // Returns the length of the vector
 template <typename T> double length(const Vector2<T>& v) {
   return sqrt(v.x * v.x + v.y * v.y);
+}
+
+// Returns the length squared of the vector
+template <typename T> double lengthSquared(const Vector2<T>& v) {
+	return v.x * v.x + v.y * v.y;
+}
+
+// double clamp(const double& v, const double& minRange, const double& maxRange)
+// {
+// 	if (v >= minRange)
+// 	{
+// 		if (v <= maxRange)
+// 		{
+// 			return v;
+// 		}
+// 
+// 		return maxRange;
+// 	}
+// 
+// 	return minRange;
+// }
+
+template <typename T> const double& minimum_distance(Vector2<T>& v, Vector2<T>& w, Vector2<T>& p) {
+	// Return minimum distance between line segment vw and point p
+	const T l2 = lengthSquared(v - w);  // i.e. |w-v|^2 -  avoid a sqrt
+	if (l2 == 0.0) return length(p - v);   // v == w case
+	// Consider the line extending the segment, parameterized as v + t (w - v).
+	// We find projection of point p onto the line. 
+	// It falls where t = [(p-v) . (w-v)] / |w-v|^2
+	// We clamp t from [0,1] to handle points outside the segment vw.
+	float d = dot(p - v, w - v) / l2;
+	float t = glm::clamp<float>(d, 0, 1);
+	const Vector2<T> projection = v + t * (w - v);  // Projection falls on the segment
+	return length(p - projection);
 }
 
 // Normalizes the vector

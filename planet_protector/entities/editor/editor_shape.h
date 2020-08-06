@@ -17,9 +17,15 @@ protected:
 		void RegenerateVertexButtons();
 		void UpdateVertexButtonPositions();
 
-		void OnButtonPressed(std::shared_ptr<class Button> button);
+		void AddVertexAt(int vertexId, sf::Vector2f pos);
+		void RemoveVertex(int vertexId);
 
+		void OnButtonHovered(std::shared_ptr<class Button> button);
+		void OnButtonUnhovered(std::shared_ptr<class Button> button);
+		void OnButtonPressed(std::shared_ptr<class Button> button);
 		void OnButtonReleased(std::shared_ptr<class Button> button);
+
+		int FindButtonId(std::shared_ptr<class Button> button);
 
 		// Shape stuff
 		std::shared_ptr<class ShapeComponent> _shapeComponent;
@@ -34,4 +40,8 @@ protected:
 		// Mouse, button stuff (UI)
 		sf::Vector2f _mouseStartPos;
 		std::shared_ptr<class Button> _currentButton = nullptr;
+		std::shared_ptr<class Button> _currentHovered = nullptr;
+
+		// Debug stuff
+		std::shared_ptr<class TextComponent> _textComponent;
 };

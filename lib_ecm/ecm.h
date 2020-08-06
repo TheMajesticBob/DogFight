@@ -85,7 +85,10 @@ public:
 	void SetTeam(Team newTeam) { _team = newTeam; }
 	const Team& GetTeam() { return _team; }
 
-	std::shared_ptr<Entity> getShared() { return _shared_to_me; }
+
+
+	template<typename T>
+	std::shared_ptr<T> getShared() { return std::static_pointer_cast<T>(_shared_to_me); }
 	void setSharedPtr(std::shared_ptr<Entity> ptr) { _shared_to_me = ptr; }
 
   void addTag(const std::string& t);

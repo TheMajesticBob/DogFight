@@ -105,7 +105,7 @@ void Ship::OnDestroyed()
 {
 	// TODO: Make Boom!
 
-	onShipDestroyed.invokeSafe(getShared());
+	onShipDestroyed.invokeSafe(getShared<Ship>());
 }
 
 void Ship::Accelerate(float Value)

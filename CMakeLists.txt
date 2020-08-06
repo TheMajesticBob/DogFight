@@ -123,7 +123,6 @@ target_link_libraries(lib_engine
 	PUBLIC sfml-graphics 
 	PUBLIC sfml-audio 
 	PUBLIC glfw 
-	PUBLIC glm 
 	PUBLIC libglew_static
 	PUBLIC opengl32
 )
@@ -152,7 +151,8 @@ ENDFOREACH()
 ### Maths lib
 add_library(lib_maths INTERFACE)
 target_sources(lib_maths INTERFACE "${CMAKE_SOURCE_DIR}/lib_maths/maths.h")
-target_include_directories(lib_maths INTERFACE "${CMAKE_SOURCE_DIR}/lib_maths" INTERFACE ${SFML_INCS})
+target_link_libraries(lib_maths INTERFACE glm)
+target_include_directories(lib_maths INTERFACE "${CMAKE_SOURCE_DIR}/lib_maths" INTERFACE ${SFML_INCS} INTERFACE ${GLM_INCS})
 
 ### ECM lib
 file(GLOB_RECURSE SOURCE_FILES lib_ecm/*.cpp lib_ecm/*.h)
