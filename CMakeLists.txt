@@ -53,8 +53,12 @@ function(assign_source_group)
 			set(_filter "Resources")
 		endif()
 		message(STATUS, "File ${_source_rel} Filter ${_filter}")
-		string(REGEX REPLACE "^([a-zA-Z0-9_]*\/)" "" _source_path "${_source_path}")
+		message(STATUS, "File dir ${_source_path}")
+		string(REGEX REPLACE "^\\/[^\\/]*(\\/.*)$" "\\1" _source_path "/${_source_path}")
+		message(STATUS, "Regex replaced path [${_source_path}]")
         string(REPLACE "/" "\\" _source_path_msvc "${_source_path}")
+		message(STATUS, "MSVC path [${_source_path_msvc}]")
+		
         source_group("${_filter}\\${_source_path_msvc}" FILES "${_source}")
     endforeach()
 endfunction(assign_source_group)
@@ -113,8 +117,8 @@ file(GLOB_RECURSE RESOURCE_FILES "res/*.*")
 
 ### Engine ###
 file(GLOB_RECURSE SOURCE_FILES engine/*.cpp engine/*.h)
-add_library(lib_engine STATIC ${SOURCE_FILES} ${RESOURCE_FILES})
-assign_source_group(${SOURCE_FILES} ${RESOURCE_FILES})
+add_library(lib_engine STATIC ${SOURCE_FILES})
+assign_source_group(${SOURCE_FILES})
 target_include_directories(lib_engine INTERFACE "${CMAKE_SOURCE_DIR}/engine/" PUBLIC SYSTEM ${B2D_INCS} ${GLEW_INCS})
 target_link_libraries(lib_engine 
 	PUBLIC lib_maths 
