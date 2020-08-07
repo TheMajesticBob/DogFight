@@ -1,5 +1,7 @@
 #pragma once
 #include <SFML/Graphics/ConvexShape.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <system_resources.h>
 #include <ecm.h>
 
 class ShapeEditor : public Entity
@@ -11,6 +13,10 @@ class ShapeEditor : public Entity
 
 
 		virtual void update(double dt) override;
+
+		void PerformNewVertexCheck();
+
+		virtual void render() override;
 
 protected:
 		void ResetShape();
@@ -33,6 +39,23 @@ protected:
 
 		// Vertices stuff
 		std::vector<std::shared_ptr<class Button>> _vertexButtons;
+
+		struct EdgeText
+		{
+			EdgeText()
+			{
+				t.setFont(*Resources::get<sf::Font>("RobotoMono-Regular.ttf"));
+			}
+
+			void render();
+
+			sf::ConvexShape* shape;
+			sf::Text t;
+			std::string text = "N/A";
+
+			int v1 = -1, v2 = -1;
+		};
+		std::vector<EdgeText> _edgeTexts;
 		sf::Vector2f _vertexStartPos;
 		int _vertexId;
 

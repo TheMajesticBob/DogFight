@@ -29,6 +29,8 @@ public:
 	void setText(std::string text);
 	void setSize(sf::Vector2f size);
 
+	void setPressed(bool pressed) { _pressedState = pressed; }
+
 	FButtonDelegate onButtonClicked;
 	FButtonPtrDelegate onButtonPressed;
 	FButtonPtrDelegate onButtonReleased;
@@ -38,10 +40,10 @@ public:
 protected:
 	void HandleMouseClick();
 
-	std::shared_ptr<ShapeComponent> shapeComponent;
-	std::shared_ptr<TextComponent> textComponent;
+	std::shared_ptr<ShapeComponent> _shapeComponent;
+	std::shared_ptr<TextComponent> _textComponent;
 	sf::Vector2f mp;
-	bool pressedState = false;
+	bool _pressedState = false;
 	bool _active = true;
 	bool _hovered = false;
 	

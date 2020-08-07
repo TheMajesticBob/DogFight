@@ -3,11 +3,31 @@
 #include "../../components/cmp_text.h"
 #include "../button.h"
 
+#include <system_renderer.h>
 #include <input_handler.h>
 #include <engine.h>
 #include <utils.h>
 
 #include <SFML/Graphics/CircleShape.hpp>
+
+void ShapeEditor::EdgeText::render()
+{
+	if (shape && v1 >= 0 && v2 >= 0)
+	{
+		sf::Vector2f v1Pos = shape->getPoint(v1) - shape->getOrigin();
+		sf::Vector2f v2Pos = shape->getPoint(v2) - shape->getOrigin();
+
+		sf::Vector2f pos = (v1Pos + v2Pos) / 2.0f;
+		t.setString(text);
+		t.setFillColor(sf::Color::White);
+		t.setPosition(pos);
+		t.setOrigin(t.getLocalBounds().getSize() / 2.0f);
+		t.setCharacterSize(36);
+		t.setScale({ 0.2f,0.2f });
+		Renderer::queue(&t);
+	}
+}
+
 
 ShapeEditor::ShapeEditor(class Scene* const s)
 	: Entity(s), _shapeComponent(addComponent<ShapeComponent>())
@@ -45,7 +65,7 @@ void ShapeEditor::update(double dt)
 			"View center: " + to_string(viewCenter.x) + ", " + to_string(viewCenter.y) + "\n" +
 			"Screen Center: " + to_string(screenCenter.x) + ", " + to_string(screenCenter.y) + "\n" +
 			"Scale: " + to_string(viewScale) + "\n" +
-			"Worls mouse pos: " + to_string(worldMousePos.x) + ", " + to_string(worldMousePos.y);
+			"World mouse pos: " + to_string(worldMousePos.x) + ", " + to_string(worldMousePos.y);
 		//_textComponent->SetPosition(worldMousePos);
 		_textComponent->SetText(text);
 	}
@@ -66,43 +86,70 @@ void ShapeEditor::update(double dt)
 		sf::Vector2f desiredPosition = _vertexStartPos + moveDelta;
 
 		_shape->setPoint(_vertexId, desiredPosition);
-		// _currentButton->setPosition();
 	}
-	else if(InputHandler::GetMouseState(sf::Mouse::Left) && !InputHandler::GetLastMouseState(sf::Mouse::Left))
+	else if(_currentHovered == nullptr && InputHandler::GetMouseState(sf::Mouse::Left) && !InputHandler::GetLastMouseState(sf::Mouse::Left))
 	{
-		sf::Vector2f mousePos = Utils::ScreenToWorld(sf::Vector2f(sf::Mouse::getPosition(Engine::GetWindow())));
-		// Returns wrong position when zoomed in?
-		for (int i = 0; i < _vertexButtons.size(); ++i)
-		{
-			int j = i + 1;
-			if (j >= _vertexButtons.size())
-				j = 0;
-
-			sf::Vector2f b1Pos = _shape->getPoint(i) - _shape->getOrigin();
-			sf::Vector2f b2Pos = _shape->getPoint(j) - _shape->getOrigin();
-
-			float lengthS = lengthSquared(b2Pos - b1Pos);
-			if (abs(lengthS) > 0.0001f)
-			{
-				float u = glm::clamp<float>(((mousePos.x - b1Pos.x)*(b2Pos.x - b1Pos.x) + (mousePos.y - b1Pos.y)*(b2Pos.y - b1Pos.y)) / lengthS, 0, 1);;
-
-				sf::Vector2f intersection(b1Pos + u * (b2Pos - b1Pos));
-
-				float distanceFromLine = length(mousePos - intersection);
-
-				if (distanceFromLine <= 2.0f * viewScale)
-				{
-					AddVertexAt(j, mousePos + _shape->getOrigin());
-					RegenerateVertexButtons();
-					break;
-				}
-			}
-		}
+		PerformNewVertexCheck();
 	}
 
 	UpdateVertexButtonPositions();
 
 	Entity::update(dt);
+}
+
+void ShapeEditor::PerformNewVertexCheck()
+{
+	sf::Vector2f mousePos = Utils::ScreenToWorld(sf::Vector2f(sf::Mouse::getPosition(Engine::GetWindow())));
+	// Returns wrong position when zoomed in?
+	for (int i = 0; i < _vertexButtons.size(); ++i)
+	{
+		int j = i + 1;
+		if (j >= _vertexButtons.size())
+			j = 0;
+
+		sf::Vector2f b1Pos = _shape->getPoint(i) - _shape->getOrigin();
+		sf::Vector2f b2Pos = _shape->getPoint(j) - _shape->getOrigin();
+
+		float lengthS = lengthSquared(b2Pos - b1Pos);
+		if (abs(lengthS) > 0.0001f)
+		{
+			float u = glm::clamp<float>(((mousePos.x - b1Pos.x)*(b2Pos.x - b1Pos.x) + (mousePos.y - b1Pos.y)*(b2Pos.y - b1Pos.y)) / lengthS, 0, 1);
+			sf::Vector2f intersection(b1Pos + u * (b2Pos - b1Pos));
+			float distanceFromLine = length(mousePos - intersection);
+
+			if (i < _vertexButtons.size() - 1)
+			{
+				_edgeTexts[i].text = to_string(distanceFromLine);
+			}
+
+			if (distanceFromLine <= 1.0f)
+			{
+				AddVertexAt(j, mousePos + _shape->getOrigin());
+				RegenerateVertexButtons();
+				UpdateVertexButtonPositions();
+
+				_currentButton = _vertexButtons[j];
+				_currentButton->setPressed(true);
+				_currentButton->setSize(sf::Vector2f(10.0f, 10.0f));
+				_vertexId = j;
+
+				_mouseStartPos = Utils::ScreenToWorld(sf::Vector2f(sf::Mouse::getPosition(Engine::GetWindow())));
+				_vertexStartPos = _shape->getPoint(j);
+				break;
+
+			}
+		}
+	}
+}
+
+void ShapeEditor::render()
+{
+// 	for (auto& edge : _edgeTexts)
+// 	{
+// 		edge.render();
+// 	}
+
+	Entity::render();
 }
 
 void ShapeEditor::ResetShape()
@@ -134,12 +181,11 @@ void ShapeEditor::RegenerateVertexButtons()
 	}
 
 	_vertexButtons.resize(_shape->getPointCount());
-
-	Button* button = nullptr;
+	_edgeTexts.resize(_shape->getPointCount() - 1);
 
 	for (int i = 0; i < _shape->getPointCount(); ++i)
 	{
-		button = _vertexButtons[i].get();
+		Button* button = _vertexButtons[i].get();
 		if (!button)
 		{
 			_vertexButtons[i] = GetScene()->MakeEntity<Button>(sf::Vector2f(5.0f,5.0f));
@@ -148,6 +194,14 @@ void ShapeEditor::RegenerateVertexButtons()
 			button->onButtonReleased += FButtonPtrDelegate::from_function<ShapeEditor, &ShapeEditor::OnButtonReleased>(this);
 			button->onButtonHovered += FButtonPtrDelegate::from_function<ShapeEditor, &ShapeEditor::OnButtonHovered>(this);
 			button->onButtonUnhovered += FButtonPtrDelegate::from_function<ShapeEditor, &ShapeEditor::OnButtonUnhovered>(this);
+		}
+
+		if (i < _shape->getPointCount() - 1)
+		{
+			EdgeText& textComponent = _edgeTexts[i];
+			textComponent.v1 = i;		// (i > 0 ? i : _shape->getPointCount()) - 1;
+			textComponent.v2 = i + 1; // (i > 1 ? i : _shape->getPointCount()) - 2;
+			textComponent.shape = _shape;
 		}
 	}
 }

@@ -7,11 +7,11 @@ using namespace sf;
 
 Button::Button(Scene* const s, Vector2f size) : Entity(s)
 {
-	textComponent = addComponent<TextComponent>();
-	textComponent->setDrawOnUI(true);
-	textComponent->setLayer(1);
-	shapeComponent = addComponent<ShapeComponent>();
-	shapeComponent->setDrawOnUI(true);
+	_textComponent = addComponent<TextComponent>();
+	_textComponent->setDrawOnUI(true);
+	_textComponent->setLayer(1);
+	_shapeComponent = addComponent<ShapeComponent>();
+	_shapeComponent->setDrawOnUI(true);
 	setSize(size);
 }
 
@@ -24,9 +24,9 @@ void Button::update(double dt)
 	//mouse over change colour of buton to a dark grey
 	if (isActive()) 
 	{
-		if (pressedState)
+		if (_pressedState)
 		{
-			shapeComponent->getShape().setFillColor(Color::Color(50, 15, 70, 255));
+			_shapeComponent->getShape().setFillColor(Color::Color(50, 15, 70, 255));
 		}
 		else 
 		{
@@ -37,7 +37,7 @@ void Button::update(double dt)
 					onButtonHovered.invokeSafe(getShared<Button>());
 					_hovered = true;
 				}
-				shapeComponent->getShape().setFillColor(Color::Color(100, 30, 140, 255));
+				_shapeComponent->getShape().setFillColor(Color::Color(100, 30, 140, 255));
 			}
 			else
 			{
@@ -46,7 +46,7 @@ void Button::update(double dt)
 					onButtonUnhovered.invokeSafe(getShared<Button>());
 					_hovered = false;
 				}
-				shapeComponent->getShape().setFillColor(Color::Black);
+				_shapeComponent->getShape().setFillColor(Color::Black);
 			}
 		}
 	}	
@@ -64,9 +64,9 @@ void Button::render()
 
 bool Button::isMouseOver()
 {
-	if (!shapeComponent->is_fordeletion())
+	if (!_shapeComponent->is_fordeletion())
 	{
-		auto bounds = shapeComponent->getShape().getGlobalBounds();
+		auto bounds = _shapeComponent->getShape().getGlobalBounds();
 		if (bounds.contains(mp))
 		{
 			return true;
@@ -77,8 +77,8 @@ bool Button::isMouseOver()
 
 void Button::setDrawOnUi(bool drawOnUi)
 {
-	shapeComponent->setDrawOnUI(drawOnUi);
-	textComponent->setDrawOnUI(drawOnUi);
+	_shapeComponent->setDrawOnUI(drawOnUi);
+	_textComponent->setDrawOnUI(drawOnUi);
 }
 
 void Button::HandleMouseClick()
@@ -86,20 +86,20 @@ void Button::HandleMouseClick()
 	Event _event;
 	sf::RenderWindow& window = Engine::GetWindow();
 	
-	if (!pressedState)
+	if (!_pressedState)
 	{
 		if (InputHandler::GetMouseState(Mouse::Button::Left) && isMouseOver())
 		{
 			if (!InputHandler::GetLastMouseState(Mouse::Button::Left))
 			{
-				pressedState = true;
+				_pressedState = true;
 				onButtonPressed.invokeSafe(std::static_pointer_cast<Button>(getShared<Button>()));
 			}
 		}
 	}
-	if (pressedState && !InputHandler::GetMouseState(Mouse::Button::Left))
+	if (_pressedState && !InputHandler::GetMouseState(Mouse::Button::Left))
 	{
-		pressedState = false;
+		_pressedState = false;
 		onButtonReleased.invokeSafe(std::static_pointer_cast<Button>(getShared<Button>()));
 
 		if (isMouseOver())
@@ -115,15 +115,15 @@ void Button::setActive(bool _active) { Button::_active = _active; }
 
 void Button::setText(std::string text)
 {	
-	textComponent->SetText(text);
-	textComponent->getText()->setOrigin(textComponent->getText()->getLocalBounds().getSize()/2.0f);
+	_textComponent->SetText(text);
+	_textComponent->getText()->setOrigin(_textComponent->getText()->getLocalBounds().getSize()/2.0f);
 }
 
 void Button::setSize(sf::Vector2f size)
 {
-	shapeComponent->setShape<RectangleShape>(Vector2f(size.x, size.y));
-	shapeComponent->getShape().setFillColor(Color::Black);
-	shapeComponent->getShape().setOutlineColor(Color::Magenta);
-	shapeComponent->getShape().setOutlineThickness(2);
-	shapeComponent->getShape().setOrigin(size.x / 2, size.y / 2);
+	_shapeComponent->setShape<RectangleShape>(Vector2f(size.x, size.y));
+	_shapeComponent->getShape().setFillColor(Color::Black);
+	_shapeComponent->getShape().setOutlineColor(Color::Magenta);
+	_shapeComponent->getShape().setOutlineThickness(2);
+	_shapeComponent->getShape().setOrigin(size.x / 2, size.y / 2);
 }
